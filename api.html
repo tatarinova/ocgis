@@ -68,7 +68,7 @@ execution.</p>
 </div>
 <p>All keyword arguments are exposed as public attributes which may be 
 arbitrarily set using standard syntax:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;uri&#39;</span><span class="p">:</span><span class="s">&#39;/some/dataset&#39;</span><span class="p">,</span><span class="s">&#39;variable&#39;</span><span class="p">:</span><span class="s">&#39;foo&#39;</span><span class="p">})</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">RequestDataset</span><span class="p">(</span><span class="s">&#39;/path/to/some/dataset&#39;</span><span class="p">,</span><span class="s">&#39;foo&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ops</span><span class="o">.</span><span class="n">aggregate</span> <span class="o">=</span> <span class="bp">True</span>
 </pre></div>
 </div>
@@ -80,7 +80,7 @@ values from internal objects.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestCollection</span></tt>) &#8211; The target dataset(s) for the request. This is the only required parameter.</li>
+<li><strong>dataset</strong> (<tt class="xref py py-class docutils literal"><span class="pre">RequestDatasetCollection</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt>) &#8211; The target dataset(s) for the request. This is the only required parameter.</li>
 <li><strong>spatial_operation</strong> (<em>str</em>) &#8211; The geometric operation to be performed.</li>
 <li><strong>geom</strong> (<em>list of dictionaries</em>) &#8211; The selection geometry(s) used for the spatial subset. If <cite>None</cite>, selection defaults to entire spatial domain.</li>
 <li><strong>aggregate</strong> (<em>bool</em>) &#8211; If <cite>True</cite>, dataset geometries are aggregated to coincident selection geometries.</li>
@@ -149,11 +149,84 @@ values from internal objects.</p>
 <p>Additional information on arguments are found in their respective sections.</p>
 <div class="section" id="dataset">
 <h4>dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">¶</a></h4>
-<p>some info</p>
+<p>A <cite>dataset</cite> is the target file(s) where data is stored. A <cite>dataset</cite> may be on the local machine or network location accessible by the software. Unsecured OpenDAP datasets may also be accessed.</p>
+<dl class="class">
+<dt id="ocgis.RequestDataset">
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDataset</tt><big>(</big><em>uri</em>, <em>variable</em>, <em>alias=None</em>, <em>time_range=None</em>, <em>level_range=None</em>, <em>s_proj=None</em>, <em>t_units=None</em>, <em>t_calendar=None</em><big>)</big><a class="headerlink" href="#ocgis.RequestDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt> contains all the information necessary to find
+and subset a variable (by time and/or level) contained in a local or 
+OpenDAP-hosted CF dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>uri</strong> (<em>str</em>) &#8211; The absolute path (URLs included) to the dataset&#8217;s location.</li>
+<li><strong>variable</strong> (<em>str</em>) &#8211; The target variable.</li>
+<li><strong>alias</strong> (<em>str</em>) &#8211; An alternative name to identify the returned variable&#8217;s data. If <cite>None</cite>, this defaults to <cite>variable</cite>. If variables having the same name occur in a request, this value will be required.</li>
+<li><strong>time_range</strong> ([<tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt>]) &#8211; Upper and lower bounds for time dimension subsetting. If <cite>None</cite>, return all time points.</li>
+<li><strong>level_range</strong> (<em>[int, int]</em>) &#8211; Upper and lower bounds for level dimension subsetting. If <cite>None</cite>, return all levels.</li>
+<li><strong>s_proj</strong> (<em>str</em>) &#8211; A <a class="reference external" href="http://trac.osgeo.org/proj/wiki/FAQ">PROJ4 string</a> describing the dataset&#8217;s spatial reference.</li>
+<li><strong>t_units</strong> (<em>str</em>) &#8211; Overload the autodiscover <a class="reference external" href="http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html#num2date">time units</a>.</li>
+<li><strong>t_calendar</strong> (<em>str</em>) &#8211; Overload the autodiscover <a class="reference external" href="http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html#num2date">time calendar</a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ocgis.RequestDatasetCollection">
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDatasetCollection</tt><big>(</big><em>request_datasets=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#ocgis.RequestDatasetCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains business logic ensuring multi-<tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt> objects are
+compatible.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_datasets</strong> (sequence of <tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt> objects) &#8211; A sequence of <tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt> objects.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ocgis.RequestDatasetCollection.update">
+<tt class="descname">update</tt><big>(</big><em>request_dataset</em><big>)</big><a class="headerlink" href="#ocgis.RequestDatasetCollection.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a <tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt> to the collection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_dataset</strong> (<tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt>) &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt> to add.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="spatial-operation">
 <h4>spatial_operation<a class="headerlink" href="#spatial-operation" title="Permalink to this headline">¶</a></h4>
-<p>some more info</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><cite>intersects</cite> (default)</td>
+<td>Source geometries touching or overlapping selection geometries are returned.</td>
+</tr>
+<tr class="row-odd"><td><cite>clip</cite></td>
+<td>A full geometric intersection is performed between source and selection geometries. New geometries may be created.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

@@ -54,14 +54,61 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>OpenClimateGIS has a number of dependencies for geospatial, array, and data storage access and processing.</p>
-<div class="section" id="linux-installation">
-<h2>Linux Installation<a class="headerlink" href="#linux-installation" title="Permalink to this headline">¶</a></h2>
-<p>A <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/sh/install_geospatial.sh">bash script</a> is available containing a command structure for installing most of the OpenClimateGIS dependencies (no need to install PostGIS). There is currently no installer for OpenClimateGIS, and it must be installed from <a class="reference external" href="https://github.com/NCPP/ocgis">source</a>. Additional information on software dependencies may be found on the project&#8217;s <a class="reference external" href="http://www.earthsystemcog.org/projects/openclimategis/dependencies">CoG dependency page</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">First, make sure <a class="reference external" href="http://www.python.org/download/releases/2.7/">Python 2.7</a> is installed and available on your system path.</p>
 </div>
-<div class="section" id="other-platforms">
-<h2>Other Platforms<a class="headerlink" href="#other-platforms" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Additional information on software dependencies may be found on the project&#8217;s <a class="reference external" href="http://www.earthsystemcog.org/projects/openclimategis/dependencies">CoG dependency page</a>.</p>
+<div class="section" id="linux-debian-ubuntu">
+<h3>Linux (Debian/Ubuntu)<a class="headerlink" href="#linux-debian-ubuntu" title="Permalink to this headline">¶</a></h3>
+<p>A number of dependencies may be installed from the package repository:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> apt-get install curl wget python-setuptools gdal-bin python-gdal
+<span class="o">[</span>sudo<span class="o">]</span> easy_install pip
+<span class="o">[</span>sudo<span class="o">]</span> pip install numpy
+<span class="o">[</span>sudo<span class="o">]</span> pip install shapely
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Installing <a class="reference external" href="http://code.google.com/p/netcdf4-python/">netcdf4-python</a> is slightly more complex:</dt>
+<dd><ul class="first last simple">
+<li>The <a class="reference external" href="http://code.google.com/p/netcdf4-python/">netcdf4-python</a> tarball may be downloaded here: <a class="reference external" href="http://code.google.com/p/netcdf4-python/downloads/list">http://code.google.com/p/netcdf4-python/downloads/list</a>.</li>
+<li>Good instructions describing what to do after you have it are available here: <a class="reference external" href="http://code.google.com/p/netcdf4-python/wiki/UbuntuInstall">http://code.google.com/p/netcdf4-python/wiki/UbuntuInstall</a>.</li>
+</ul>
+</dd>
+</dl>
+<p>Dependencies may also be built from source. A <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/sh/install_geospatial.sh">bash script</a> is available containing a command structure for installing most of the OpenClimateGIS dependencies (no need to install PostGIS).</p>
+</div>
+<div class="section" id="other-platforms-mac-windows">
+<h3>Other Platforms (Mac/Windows)<a class="headerlink" href="#other-platforms-mac-windows" title="Permalink to this headline">¶</a></h3>
 <p>OpenClimateGIS has not been tested on other platforms. All libraries are theoretically supported on Mac and Windows.</p>
+</div>
+</div>
+<div class="section" id="openclimategis-installation">
+<h2>OpenClimateGIS Installation<a class="headerlink" href="#openclimategis-installation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Download the current release: <a class="reference external" href="https://github.com/NCPP/ocgis/tags">https://github.com/NCPP/ocgis/tags</a>.</li>
+<li>Extract the file using your favorite extraction utility.</li>
+<li>Navigate into extracted directory.</li>
+<li>Run the system command:</li>
+</ol>
+<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python setup.py install
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li>Check that the package may be imported:</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ocgis</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="uninstalling-openclimategis">
+<h2>Uninstalling OpenClimateGIS<a class="headerlink" href="#uninstalling-openclimategis" title="Permalink to this headline">¶</a></h2>
+<p>Uninstalling will remove every OpenClimateGIS package exposed on the Python path.</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python setup.py uninstall
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -74,8 +121,13 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#linux-installation">Linux Installation</a></li>
-<li><a class="reference internal" href="#other-platforms">Other Platforms</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
+<li><a class="reference internal" href="#linux-debian-ubuntu">Linux (Debian/Ubuntu)</a></li>
+<li><a class="reference internal" href="#other-platforms-mac-windows">Other Platforms (Mac/Windows)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#openclimategis-installation">OpenClimateGIS Installation</a></li>
+<li><a class="reference internal" href="#uninstalling-openclimategis">Uninstalling OpenClimateGIS</a></li>
 </ul>
 </li>
 </ul>
