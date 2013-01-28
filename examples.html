@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Examples &mdash; OpenClimateGIS 0.03a documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.03a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.03a documentation" href="index.html" />
+    <link rel="prev" title="Python API" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="Python API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>These examples will introduce basic subsetting, formatting, and computation in OpenClimateGIS. The datasets used in these examples were downloaded from the Earth System Grid Federation.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Shapefile data is currently not distributed with OpenClimateGIS. Please contact the maintainer for information on acquiring shapefile datasets.</p>
+</div>
+<div class="section" id="inspection">
+<h2>Inspection<a class="headerlink" href="#inspection" title="Permalink to this headline">¶</a></h2>
+<p>First, it is always a good idea to ensure a dataset is readable by OpenClimateGIS. Furthermore, it is also good to check if variables/dimensions are properly identifiable and match expectations. The <a class="reference internal" href="api.html#ocgis.Inspect" title="ocgis.Inspect"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.Inspect</span></tt></a> object offers a way to perform those initial checks.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">Inspect</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+
+
+<span class="c">## Directory holding climate data.</span>
+<span class="n">DATA_DIR</span> <span class="o">=</span> <span class="s">&#39;/usr/local/climate_data/CanCM4&#39;</span>
+<span class="c">## Location and variable name for a daily decadal temperature simulation.</span>
+<span class="n">URI_TAS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">,</span><span class="s">&#39;tas_day_CanCM4_decadal2000_r2i1p1_20010101-20101231.nc&#39;</span><span class="p">)</span>
+<span class="n">VAR_TAS</span> <span class="o">=</span> <span class="s">&#39;tas&#39;</span>
+
+
+<span class="c">## Inspect the dataset at the global level.</span>
+<span class="k">print</span><span class="p">(</span><span class="n">Inspect</span><span class="p">(</span><span class="n">URI_TAS</span><span class="p">))</span>
+<span class="c">## Inspect a variable contained in a dataset.</span>
+<span class="k">print</span><span class="p">(</span><span class="n">Inspect</span><span class="p">(</span><span class="n">URI_TAS</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="n">VAR_TAS</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The second print statement will prepend variable-level information used by OpenClimateGIS. It is important to look carefully at this information to identify any inconsistencies especially if the target dataset may not be entirely CF-compliant. For example, this is normal output for variable-level descriptions:</p>
+<div class="highlight-rest"><div class="highlight"><pre><span class="nt">&lt;snip&gt;</span>
+URI = /usr/local/climate_data/CanCM4/tas_day_CanCM4_decadal2000_r2i1p1_20010101-20101231.nc
+VARIABLE = tas
+
+=== Temporal =============
+
+       Start Date = 2001-01-01 12:00:00
+         End Date = 2010-12-31 12:00:00
+         Calendar = 365_day
+            Units = days since 1850-1-1
+Resolution (Days) = 1
+            Count = 3650
+       Has Bounds = True
+
+=== Spatial ==============
+
+Spatial Reference = WGS84
+     Proj4 String = +proj=longlat +datum=WGS84 +no_defs
+           Extent = (-1.40625, -90.0, 358.59375, 90.0)
+   Interface Type = SpatialInterfacePolygon
+       Resolution = 2.78932702678
+            Count = 8192
+
+=== Level ================
+
+No level dimension found.
+
+=== Dump =================
+
+dimensions:
+    time = ISUNLIMITED ; // 3650 currently
+    lat = 64 ;
+    lon = 128 ;
+    bnds = 2 ;
+
+variables:
+    float64 time(time) ;
+      time:bounds = &quot;time_bnds&quot; ;
+      time:units = &quot;days since 1850-1-1&quot; ;
+      time:calendar = &quot;365_day&quot; ;
+      time:axis = &quot;T&quot; ;
+      time:long_name = &quot;time&quot; ;
+<span class="nt">&lt;/snip&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-of-snippet">
+<h2>Use of <cite>snippet</cite><a class="headerlink" href="#use-of-snippet" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api.html#snippet-headline"><em>snippet</em></a> argument is important when testing and developing an OpenClimateGIS call. It should generally be set to <cite>True</cite> until the final data request is ready. This is for your benefit (requests are faster) as well as for the benefit of any remote storage server (not transferring excessive data).</p>
+</div>
+<div class="section" id="simple-subset">
+<h2>Simple Subset<a class="headerlink" href="#simple-subset" title="Permalink to this headline">¶</a></h2>
+<p>This example will introduce simple subsetting by a bounding box with conversion to in-memory NumPy arrays, shapefile, CSV, and keyed formats.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">OcgOperations</span><span class="p">,</span> <span class="n">RequestDataset</span><span class="p">,</span> <span class="n">env</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+
+
+<span class="c">## Directory holding climate data.</span>
+<span class="n">DATA_DIR</span> <span class="o">=</span> <span class="s">&#39;/usr/local/climate_data/CanCM4&#39;</span>
+<span class="c">## Location and variable name for a daily decadal temperature simulation.</span>
+<span class="n">URI_TAS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">,</span><span class="s">&#39;tas_day_CanCM4_decadal2000_r2i1p1_20010101-20101231.nc&#39;</span><span class="p">)</span>
+<span class="n">VAR_TAS</span> <span class="o">=</span> <span class="s">&#39;tas&#39;</span>
+<span class="c">## Make it easy to switch to non-snippet requests.</span>
+<span class="n">SNIPPET</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="c">## Set output directory for shapefile and keyed formats. (MAKE SURE IT EXISTS!)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">WORKSPACE</span> <span class="o">=</span> <span class="s">&#39;/tmp/foo&#39;</span>
+<span class="c">## The bounding box coordinates [minx, miny, maxx, maxy] for the state of</span>
+<span class="c">## Colorado in WGS84 latitude/longitude coordinates.</span>
+<span class="n">BBOX</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">109.1</span><span class="p">,</span> <span class="mf">36.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">102.0</span><span class="p">,</span> <span class="mf">41.0</span><span class="p">]</span>
+
+
+<span class="c">## Construct RequestDataset Object #############################################</span>
+
+<span class="c">## This object will be reused so just build it once.</span>
+<span class="n">rd</span> <span class="o">=</span> <span class="n">RequestDataset</span><span class="p">(</span><span class="n">URI_TAS</span><span class="p">,</span><span class="n">VAR_TAS</span><span class="p">)</span>
+
+<span class="c">## Returning NumPy Data Objects ################################################</span>
+
+<span class="c">## The NumPy data type return is the default. Only the geometry and</span>
+<span class="c">## RequestDataset are required (except &quot;snippet&quot; of course...). See the</span>
+<span class="c">## documentation for the OcgCollection object to understand the return </span>
+<span class="c">## structure.</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rd</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="n">BBOX</span><span class="p">,</span><span class="n">snippet</span><span class="o">=</span><span class="n">SNIPPET</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+<span class="c">## Returning Converted Files ###################################################</span>
+
+<span class="c">## At this time, the software will create named temporary directories inside</span>
+<span class="c">## env.WORKSPACE. This is to avoid the confusing process of managine overwrites</span>
+<span class="c">## etc. The support for managing output files will be improved in future </span>
+<span class="c">## releases. The returned value is the absolute path to the file or folder</span>
+<span class="c">## depending on the requested format.</span>
+<span class="n">output_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;shp&#39;</span><span class="p">,</span><span class="s">&#39;csv&#39;</span><span class="p">,</span><span class="s">&#39;keyed&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">output_format</span> <span class="ow">in</span> <span class="n">output_formats</span><span class="p">:</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="n">output_format</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rd</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="n">BBOX</span><span class="p">,</span><span class="n">snippet</span><span class="o">=</span><span class="n">SNIPPET</span><span class="p">,</span>
+                        <span class="n">output_format</span><span class="o">=</span><span class="n">output_format</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now, the directory structure for <cite>/tmp/foo</cite> will look like (temporary directory names will differ):</p>
+<div class="highlight-rest"><div class="highlight"><pre>$ find /tmp/foo
+/tmp/foo
+/tmp/foo/shp_tmplZ_8mU
+/tmp/foo/shp_tmplZ_8mU/shp.shx
+/tmp/foo/shp_tmplZ_8mU/shp_meta.txt
+/tmp/foo/shp_tmplZ_8mU/shp.prj
+/tmp/foo/shp_tmplZ_8mU/shp.dbf
+/tmp/foo/shp_tmplZ_8mU/shp.shp
+/tmp/foo/csv_tmpRL7dwt
+/tmp/foo/csv_tmpRL7dwt/csv.csv
+/tmp/foo/csv_tmpRL7dwt/csv_meta.txt
+/tmp/foo/keyed_tmpE0noqj
+/tmp/foo/keyed_tmpE0noqj/keyed_gid.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_vid.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_ugid.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_lid.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_value.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_meta.txt
+/tmp/foo/keyed_tmpE0noqj/keyed_cid.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_tid.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_did.csv
+/tmp/foo/keyed_tmpE0noqj/keyed_shp
+/tmp/foo/keyed_tmpE0noqj/keyed_shp/keyed_shpidx.dbf
+/tmp/foo/keyed_tmpE0noqj/keyed_shp/keyed_shpidx.shx
+/tmp/foo/keyed_tmpE0noqj/keyed_shp/keyed_shpidx.shp
+/tmp/foo/keyed_tmpE0noqj/keyed_shp/keyed_shpidx.prj
+/tmp/foo/keyed_tmpE0noqj/keyed_tgid.csv
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This data management approach may be confusing and efforts will be made in future releases to improve directory management.</p>
+</div>
+</div>
+<div class="section" id="advanced-subsetting">
+<h2>Advanced Subsetting<a class="headerlink" href="#advanced-subsetting" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="computation">
+<h2>Computation<a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#inspection">Inspection</a></li>
+<li><a class="reference internal" href="#use-of-snippet">Use of <cite>snippet</cite></a></li>
+<li><a class="reference internal" href="#simple-subset">Simple Subset</a></li>
+<li><a class="reference internal" href="#advanced-subsetting">Advanced Subsetting</a></li>
+<li><a class="reference internal" href="#computation">Computation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">Python API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/examples.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="Python API"
+             >previous</a> |</li>
+        <li><a href="index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ben Koziol, Tyler Erickson, K. Arthur Endsley.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
