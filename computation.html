@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Computation &mdash; OpenClimateGIS 0.03a documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.03a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.03a documentation" href="index.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Python API" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples.html" title="Examples"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="api.html" title="Python API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="computation">
+<h1>Computation<a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>OpenClimateGIS offers an extensible computation framework that supports:</dt>
+<dd><ol class="first last arabic simple">
+<li>NumPy-based array calculations</li>
+<li>Temporal grouping (level grouping not supported)</li>
+<li>Argumented and multivariate functions (e.g. heat index)</li>
+<li>Overload hooks for spatial aggregation - temporal aggregation implicit to calculation function</li>
+</ol>
+</dd>
+</dl>
+<div class="section" id="using-computations">
+<h2>Using Computations<a class="headerlink" href="#using-computations" title="Permalink to this headline">¶</a></h2>
+<p>Computations are used by providing a dict list to the <a class="reference internal" href="api.html#calc-headline"><em>calc</em></a> argument of the <a class="reference internal" href="api.html#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">OcgOperations</span></tt></a> object. The other two important arguments are <a class="reference internal" href="api.html#calc-raw-headline"><em>calc_raw</em></a> and <a class="reference internal" href="api.html#calc-grouping-headline"><em>calc_grouping</em></a>.</p>
+<p>A function dict is composed of a <cite>func</cite> key and a <cite>name</cite> key. The <cite>func</cite> key corresponds to the <cite>name</cite> attribute of the function class. (This is a bit confusing and will be fixed in a later release.) The <cite>name</cite> key in the function dict is required and is a user-supplied alias. This is required to allow multiple calculations to performed with different parameters. Software-generated function names would be confusing.</p>
+<p>For example to calculate a monthly mean and median on a hypothetical daily climate dataset (dumped back into a NetCDF), an OpenClimateGIS call may look like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">OcgOperations</span><span class="p">,</span> <span class="n">RequestDataset</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rd</span> <span class="o">=</span> <span class="n">RequestDataset</span><span class="p">(</span><span class="s">&#39;/path/to/data&#39;</span><span class="p">,</span><span class="s">&#39;tas&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;func&#39;</span><span class="p">:</span><span class="s">&#39;mean&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;monthly_mean&#39;</span><span class="p">},{</span><span class="s">&#39;func&#39;</span><span class="p">:</span><span class="s">&#39;median&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;monthly_median&#39;</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rd</span><span class="p">,</span><span class="n">calc</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span><span class="n">calc_grouping</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;month&#39;</span><span class="p">],</span><span class="n">output_format</span><span class="o">=</span><span class="s">&#39;nc&#39;</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;my_calculation&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="available-functions">
+<h2>Available Functions<a class="headerlink" href="#available-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basic-statistics">
+<h3>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="ocgis.calc.library.SampleSize">
+<em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">SampleSize</tt><a class="reference internal" href="_modules/ocgis/calc/library.html#SampleSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.SampleSize" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Automatically added by OpenClimateGIS. This should generally not be invoked manually.</p>
+</div>
+<p>n: Statistical sample size.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="thresholds">
+<h3>Thresholds<a class="headerlink" href="#thresholds" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="multivariate-calculations">
+<h3>Multivariate Calculations<a class="headerlink" href="#multivariate-calculations" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Computation</a><ul>
+<li><a class="reference internal" href="#using-computations">Using Computations</a></li>
+<li><a class="reference internal" href="#available-functions">Available Functions</a><ul>
+<li><a class="reference internal" href="#basic-statistics">Basic Statistics</a></li>
+<li><a class="reference internal" href="#thresholds">Thresholds</a></li>
+<li><a class="reference internal" href="#multivariate-calculations">Multivariate Calculations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">Python API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="next chapter">Examples</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/computation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples.html" title="Examples"
+             >next</a></li>
+        <li class="right" >
+          <a href="api.html" title="Python API"
+             >previous</a> |</li>
+        <li><a href="index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ben Koziol, Tyler Erickson, K. Arthur Endsley.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
