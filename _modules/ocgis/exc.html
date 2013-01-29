@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ocgis.exc &mdash; OpenClimateGIS 0.03a documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.03a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.03a documentation" href="../../index.html" />
+    <link rel="up" title="ocgis" href="../ocgis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ocgis.exc</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="OcgException"><a class="viewcode-back" href="../../api.html#ocgis.exc.OcgException">[docs]</a><span class="k">class</span> <span class="nc">OcgException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all OCGIS exceptions.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<span class="k">class</span> <span class="nc">InterpreterException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">InterpreterNotRecognized</span><span class="p">(</span><span class="n">InterpreterException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="DefinitionValidationError"><a class="viewcode-back" href="../../api.html#ocgis.exc.DefinitionValidationError">[docs]</a><span class="k">class</span> <span class="nc">DefinitionValidationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when validation fails on :class:`~ocgis.OcgOperations`.</span>
+<span class="sd">    </span>
+<span class="sd">    :param ocg_argument: The origin of the exception.</span>
+<span class="sd">    :type ocg_argument: :class:`ocgis.api.definition.OcgParameter`, str</span>
+<span class="sd">    :param msg: The message related to the exception to display in the exception&#39;s template.</span>
+<span class="sd">    :type msg: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ocg_argument</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span> <span class="o">=</span> <span class="n">ocg_argument</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Operations validation raised an exception on the argument or operation &#39;</span>
+               <span class="s">&#39;&quot;{0}&quot; with the message: &quot;{1}&quot;&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="CannotEncodeUrl"><a class="viewcode-back" href="../../api.html#ocgis.exc.CannotEncodeUrl">[docs]</a><span class="k">class</span> <span class="nc">CannotEncodeUrl</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a URL may not be encoded from an :func:`~ocgis.OcgOperations.as_qs` call.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<span class="k">class</span> <span class="nc">ParameterFormattingError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">pass</span>
+    
+    
+<span class="k">class</span> <span class="nc">UniqueIdNotFound</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s">&#39;No unique ids found.&#39;</span><span class="p">)</span>
+    
+    
+<span class="k">class</span> <span class="nc">DummyLevelEncountered</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">pass</span>
+    
+
+<div class="viewcode-block" id="SubsetException"><a class="viewcode-back" href="../../api.html#ocgis.exc.SubsetException">[docs]</a><span class="k">class</span> <span class="nc">SubsetException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all subset exceptions.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<span class="k">class</span> <span class="nc">MaskedDataError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Geometric intersection returns all masked values.&#39;</span><span class="p">)</span>
+    
+    
+<span class="k">class</span> <span class="nc">ExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Geometric intersection is empty.&#39;</span><span class="p">)</span>
+    
+    
+<div class="viewcode-block" id="EmptyDataNotAllowed"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptyDataNotAllowed">[docs]</a><span class="k">class</span> <span class="nc">EmptyDataNotAllowed</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when the empty set for a geometry is returned and `allow_empty`_ is `False`.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Intersection returned empty, but empty data not allowed.&#39;</span><span class="p">)</span>
+    
+    </div>
+<span class="k">class</span> <span class="nc">EmptyData</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Empty data returned.&#39;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../ocgis.html" >ocgis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ben Koziol, Tyler Erickson, K. Arthur Endsley.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
