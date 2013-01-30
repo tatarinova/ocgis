@@ -50,7 +50,7 @@
           <div class="body">
             
   <div class="section" id="computation">
-<h1>Computation<a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h1>
+<span id="computation-headline"></span><h1>Computation<a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h1>
 <dl class="docutils">
 <dt>OpenClimateGIS offers an extensible computation framework that supports:</dt>
 <dd><ol class="first last arabic simple">
@@ -72,6 +72,10 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;func&#39;</span><span class="p">:</span><span class="s">&#39;mean&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;monthly_mean&#39;</span><span class="p">},{</span><span class="s">&#39;func&#39;</span><span class="p">:</span><span class="s">&#39;median&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;monthly_median&#39;</span><span class="p">}]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rd</span><span class="p">,</span><span class="n">calc</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span><span class="n">calc_grouping</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;month&#39;</span><span class="p">],</span><span class="n">output_format</span><span class="o">=</span><span class="s">&#39;nc&#39;</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;my_calculation&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A calculation with arguments includes a <cite>kwds</cite> key in the function dictionary:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;func&#39;</span><span class="p">:</span><span class="s">&#39;between&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;between_5_10&#39;</span><span class="p">,</span><span class="s">&#39;kwds&#39;</span><span class="p">:{</span><span class="s">&#39;lower&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&#39;upper&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">}}]</span>
 </pre></div>
 </div>
 </div>

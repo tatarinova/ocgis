@@ -276,8 +276,24 @@ variables:
 <p class="caption">A peak inside the <cite>ocgis_vid.csv</cite> file which links to the <cite>VID</cite> attribute of the value file.</p>
 </div>
 </div>
-<div class="section" id="subsetting-with-a-time-range">
-<h2>Subsetting with a Time Range<a class="headerlink" href="#subsetting-with-a-time-range" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="subsetting-with-a-time-level-range">
+<h2>Subsetting with a Time/Level Range<a class="headerlink" href="#subsetting-with-a-time-level-range" title="Permalink to this headline">¶</a></h2>
+<p>Adding a time or level range subset is done at the <a class="reference internal" href="api.html#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a> level.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Datetime ranges are absolute and inclusive.</p>
+</div>
+<p>For example, the code below will return all data from the year 2000 for the first two levels. Level indexing originates at 1.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">OcgOperations</span><span class="p">,</span> <span class="n">RequestDataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c">## Depending on your data&#39;s time resolution, the hour/minute/second/etc.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c">## may be important for capturing all the data within the range.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">59</span><span class="p">,</span><span class="mi">59</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rd</span> <span class="o">=</span> <span class="n">RequestDataset</span><span class="p">(</span><span class="s">&#39;/my/leveled/data&#39;</span><span class="p">,</span><span class="s">&#39;tas&#39;</span><span class="p">,</span><span class="n">time_range</span><span class="o">=</span><span class="n">tr</span><span class="p">,</span><span class="n">level_range</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rd</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="computation">
 <h2>Computation<a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h2>
@@ -297,7 +313,7 @@ variables:
 <li><a class="reference internal" href="#use-of-snippet">Use of <cite>snippet</cite></a></li>
 <li><a class="reference internal" href="#simple-subsetting">Simple Subsetting</a></li>
 <li><a class="reference internal" href="#advanced-subsetting">Advanced Subsetting</a></li>
-<li><a class="reference internal" href="#subsetting-with-a-time-range">Subsetting with a Time Range</a></li>
+<li><a class="reference internal" href="#subsetting-with-a-time-level-range">Subsetting with a Time/Level Range</a></li>
 <li><a class="reference internal" href="#computation">Computation</a></li>
 </ul>
 </li>
