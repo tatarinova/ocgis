@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python API &mdash; OpenClimateGIS 0.03a documentation</title>
+    <title>Python API &mdash; OpenClimateGIS 0.04b documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.03a',
+        VERSION:     '0.04b',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.03a documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.04b documentation" href="index.html" />
     <link rel="next" title="Computation" href="computation.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.04b documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,27 +56,47 @@
 <h2><a class="reference internal" href="#module-ocgis.env" title="ocgis.env"><tt class="xref py py-mod docutils literal"><span class="pre">ocgis.env</span></tt></a><a class="headerlink" href="#ocgis-env" title="Permalink to this headline">¶</a></h2>
 <p>These are global parameters used by OpenClimateGIS. For those familiar with <tt class="xref py py-mod docutils literal"><span class="pre">arcpy</span></tt> programming, this behaves similarly to the <tt class="xref py py-mod docutils literal"><span class="pre">arcpy.env</span></tt> module.</p>
 <span class="target" id="module-ocgis.env"></span><dl class="data">
-<dt id="ocgis.env.BASE_NAME">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">BASE_NAME</tt><em class="property"> = 'ocg'</em><a class="headerlink" href="#ocgis.env.BASE_NAME" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default prefix to apply to output files.</p>
-</dd></dl>
-
-<dl class="data">
 <dt id="ocgis.env.CORES">
 <tt class="descclassname">ocgis.env.</tt><tt class="descname">CORES</tt><em class="property"> = 6</em><a class="headerlink" href="#ocgis.env.CORES" title="Permalink to this definition">¶</a></dt>
 <dd><p>If operating in parallel (i.e. <a class="reference internal" href="#ocgis.env.SERIAL" title="ocgis.env.SERIAL"><tt class="xref py py-attr docutils literal"><span class="pre">SERIAL</span></tt></a> = <cite>False</cite>), specify the number of cores to use.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="ocgis.env.FILL_VALUE">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">FILL_VALUE</tt><em class="property"> = 1e+20</em><a class="headerlink" href="#ocgis.env.FILL_VALUE" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fill value for masked data in NetCDF output.</p>
+<dt id="ocgis.env.DIR_DATA">
+<tt class="descclassname">ocgis.env.</tt><tt class="descname">DIR_DATA</tt><em class="property"> = None</em><a class="headerlink" href="#ocgis.env.DIR_DATA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directories to search through to find climate data. If specified, this should
+be a sequence of directories. It may also be a single directory location. Note
+that the search may take considerable time if a very high level directory is
+chosen.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.env.DIR_OUTPUT">
+<tt class="descclassname">ocgis.env.</tt><tt class="descname">DIR_OUTPUT</tt><em class="property"> = None</em><a class="headerlink" href="#ocgis.env.DIR_OUTPUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>The directory where output data is written. OpenClimateGIS always creates
+temporary directories inside this directory path ensuring data is not
+overwritten. Also, many of the output formats have multiple output files
+making a single directory location potentially troubling in terms of file
+quantity. If <cite>None</cite>, it defaults to the system&#8217;s temporary directory.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.env.DIR_SHPCABINET">
+<tt class="descclassname">ocgis.env.</tt><tt class="descname">DIR_SHPCABINET</tt><em class="property"> = '/home/local/WX/ben.koziol/links/ocgis/bin/shp'</em><a class="headerlink" href="#ocgis.env.DIR_SHPCABINET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location of the shapefile directory for use by <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.env.PREFIX">
+<tt class="descclassname">ocgis.env.</tt><tt class="descname">PREFIX</tt><em class="property"> = 'ocg'</em><a class="headerlink" href="#ocgis.env.PREFIX" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default prefix to apply to output files.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="ocgis.env.SERIAL">
 <tt class="descclassname">ocgis.env.</tt><tt class="descname">SERIAL</tt><em class="property"> = True</em><a class="headerlink" href="#ocgis.env.SERIAL" title="Permalink to this definition">¶</a></dt>
-<dd><p>If <cite>True</cite>, execute in serial. Only set to <cite>False</cite> if you are confident in your grasp of the software and operation.</p>
+<dd><p>The fill value for masked data in NetCDF output.
+If <cite>True</cite>, execute in serial. Only set to <cite>False</cite> if you are confident in your grasp of the software and operation.</p>
 </dd></dl>
 
 <dl class="data">
@@ -85,22 +105,12 @@
 <dd><p>Indicate if additional output information should be printed to terminal. (Currently not very useful.)</p>
 </dd></dl>
 
-<dl class="data">
-<dt id="ocgis.env.WORKSPACE">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">WORKSPACE</tt><em class="property"> = None</em><a class="headerlink" href="#ocgis.env.WORKSPACE" title="Permalink to this definition">¶</a></dt>
-<dd><p>The directory where output data is written. OpenClimateGIS always creates
-temporary directories inside this directory path ensuring data is not
-overwritten. Also, many of the output formats have multiple output files
-making a single directory location potentially troubling in terms of file
-quantity. If <cite>None</cite>, it defaults to the system&#8217;s temporary directory.</p>
-</dd></dl>
-
 </div>
 <div class="section" id="ocgis-ocgoperations">
 <h2><a class="reference internal" href="#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgOperations</span></tt></a><a class="headerlink" href="#ocgis-ocgoperations" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.OcgOperations">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>request_url=None</em>, <em>prefix='ocgis'</em>, <em>output_format='numpy'</em>, <em>output_grouping=None</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix='ocgis'</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for OCGIS operations. Parameters may be modified before an
 execution.</p>
 <div class="admonition warning">
@@ -563,7 +573,7 @@ accessible location.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Adjust location of :class:`ocgis.ShpCabinet` search directory.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ocgis</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ocgis</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">SHP_DIR</span> <span class="o">=</span> <span class="s">&#39;/path/to/local/shapefile/directory&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ocgis</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">DIR_SHPCABINET</span> <span class="o">=</span> <span class="s">&#39;/path/to/local/shapefile/directory&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sc</span> <span class="o">=</span> <span class="n">ShpCabinet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c"># List the shapefiles available.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sc</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
@@ -576,7 +586,7 @@ accessible location.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Absolute path the directory holding shapefile folders. Defaults to <tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.SHP_DIR</span></tt>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Absolute path the directory holding shapefile folders. Defaults to <a class="reference internal" href="#ocgis.env.DIR_SHPCABINET" title="ocgis.env.DIR_SHPCABINET"><tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -643,7 +653,7 @@ accessible location.</p>
 
 <div class="section" id="adding-additional-shapefile-data">
 <h3>Adding Additional Shapefile Data<a class="headerlink" href="#adding-additional-shapefile-data" title="Permalink to this headline">¶</a></h3>
-<p>In the <tt class="xref py py-attr docutils literal"><span class="pre">SHP_DIR</span></tt>, create a folder with the name you would like to use for the geometry&#8217;s key. Copy all the shapefile component files to the new directory. Inside the directory, create a <cite>.cfg</cite> file with the same name as the containing folder. The <cite>.cfg</cite> file will containg the header <cite>[mapping]</cite> and two key-value pairs: <cite>ugid</cite> and <cite>attributes</cite>. The <cite>ugid</cite> key value is the name of the attribute for the shapefiles unique identifier. If the file does not contain a unique identifier, setting the value to <cite>none</cite> will cause OpenClimateGIS to generate unique identifiers. The <cite>attributes</cite> key value are the attributes you want OpenClimateGIS to read from the file. Setting this to <cite>none</cite> will result in no additional attributes being inserted into the geometry dictionary.</p>
+<p>In the <a class="reference internal" href="#ocgis.env.DIR_SHPCABINET" title="ocgis.env.DIR_SHPCABINET"><tt class="xref py py-attr docutils literal"><span class="pre">DIR_SHPCABINET</span></tt></a>, create a folder with the name you would like to use for the geometry&#8217;s key. Copy all the shapefile component files to the new directory. Inside the directory, create a <cite>.cfg</cite> file with the same name as the containing folder. The <cite>.cfg</cite> file will containg the header <cite>[mapping]</cite> and two key-value pairs: <cite>ugid</cite> and <cite>attributes</cite>. The <cite>ugid</cite> key value is the name of the attribute for the shapefiles unique identifier. If the file does not contain a unique identifier, setting the value to <cite>none</cite> will cause OpenClimateGIS to generate unique identifiers. The <cite>attributes</cite> key value are the attributes you want OpenClimateGIS to read from the file. Setting this to <cite>none</cite> will result in no additional attributes being inserted into the geometry dictionary. Setting the <cite>attributes</cite> value to <cite>all</cite> results in all attributes being read.</p>
 <div class="highlight-ini"><div class="highlight"><pre><span class="k">[mapping]</span>
 <span class="na">ugid</span><span class="o">=</span><span class="s">id</span>
 <span class="na">attributes</span><span class="o">=</span><span class="s">state_name,population</span>
@@ -882,7 +892,7 @@ accessible location.</p>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.03a documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.04b documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
