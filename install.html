@@ -61,7 +61,7 @@
 <div class="section" id="linux-debian-ubuntu">
 <h3>Linux (Debian/Ubuntu)<a class="headerlink" href="#linux-debian-ubuntu" title="Permalink to this headline">¶</a></h3>
 <p>A number of dependencies may be installed from the package repository:</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> apt-get install g++ libz-dev python-dev curl wget python-setuptools gdal-bin python-gdal
+<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> apt-get install g++ libz-dev curl wget python-setuptools gdal-bin python-gdal
 <span class="o">[</span>sudo<span class="o">]</span> easy_install pip
 <span class="o">[</span>sudo<span class="o">]</span> pip install shapely
 </pre></div>
@@ -81,8 +81,8 @@
 <p>OpenClimateGIS has not been tested on other platforms. All libraries are theoretically supported on Mac and Windows.</p>
 </div>
 </div>
-<div class="section" id="openclimategis-installation">
-<h2>OpenClimateGIS Installation<a class="headerlink" href="#openclimategis-installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installing-openclimategis">
+<h2>Installing OpenClimateGIS<a class="headerlink" href="#installing-openclimategis" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li>Download the current release: <a class="reference external" href="https://github.com/NCPP/ocgis/tags">https://github.com/NCPP/ocgis/tags</a>.</li>
 <li>Extract the file using your favorite extraction utility.</li>
@@ -105,6 +105,10 @@
 </div>
 <div class="section" id="uninstalling-openclimategis">
 <h2>Uninstalling OpenClimateGIS<a class="headerlink" href="#uninstalling-openclimategis" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The <cite>uninstall</cite> command is currently not supported.</p>
+</div>
 <p>Uninstalling will remove every OpenClimateGIS package exposed on the Python path.</p>
 <div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python setup.py uninstall
 </pre></div>
@@ -126,7 +130,7 @@
 <li><a class="reference internal" href="#other-platforms-mac-windows">Other Platforms (Mac/Windows)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#openclimategis-installation">OpenClimateGIS Installation</a><ul>
+<li><a class="reference internal" href="#installing-openclimategis">Installing OpenClimateGIS</a><ul>
 <li><a class="reference internal" href="#configuring-the-shpcabinet">Configuring the <tt class="docutils literal"><span class="pre">ShpCabinet</span></tt></a></li>
 </ul>
 </li>
