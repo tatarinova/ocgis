@@ -72,7 +72,17 @@
 <span class="k">print</span><span class="p">(</span><span class="n">Inspect</span><span class="p">(</span><span class="n">URI_TAS</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="n">VAR_TAS</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The second print statement will prepend variable-level information used by OpenClimateGIS. It is important to look carefully at this information to identify any inconsistencies especially if the target dataset may not be entirely CF-compliant. For example, this is normal output for variable-level descriptions:</p>
+<p>As an alternative, you may use the <a href="#id1"><span class="problematic" id="id2">:method:`ocgis.RequestDataset.inspect`</span></a> method to generate a similar output (variable-level only):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">RequestDataset</span>
+
+
+<span class="n">uri</span> <span class="o">=</span> <span class="s">&#39;http:://some.remote.dataset.nc&#39;</span>
+<span class="n">variable</span> <span class="o">=</span> <span class="s">&#39;tas&#39;</span>
+
+<span class="n">RequestDataset</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span><span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">inspect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Passing a variable to <a class="reference internal" href="api.html#ocgis.Inspect" title="ocgis.Inspect"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.Inspect</span></tt></a> or using <a href="#id3"><span class="problematic" id="id4">:method:`ocgis.RequestDataset.inspect`</span></a> will prepend variable-level information used by OpenClimateGIS. It is important to look carefully at this descriptive information to identify any inconsistencies especially if the target dataset may not be entirely CF-compliant. For example, this is normal output for variable-level descriptions:</p>
 <div class="highlight-rest"><div class="highlight"><pre><span class="nt">&lt;snip&gt;</span>
 URI = /usr/local/climate_data/CanCM4/tas_day_CanCM4_decadal2000_r2i1p1_20010101-20101231.nc
 VARIABLE = tas
