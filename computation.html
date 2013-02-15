@@ -67,6 +67,10 @@
 </dl>
 <div class="section" id="using-computations">
 <h2>Using Computations<a class="headerlink" href="#using-computations" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Always use <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/maskedarray.html">NumPy masked array functions</a>!! Standard array functions may not be compatible with masked variables.</p>
+</div>
 <p>Computations are used by providing a dict list to the <a class="reference internal" href="api.html#calc-headline"><em>calc</em></a> argument of the <a class="reference internal" href="api.html#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">OcgOperations</span></tt></a> object. The other two important arguments are <a class="reference internal" href="api.html#calc-raw-headline"><em>calc_raw</em></a> and <a class="reference internal" href="api.html#calc-grouping-headline"><em>calc_grouping</em></a>.</p>
 <p>A function dict is composed of a <cite>func</cite> key and a <cite>name</cite> key. The <cite>func</cite> key corresponds to the <cite>name</cite> attribute of the function class. (This is a bit confusing and will be fixed in a later release.) The <cite>name</cite> key in the function dict is required and is a user-supplied alias. This is required to allow multiple calculations to performed with different parameters. Software-generated function names would be confusing.</p>
 <p>For example to calculate a monthly mean and median on a hypothetical daily climate dataset (dumped back into a NetCDF), an OpenClimateGIS call may look like:</p>
