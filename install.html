@@ -62,7 +62,7 @@
 <h3>Linux (Debian/Ubuntu)<a class="headerlink" href="#linux-debian-ubuntu" title="Permalink to this headline">¶</a></h3>
 <p>A number of dependencies may be installed from the package repository and using Python&#8217;s <cite>easy_install</cite>:</p>
 <div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> apt-get update
-<span class="o">[</span>sudo<span class="o">]</span> apt-get install g++ libz-dev curl wget python-setuptools python-gdal
+<span class="o">[</span>sudo<span class="o">]</span> apt-get install g++ libz-dev curl wget python-dev python-setuptools python-gdal
 <span class="o">[</span>sudo<span class="o">]</span> easy_install shapely
 </pre></div>
 </div>
@@ -75,35 +75,41 @@
 </dd>
 </dl>
 <p>You may attempt to use this set of terminal commands (file names and URLs may need to be updated):</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="c">## HDF5 ##</span>
-<span class="nb">cd</span> /tmp
-wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.1.0-patch1.tar.gz
-tar -xzvf hdf5-1.8.1.0-patch1.tar.gz
-<span class="nb">cd </span>hdf5-1.8.1.0-patch1
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">SRC</span><span class="o">=</span>/tmp
+<span class="nv">HDF5</span><span class="o">=</span>hdf5-1.8.1.0-patch1
+<span class="nv">NETCDF4</span><span class="o">=</span>netcdf-4.2.1
+<span class="nv">NETCDF4_PYTHON</span><span class="o">=</span>netCDF4-1.0.2
+
+<span class="c">## HDF5 ##</span>
+<span class="nb">cd</span> <span class="nv">$SRC</span>
+wget http://www.hdfgroup.org/ftp/HDF5/current/src/<span class="nv">$HDF5</span>.tar.gz
+tar -xzvf <span class="nv">$HDF5</span>.tar.gz
+<span class="nb">cd</span> <span class="nv">$HDF5</span>
 ./configure --prefix<span class="o">=</span>/usr/local --enable-shared --enable-hl
 make
 <span class="o">[</span>sudo<span class="o">]</span> make install
 
 <span class="c">## NetCDF4 ##</span>
-<span class="nb">cd</span> /tmp
-wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.2.1.tar.gz
-tar -xzvf netcdf-4.2.1.tar.gz
-<span class="nb">cd </span>netcdf-4.2.1
-<span class="nv">LDFLAGS</span><span class="o">=</span>-L/usr/local/lib <span class="nv">CPPFLAGS</span><span class="o">=</span>-I/usr/local/include
+<span class="nb">cd</span> <span class="nv">$SRC</span>
+wget ftp://ftp.unidata.ucar.edu/pub/netcdf/<span class="nv">$NETCDF4</span>.tar.gz
+tar -xzvf <span class="nv">$NETCDF4</span>.tar.gz
+<span class="nb">cd</span> <span class="nv">$NETCDF4</span>
+<span class="nv">LDFLAGS</span><span class="o">=</span>-L/usr/local/lib
+<span class="nv">CPPFLAGS</span><span class="o">=</span>-I/usr/local/include
 ./configure --enable-netcdf-4 --enable-dap --enable-shared --prefix<span class="o">=</span>/usr/local
 make
 <span class="o">[</span>sudo<span class="o">]</span> make install
 
 <span class="c">## netCDF4-python ##</span>
-<span class="nb">cd</span> /tmp
+<span class="nb">cd</span> <span class="nv">$SRC</span>
 <span class="o">[</span>sudo<span class="o">]</span> ldconfig
-wget http://netcdf4-python.googlecode.com/files/netCDF4-1.0.2.tar.gz
-tar -xzvf netCDF4-1.0.2.tar.gz
-<span class="nb">cd </span>netCDF4-1.0.2
+wget http://netcdf4-python.googlecode.com/files/<span class="nv">$NETCDF4_PYTHON</span>.tar.gz
+tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
+<span class="nb">cd</span> <span class="nv">$NETCDF4_PYTHON</span>
 <span class="o">[</span>sudo<span class="o">]</span> python setup.py install
 </pre></div>
 </div>
-<p>Dependencies may also be built from source. A <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/sh/install_geospatial.sh">bash script</a> is available containing a command structure for installing most of the OpenClimateGIS dependencies (no need to install PostGIS).</p>
+<p>Dependencies may also be built entirely from source. A <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/sh/install_geospatial.sh">bash script</a> is available containing a command structure for installing most of the OpenClimateGIS dependencies (no need to install PostGIS).</p>
 </div>
 <div class="section" id="other-platforms-mac-windows">
 <h3>Other Platforms (Mac/Windows)<a class="headerlink" href="#other-platforms-mac-windows" title="Permalink to this headline">¶</a></h3>
@@ -127,18 +133,18 @@ tar -xzvf netCDF4-1.0.2.tar.gz
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ocgis</span>
 </pre></div>
 </div>
+<p>or</p>
+<div class="highlight-sh"><div class="highlight"><pre>python -c <span class="s1">&#39;import ocgis&#39;</span>
+</pre></div>
+</div>
 <div class="section" id="configuring-the-shpcabinet">
 <h3>Configuring the <a class="reference internal" href="api.html#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a><a class="headerlink" href="#configuring-the-shpcabinet" title="Permalink to this headline">¶</a></h3>
-<p>Set the path to the folder containing the shapefile folders in <a class="reference internal" href="api.html#ocgis.env.DIR_SHPCABINET" title="ocgis.env.DIR_SHPCABINET"><tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt></a>.</p>
+<p>Set the path to the directory containing the shapefile folders in <a class="reference internal" href="api.html#ocgis.env.DIR_SHPCABINET" title="ocgis.env.DIR_SHPCABINET"><tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt></a>.</p>
 </div>
 </div>
 <div class="section" id="uninstalling-openclimategis">
 <h2>Uninstalling OpenClimateGIS<a class="headerlink" href="#uninstalling-openclimategis" title="Permalink to this headline">¶</a></h2>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The <cite>uninstall</cite> command is currently not supported.</p>
-</div>
-<p>Uninstalling will remove every OpenClimateGIS package exposed on the Python path.</p>
+<p>The <cite>uninstall</cite> command will simply provide you with the directory location of the OpenClimateGIS package. This must be manually removed.</p>
 <div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python setup.py uninstall
 </pre></div>
 </div>
