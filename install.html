@@ -66,7 +66,7 @@
 <span class="o">[</span>sudo<span class="o">]</span> easy_install shapely
 </pre></div>
 </div>
-<dl class="docutils">
+<dl class="docutils" id="netcdf4-python-install">
 <dt>Installing <a class="reference external" href="http://code.google.com/p/netcdf4-python/">netcdf4-python</a> is slightly more complex:</dt>
 <dd><ul class="first last simple">
 <li>The <a class="reference external" href="http://code.google.com/p/netcdf4-python/">netcdf4-python</a> tarball may be downloaded here: <a class="reference external" href="http://code.google.com/p/netcdf4-python/downloads/list">http://code.google.com/p/netcdf4-python/downloads/list</a>.</li>
@@ -75,8 +75,9 @@
 </dd>
 </dl>
 <p>You may attempt to use this set of terminal commands (file names and URLs may need to be updated):</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="nv">SRC</span><span class="o">=</span>/tmp
-<span class="nv">HDF5</span><span class="o">=</span>hdf5-1.8.1.0-patch1
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">SRC</span><span class="o">=</span>&lt;path-to-source-file-storage&gt;
+<span class="nv">PREFIX</span><span class="o">=</span>/usr/local
+<span class="nv">HDF5</span><span class="o">=</span>hdf5-1.8.1.10-patch1
 <span class="nv">NETCDF4</span><span class="o">=</span>netcdf-4.2.1
 <span class="nv">NETCDF4_PYTHON</span><span class="o">=</span>netCDF4-1.0.2
 
@@ -85,7 +86,7 @@
 wget http://www.hdfgroup.org/ftp/HDF5/current/src/<span class="nv">$HDF5</span>.tar.gz
 tar -xzvf <span class="nv">$HDF5</span>.tar.gz
 <span class="nb">cd</span> <span class="nv">$HDF5</span>
-./configure --prefix<span class="o">=</span>/usr/local --enable-shared --enable-hl
+./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-shared --enable-hl
 make
 <span class="o">[</span>sudo<span class="o">]</span> make install
 
@@ -94,14 +95,15 @@ make
 wget ftp://ftp.unidata.ucar.edu/pub/netcdf/<span class="nv">$NETCDF4</span>.tar.gz
 tar -xzvf <span class="nv">$NETCDF4</span>.tar.gz
 <span class="nb">cd</span> <span class="nv">$NETCDF4</span>
-<span class="nv">LDFLAGS</span><span class="o">=</span>-L/usr/local/lib
-<span class="nv">CPPFLAGS</span><span class="o">=</span>-I/usr/local/include
-./configure --enable-netcdf-4 --enable-dap --enable-shared --prefix<span class="o">=</span>/usr/local
+<span class="nv">LDFLAGS</span><span class="o">=</span>-L<span class="nv">$PREFIX</span>/lib
+<span class="nv">CPPFLAGS</span><span class="o">=</span>-I<span class="nv">$PREFIX</span>/include
+./configure --enable-netcdf-4 --enable-dap --enable-shared --prefix<span class="o">=</span><span class="nv">$PREFIX</span>
 make
 <span class="o">[</span>sudo<span class="o">]</span> make install
 
 <span class="c">## netCDF4-python ##</span>
 <span class="nb">cd</span> <span class="nv">$SRC</span>
+<span class="c"># not necessary for Mac OS X</span>
 <span class="o">[</span>sudo<span class="o">]</span> ldconfig
 wget http://netcdf4-python.googlecode.com/files/<span class="nv">$NETCDF4_PYTHON</span>.tar.gz
 tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
@@ -111,9 +113,23 @@ tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
 </div>
 <p>Dependencies may also be built entirely from source. A <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/sh/install_geospatial.sh">bash script</a> is available containing a command structure for installing most of the OpenClimateGIS dependencies (no need to install PostGIS).</p>
 </div>
-<div class="section" id="other-platforms-mac-windows">
-<h3>Other Platforms (Mac/Windows)<a class="headerlink" href="#other-platforms-mac-windows" title="Permalink to this headline">¶</a></h3>
-<p>OpenClimateGIS has not been tested on other platforms. All libraries are theoretically supported on Mac and Windows.</p>
+<div class="section" id="mac-os-x">
+<h3>Mac OS X<a class="headerlink" href="#mac-os-x" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Download and install GDAL from a pre-packaged DMG installer: <a class="reference external" href="http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg">http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg</a>.</p>
+</li>
+<li><p class="first">Download and extract Shapely from: <a class="reference external" href="https://pypi.python.org/pypi/Shapely">https://pypi.python.org/pypi/Shapely</a>. Then run:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python &lt;path-to-extracted-shapely-folder&gt;/setup.py install
+</pre></div>
+</div>
+</li>
+<li><p class="first">Follow the instructions on installing <a class="reference internal" href="#netcdf4-python-install"><em>netCDF4 Python</em></a>.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>OpenClimateGIS has not been tested on Windows platforms. All libraries are theoretically supported.</p>
 </div>
 </div>
 <div class="section" id="installing-openclimategis">
@@ -162,7 +178,8 @@ tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
 <li><a class="reference internal" href="#linux-debian-ubuntu">Linux (Debian/Ubuntu)</a></li>
-<li><a class="reference internal" href="#other-platforms-mac-windows">Other Platforms (Mac/Windows)</a></li>
+<li><a class="reference internal" href="#mac-os-x">Mac OS X</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#installing-openclimategis">Installing OpenClimateGIS</a><ul>
