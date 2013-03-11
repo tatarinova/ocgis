@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python API &mdash; OpenClimateGIS 0.04.01b documentation</title>
+    <title>Python API &mdash; OpenClimateGIS 0.04.01b-dev documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.04.01b',
+        VERSION:     '0.04.01b-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.04.01b documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.04.01b-dev documentation" href="index.html" />
     <link rel="next" title="Computation" href="computation.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.04.01b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.04.01b-dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,64 +53,37 @@
 <span id="id1"></span><h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h1>
 <p>Additional information on keyword arguments can be found below the initial documentation in the <a class="reference internal" href="#detailed-argument-information">Detailed Argument Information</a> section.</p>
 <div class="section" id="ocgis-env">
-<h2><a class="reference internal" href="#module-ocgis.env" title="ocgis.env"><tt class="xref py py-mod docutils literal"><span class="pre">ocgis.env</span></tt></a><a class="headerlink" href="#ocgis-env" title="Permalink to this headline">¶</a></h2>
-<p>These are global parameters used by OpenClimateGIS. For those familiar with <tt class="xref py py-mod docutils literal"><span class="pre">arcpy</span></tt> programming, this behaves similarly to the <tt class="xref py py-mod docutils literal"><span class="pre">arcpy.env</span></tt> module.</p>
-<span class="target" id="module-ocgis.env"></span><dl class="data">
-<dt id="ocgis.env.CORES">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">CORES</tt><em class="property"> = 6</em><a class="headerlink" href="#ocgis.env.CORES" title="Permalink to this definition">¶</a></dt>
-<dd><p>If operating in parallel (i.e. <a class="reference internal" href="#ocgis.env.SERIAL" title="ocgis.env.SERIAL"><tt class="xref py py-attr docutils literal"><span class="pre">SERIAL</span></tt></a> = <cite>False</cite>), specify the number of cores to use.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="ocgis.env.DIR_DATA">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">DIR_DATA</tt><em class="property"> = None</em><a class="headerlink" href="#ocgis.env.DIR_DATA" title="Permalink to this definition">¶</a></dt>
-<dd><p>Directories to search through to find climate data. If specified, this should
-be a sequence of directories. It may also be a single directory location. Note
-that the search may take considerable time if a very high level directory is
-chosen.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="ocgis.env.DIR_OUTPUT">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">DIR_OUTPUT</tt><em class="property"> = None</em><a class="headerlink" href="#ocgis.env.DIR_OUTPUT" title="Permalink to this definition">¶</a></dt>
-<dd><p>The directory where output data is written. OpenClimateGIS always creates
-temporary directories inside this directory path ensuring data is not
-overwritten. Also, many of the output formats have multiple output files
-making a single directory location potentially troubling in terms of file
-quantity. If <cite>None</cite>, it defaults to the system&#8217;s temporary directory.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="ocgis.env.DIR_SHPCABINET">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">DIR_SHPCABINET</tt><em class="property"> = '/home/local/WX/ben.koziol/links/ocgis/bin/shp'</em><a class="headerlink" href="#ocgis.env.DIR_SHPCABINET" title="Permalink to this definition">¶</a></dt>
-<dd><p>Location of the shapefile directory for use by <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="ocgis.env.PREFIX">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">PREFIX</tt><em class="property"> = None</em><a class="headerlink" href="#ocgis.env.PREFIX" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default prefix to apply to output files.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="ocgis.env.SERIAL">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">SERIAL</tt><em class="property"> = True</em><a class="headerlink" href="#ocgis.env.SERIAL" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fill value for masked data in NetCDF output.
-If <cite>True</cite>, execute in serial. Only set to <cite>False</cite> if you are confident in your grasp of the software and operation.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="ocgis.env.VERBOSE">
-<tt class="descclassname">ocgis.env.</tt><tt class="descname">VERBOSE</tt><em class="property"> = False</em><a class="headerlink" href="#ocgis.env.VERBOSE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicate if additional output information should be printed to terminal. (Currently not very useful.)</p>
-</dd></dl>
-
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">ocgis.env</span></tt><a class="headerlink" href="#ocgis-env" title="Permalink to this headline">¶</a></h2>
+<p>These are global parameters used by OpenClimateGIS. For those familiar with <tt class="xref py py-mod docutils literal"><span class="pre">arcpy</span></tt> programming, this behaves similarly to the <tt class="xref py py-mod docutils literal"><span class="pre">arcpy.env</span></tt> module. Any <tt class="xref py py-mod docutils literal"><span class="pre">ocgis.env</span></tt> variable be overloaded with system environment variables by setting <cite>OCGIS_&lt;variable-name&gt;</cite>.</p>
+<dl class="docutils">
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_OUTPUT</span></tt> = <tt class="xref py py-meth docutils literal"><span class="pre">tempfile.gettempdir()</span></tt></dt>
+<dd>The directory where output data is written. OpenClimateGIS always creates directories inside which output data is stored. Also, many of the output formats have multiple output files making a single directory location potentially troubling in terms of file quantity. If <cite>None</cite>, it defaults to the system&#8217;s temporary directory.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.OVERWRITE</span></tt> = <cite>False</cite></dt>
+<dd><div class="first admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Use with caution.</p>
+</div>
+<p class="last">Set to <cite>True</cite> to overwrite existing output folders. This will remove the folder if it exists!</p>
+</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.PREFIX</span></tt> = &#8216;ocgis_output&#8217;</dt>
+<dd>The default prefix to apply to output files. This is also the output folder name.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_SHPCABINET</span></tt> = &lt;path-to-directory&gt;</dt>
+<dd>Location of the shapefile directory for use by <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a>.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_DATA</span></tt> = <cite>None</cite></dt>
+<dd>Directory(s) to search through to find data. If specified, this should be a sequence of directories. It may also be a single directory location. Note that the search may take considerable time if a very high level directory is chosen. If this variable is set, it is only necessary to specify the filename(s) when creating a <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a>.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.SERIAL</span></tt> = <cite>True</cite></dt>
+<dd>If <cite>True</cite>, execute in serial. Only set to <cite>False</cite> if you are confident in your grasp of the software and its internal operation.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.CORES</span></tt> = 6</dt>
+<dd>If operating in parallel (i.e. <tt class="xref py py-attr docutils literal"><span class="pre">env.SERIAL</span></tt> = <cite>False</cite>), specify the number of cores to use.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.VERBOSE</span></tt> = <cite>False</cite></dt>
+<dd>Indicate if additional output information should be printed to terminal. (Currently not very useful.)</dd>
+</dl>
 </div>
 <div class="section" id="ocgis-ocgoperations">
 <h2><a class="reference internal" href="#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgOperations</span></tt></a><a class="headerlink" href="#ocgis-ocgoperations" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.OcgOperations">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix='ocgis_output'</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for OCGIS operations. Parameters may be modified before an
 execution.</p>
 <div class="admonition warning">
@@ -207,7 +180,7 @@ values from internal objects.</p>
 <p>A <cite>dataset</cite> is the target file(s) where data is stored. A <cite>dataset</cite> may be on the local machine or network location accessible by the software. Unsecured OpenDAP datasets may also be accessed.</p>
 <dl class="class">
 <dt id="ocgis.RequestDataset">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDataset</tt><big>(</big><em>uri</em>, <em>variable</em>, <em>alias=None</em>, <em>time_range=None</em>, <em>level_range=None</em>, <em>s_proj=None</em>, <em>t_units=None</em>, <em>t_calendar=None</em><big>)</big><a class="headerlink" href="#ocgis.RequestDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDataset</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>alias=None</em>, <em>time_range=None</em>, <em>level_range=None</em>, <em>s_proj=None</em>, <em>t_units=None</em>, <em>t_calendar=None</em><big>)</big><a class="headerlink" href="#ocgis.RequestDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> contains all the information necessary to find
 and subset a variable (by time and/or level) contained in a local or 
 OpenDAP-hosted CF dataset.</p>
@@ -238,7 +211,7 @@ OpenDAP-hosted CF dataset.</p>
 <dl class="method">
 <dt id="ocgis.RequestDataset.inspect">
 <tt class="descname">inspect</tt><big>(</big><big>)</big><a class="headerlink" href="#ocgis.RequestDataset.inspect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print inspection output using <tt class="xref py py-class docutils literal"><span class="pre">Insepct</span></tt>. This is a 
+<dd><p>Print inspection output using <a class="reference internal" href="#ocgis.Inspect" title="ocgis.Inspect"><tt class="xref py py-class docutils literal"><span class="pre">Inspect</span></tt></a>. This is a 
 convenience method.</p>
 </dd></dl>
 
@@ -593,7 +566,7 @@ accessible location.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Absolute path the directory holding shapefile folders. Defaults to <a class="reference internal" href="#ocgis.env.DIR_SHPCABINET" title="ocgis.env.DIR_SHPCABINET"><tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt></a>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Absolute path the directory holding shapefile folders. Defaults to <tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -660,7 +633,7 @@ accessible location.</p>
 
 <div class="section" id="adding-additional-shapefile-data">
 <h3>Adding Additional Shapefile Data<a class="headerlink" href="#adding-additional-shapefile-data" title="Permalink to this headline">¶</a></h3>
-<p>In the <a class="reference internal" href="#ocgis.env.DIR_SHPCABINET" title="ocgis.env.DIR_SHPCABINET"><tt class="xref py py-attr docutils literal"><span class="pre">DIR_SHPCABINET</span></tt></a>, create a folder with the name you would like to use for the geometry&#8217;s key. Copy all the shapefile component files to the new directory. Inside the directory, create a <cite>.cfg</cite> file with the same name as the containing folder. The <cite>.cfg</cite> file will containg the header <cite>[mapping]</cite> and two key-value pairs: <cite>ugid</cite> and <cite>attributes</cite>. The <cite>ugid</cite> key value is the name of the attribute for the shapefiles unique identifier. If the file does not contain a unique identifier, setting the value to <cite>none</cite> will cause OpenClimateGIS to generate unique identifiers. The <cite>attributes</cite> key value are the attributes you want OpenClimateGIS to read from the file. Setting this to <cite>none</cite> will result in no additional attributes being inserted into the geometry dictionary. Setting the <cite>attributes</cite> value to <cite>all</cite> results in all attributes being read.</p>
+<p>In the directory specified by <tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_SHPCABINET</span></tt>, create a folder with the name you would like to use for the geometry&#8217;s key. Copy all the shapefile component files to the new directory. Inside the directory, create a <cite>.cfg</cite> file with the same name as the containing folder. The <cite>.cfg</cite> file will containg the header <cite>[mapping]</cite> and two key-value pairs: <cite>ugid</cite> and <cite>attributes</cite>. The <cite>ugid</cite> key value is the name of the attribute for the shapefiles unique identifier. If the file does not contain a unique identifier, setting the value to <cite>none</cite> will cause OpenClimateGIS to generate unique identifiers. The <cite>attributes</cite> key value are the attributes you want OpenClimateGIS to read from the file. Setting this to <cite>none</cite> will result in no additional attributes being inserted into the geometry dictionary. Setting the <cite>attributes</cite> value to <cite>all</cite> results in all attributes being read.</p>
 <div class="highlight-ini"><div class="highlight"><pre><span class="k">[mapping]</span>
 <span class="na">ugid</span><span class="o">=</span><span class="s">id</span>
 <span class="na">attributes</span><span class="o">=</span><span class="s">state_name,population</span>
@@ -736,8 +709,8 @@ accessible location.</p>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="ocgis.env.OcgCollection.variables">
-<tt class="descname">variables</tt><a class="headerlink" href="#ocgis.env.OcgCollection.variables" title="Permalink to this definition">¶</a></dt>
+<dt id="OcgCollection.variables">
+<tt class="descname">variables</tt><a class="headerlink" href="#OcgCollection.variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <a class="reference external" href="http://docs.python.org/2.7/library/collections.html#collections.OrderedDict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">collections.OrderedDict</span></tt></a> holding <a class="reference internal" href="#ocgis.OcgVariable" title="ocgis.OcgVariable"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgVariable</span></tt></a> s.</p>
 </dd></dl>
 
@@ -747,28 +720,28 @@ accessible location.</p>
 <dt id="ocgis.OcgVariable">
 <em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgVariable</tt><big>(</big><em>name</em>, <em>value</em>, <em>temporal</em>, <em>spatial</em>, <em>level=None</em>, <em>uri=None</em>, <em>alias=None</em><big>)</big><a class="headerlink" href="#ocgis.OcgVariable" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
-<dt id="ocgis.env.OcgVariable.name">
-<tt class="descname">name</tt><a class="headerlink" href="#ocgis.env.OcgVariable.name" title="Permalink to this definition">¶</a></dt>
+<dt id="OcgVariable.name">
+<tt class="descname">name</tt><a class="headerlink" href="#OcgVariable.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ocgis.env.OcgVariable.value">
-<tt class="descname">value</tt><a class="headerlink" href="#ocgis.env.OcgVariable.value" title="Permalink to this definition">¶</a></dt>
+<dt id="OcgVariable.value">
+<tt class="descname">value</tt><a class="headerlink" href="#OcgVariable.value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ocgis.env.OcgVariable.temporal">
-<tt class="descname">temporal</tt><a class="headerlink" href="#ocgis.env.OcgVariable.temporal" title="Permalink to this definition">¶</a></dt>
+<dt id="OcgVariable.temporal">
+<tt class="descname">temporal</tt><a class="headerlink" href="#OcgVariable.temporal" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ocgis.env.OcgVariable.level">
-<tt class="descname">level</tt><a class="headerlink" href="#ocgis.env.OcgVariable.level" title="Permalink to this definition">¶</a></dt>
+<dt id="OcgVariable.level">
+<tt class="descname">level</tt><a class="headerlink" href="#OcgVariable.level" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ocgis.env.OcgVariable.geom">
-<tt class="descname">geom</tt><a class="headerlink" href="#ocgis.env.OcgVariable.geom" title="Permalink to this definition">¶</a></dt>
+<dt id="OcgVariable.geom">
+<tt class="descname">geom</tt><a class="headerlink" href="#OcgVariable.geom" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -899,11 +872,11 @@ accessible location.</p>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.04.01b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.04.01b-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Ben Koziol, Tyler Erickson, K. Arthur Endsley.
+        &copy; Copyright 2013, NOAA Environmental Software Infrastructure and Interoperability (NESII) Group, National Oceanic and Atmospheric Administration (NOAA).
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
