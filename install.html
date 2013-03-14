@@ -103,7 +103,7 @@ make
 
 <span class="c">## netCDF4-python ##</span>
 <span class="nb">cd</span> <span class="nv">$SRC</span>
-<span class="c"># not necessary for Mac OS X</span>
+<span class="c"># the &quot;ldconfig&quot; is not necessary for Mac OS X</span>
 <span class="o">[</span>sudo<span class="o">]</span> ldconfig
 wget http://netcdf4-python.googlecode.com/files/<span class="nv">$NETCDF4_PYTHON</span>.tar.gz
 tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
@@ -118,8 +118,8 @@ tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
 <ol class="arabic">
 <li><p class="first">Download and install GDAL from a pre-packaged DMG installer: <a class="reference external" href="http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg">http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg</a>.</p>
 </li>
-<li><p class="first">Download and extract Shapely from: <a class="reference external" href="https://pypi.python.org/pypi/Shapely">https://pypi.python.org/pypi/Shapely</a>. Then run:</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python &lt;path-to-extracted-shapely-folder&gt;/setup.py install
+<li><p class="first">Download and extract Shapely from: <a class="reference external" href="https://pypi.python.org/pypi/Shapely">https://pypi.python.org/pypi/Shapely</a>. Navigate into extracted folder. Then run:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python setup.py install
 </pre></div>
 </div>
 </li>
