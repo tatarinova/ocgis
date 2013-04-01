@@ -51,6 +51,29 @@
 <span class="kn">from</span> <span class="nn">ocgis.util.helpers</span> <span class="kn">import</span> <span class="n">iter_array</span>
 
 
+<span class="k">class</span> <span class="nc">FrequencyPercentile</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;freq_perc&#39;</span>
+    <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Percentiles</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Percentile value matching &quot;perc&quot; and index rounded according to &quot;round_method&quot; (ceil/floor)&#39;</span>
+    
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">round_method</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">perc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">perc</span><span class="p">)</span>
+        <span class="c">## sort the data</span>
+<span class="c">#        cseq = values.copy()</span>
+<span class="c">#        cseq.sort(axis=0)</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c">## reference the time vector length</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c">## calculate the index</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span><span class="n">round_method</span><span class="p">)(</span><span class="n">perc</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
+        <span class="c">## get the percentiles</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">,:,:,:]</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="SampleSize"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.SampleSize">[docs]</a><span class="k">class</span> <span class="nc">SampleSize</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    .. note:: Automatically added by OpenClimateGIS. This should generally not be invoked manually.</span>
@@ -302,7 +325,7 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, NOAA Environmental Software Infrastructure and Interoperability (NESII) Group, National Oceanic and Atmospheric Administration (NOAA).
+        &copy; Copyright 2013, University of Michigan-Ann Arbor, Michigan Technological University, University of Colorado-Boulder.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

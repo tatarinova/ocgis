@@ -83,7 +83,7 @@
 <h2><a class="reference internal" href="#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgOperations</span></tt></a><a class="headerlink" href="#ocgis-ocgoperations" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.OcgOperations">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix='ocgis_output'</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix='ocgis_output'</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output='/tmp'</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for OCGIS operations. Parameters may be modified before an
 execution.</p>
 <div class="admonition warning">
@@ -124,6 +124,7 @@ values from internal objects.</p>
 <li><strong>select_ugid</strong> (<em>list of integers</em>) &#8211; The unique identifiers of specific geometries contained in canned geometry datasets. These unique identifiers will be selected and used for spatial operations.</li>
 <li><strong>vector_wrap</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, keep any vector output on a -180 to 180 longitudinal domain.</li>
 <li><strong>allow_empty</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, do not raise an exception in the case of an empty geometric selection.</li>
+<li><strong>dir_output</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The output directory to which any disk format folders are written. If the directory does not exist, an exception will be raised.</li>
 </ul>
 </td>
 </tr>
@@ -880,7 +881,7 @@ accessible location.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, NOAA Environmental Software Infrastructure and Interoperability (NESII) Group, National Oceanic and Atmospheric Administration (NOAA).
+        &copy; Copyright 2013, University of Michigan-Ann Arbor, Michigan Technological University, University of Colorado-Boulder.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
