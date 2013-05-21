@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.calc.library &mdash; OpenClimateGIS 0.05b-dev documentation</title>
+    <title>ocgis.calc.library &mdash; OpenClimateGIS 0.05.1b documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.05b-dev',
+        VERSION:     '0.05.1b',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.05b-dev documentation" href="../../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.05.1b documentation" href="../../../index.html" />
     <link rel="up" title="ocgis" href="../../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.05b-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -56,21 +56,12 @@
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Percentiles</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Percentile value matching &quot;perc&quot; and index rounded according to &quot;round_method&quot; (ceil/floor)&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Percentile value matching &quot;perc&quot;.&#39;</span>
     
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">round_method</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">perc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">perc</span><span class="p">)</span>
-        <span class="c">## sort the data</span>
-<span class="c">#        cseq = values.copy()</span>
-<span class="c">#        cseq.sort(axis=0)</span>
-        <span class="n">values</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c">## reference the time vector length</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c">## calculate the index</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span><span class="n">round_method</span><span class="p">)(</span><span class="n">perc</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
-        <span class="c">## get the percentiles</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">,:,:,:]</span>
+    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">perc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">perc</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 
 
@@ -319,7 +310,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.05b-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>

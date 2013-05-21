@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.exc &mdash; OpenClimateGIS 0.05b-dev documentation</title>
+    <title>ocgis.exc &mdash; OpenClimateGIS 0.05.1b documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.05b-dev',
+        VERSION:     '0.05.1b',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.05b-dev documentation" href="../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.05.1b documentation" href="../../index.html" />
     <link rel="up" title="ocgis" href="../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../index.html">OpenClimateGIS 0.05b-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -47,7 +47,9 @@
   <h1>Source code for ocgis.exc</h1><div class="highlight"><pre>
 <div class="viewcode-block" id="OcgException"><a class="viewcode-back" href="../../api.html#ocgis.exc.OcgException">[docs]</a><span class="k">class</span> <span class="nc">OcgException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all OCGIS exceptions.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
 
 </div>
 <span class="k">class</span> <span class="nc">InterpreterException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
@@ -99,7 +101,7 @@
         <span class="k">return</span><span class="p">(</span><span class="s">&#39;No unique ids found.&#39;</span><span class="p">)</span>
     
     
-<span class="k">class</span> <span class="nc">DummyLevelEncountered</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DummyDimensionEncountered</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="k">pass</span>
     
 
@@ -115,7 +117,7 @@
     
 <span class="k">class</span> <span class="nc">ExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Geometric intersection is empty.&#39;</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Geometric intersection is empty. {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">))</span>
     
     
 <div class="viewcode-block" id="EmptyDataNotAllowed"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptyDataNotAllowed">[docs]</a><span class="k">class</span> <span class="nc">EmptyDataNotAllowed</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
@@ -154,7 +156,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../index.html">OpenClimateGIS 0.05b-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>
