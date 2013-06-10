@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Examples &mdash; OpenClimateGIS 0.05.1b documentation</title>
+    <title>Examples &mdash; OpenClimateGIS 0.05.1b-dev documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.05.1b',
+        VERSION:     '0.05.1b-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.05.1b documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.05.1b-dev documentation" href="index.html" />
     <link rel="prev" title="Computation" href="computation.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="computation.html" title="Computation"
              accesskey="P">previous</a></li>
-        <li><a href="index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -141,7 +141,7 @@ variables:
 </div>
 <p>This example will introduce simple subsetting by a bounding box with conversion to in-memory NumPy arrays, shapefile, CSV, and keyed formats.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">ocgis</span>
-<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 
 <span class="c">## Directory holding climate data.</span>
@@ -153,6 +153,7 @@ variables:
 <span class="n">SNIPPET</span> <span class="o">=</span> <span class="bp">True</span>
 <span class="c">## Set output directory for shapefile and keyed formats. (MAKE SURE IT EXISTS!)</span>
 <span class="n">ocgis</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">DIR_OUTPUT</span> <span class="o">=</span> <span class="s">&#39;/tmp/foo&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s">&#39;/tmp/foo&#39;</span><span class="p">)</span>
 <span class="c">## The bounding box coordinates [minx, miny, maxx, maxy] for the state of</span>
 <span class="c">## Colorado in WGS84 latitude/longitude coordinates.</span>
 <span class="n">BBOX</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">109.1</span><span class="p">,</span> <span class="mf">36.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">102.0</span><span class="p">,</span> <span class="mf">41.0</span><span class="p">]</span>
@@ -173,58 +174,62 @@ variables:
 
 <span class="c">## Returning Converted Files ###################################################</span>
 
-<span class="c">## At this time, the software will create named temporary directories inside</span>
-<span class="c">## env.DIR_OUTPUT. This is to avoid the confusing process of managine overwrites</span>
-<span class="c">## etc. The support for managing output files will be improved in future </span>
-<span class="c">## releases. The returned value is the absolute path to the file or folder</span>
-<span class="c">## depending on the requested format.</span>
-<span class="n">output_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;shp&#39;</span><span class="p">,</span><span class="s">&#39;csv&#39;</span><span class="p">,</span><span class="s">&#39;keyed&#39;</span><span class="p">]</span>
+<span class="n">output_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;shp&#39;</span><span class="p">,</span><span class="s">&#39;csv&#39;</span><span class="p">,</span><span class="s">&#39;csv+&#39;</span><span class="p">,</span><span class="s">&#39;nc&#39;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">output_format</span> <span class="ow">in</span> <span class="n">output_formats</span><span class="p">:</span>
     <span class="n">prefix</span> <span class="o">=</span> <span class="n">output_format</span> <span class="o">+</span> <span class="s">&#39;_output&#39;</span>
     <span class="n">ops</span> <span class="o">=</span> <span class="n">ocgis</span><span class="o">.</span><span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rd</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="n">BBOX</span><span class="p">,</span><span class="n">snippet</span><span class="o">=</span><span class="n">SNIPPET</span><span class="p">,</span>
-                        <span class="n">output_format</span><span class="o">=</span><span class="n">output_format</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
+                              <span class="n">output_format</span><span class="o">=</span><span class="n">output_format</span><span class="p">,</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Now, the directory structure for <cite>/tmp/foo</cite> will look like:</p>
 <div class="highlight-rest"><div class="highlight"><pre>$ find /tmp/foo
-/tmp/foo
+/tmp/foo/
+/tmp/foo/nc_output
+/tmp/foo/nc_output/nc_output_did.csv
+/tmp/foo/nc_output/nc_output.nc
+/tmp/foo/nc_output/nc_output_meta.txt
+/tmp/foo/csv+_output
+/tmp/foo/csv+_output/csv+_output_meta.txt
+/tmp/foo/csv+_output/csv+_output_did.csv
+/tmp/foo/csv+_output/csv+_output.csv
+/tmp/foo/csv+_output/shp
+/tmp/foo/csv+_output/shp/csv+_output_gid.csv
+/tmp/foo/csv+_output/shp/csv+_output_gid.shp
+/tmp/foo/csv+_output/shp/csv+_output_ugid.prj
+/tmp/foo/csv+_output/shp/csv+_output_gid.dbf
+/tmp/foo/csv+_output/shp/csv+_output_ugid.shp
+/tmp/foo/csv+_output/shp/csv+_output_gid.prj
+/tmp/foo/csv+_output/shp/csv+_output_ugid.shx
+/tmp/foo/csv+_output/shp/csv+_output_gid.shx
+/tmp/foo/csv+_output/shp/csv+_output_ugid.csv
+/tmp/foo/csv+_output/shp/csv+_output_ugid.dbf
 /tmp/foo/shp_output
+/tmp/foo/shp_output/shp_output_ugid.shx
+/tmp/foo/shp_output/shp_output_ugid.prj
 /tmp/foo/shp_output/shp_output.shp
+/tmp/foo/shp_output/shp_output_ugid.csv
 /tmp/foo/shp_output/shp_output.dbf
+/tmp/foo/shp_output/shp_output_ugid.shp
 /tmp/foo/shp_output/shp_output.shx
+/tmp/foo/shp_output/shp_output_ugid.dbf
 /tmp/foo/shp_output/shp_output_meta.txt
+/tmp/foo/shp_output/shp_output_did.csv
 /tmp/foo/shp_output/shp_output.prj
-/tmp/foo/ocgis_output
 /tmp/foo/csv_output
 /tmp/foo/csv_output/csv_output.csv
 /tmp/foo/csv_output/csv_output_meta.txt
-/tmp/foo/keyed_output
-/tmp/foo/keyed_output/keyed_output_tid.csv
-/tmp/foo/keyed_output/keyed_output_lid.csv
-/tmp/foo/keyed_output/keyed_output_vid.csv
-/tmp/foo/keyed_output/keyed_output_cid.csv
-/tmp/foo/keyed_output/keyed_output_meta.txt
-/tmp/foo/keyed_output/keyed_output_ugid.csv
-/tmp/foo/keyed_output/keyed_output_did.csv
-/tmp/foo/keyed_output/keyed_output_tgid.csv
-/tmp/foo/keyed_output/keyed_output_shp
-/tmp/foo/keyed_output/keyed_output_shp/keyed_output_shpidx.shx
-/tmp/foo/keyed_output/keyed_output_shp/keyed_output_shpidx.shp
-/tmp/foo/keyed_output/keyed_output_shp/keyed_output_shpidx.prj
-/tmp/foo/keyed_output/keyed_output_shp/keyed_output_shpidx.dbf
-/tmp/foo/keyed_output/keyed_output_gid.csv
-/tmp/foo/keyed_output/keyed_output_value.csv
+/tmp/foo/csv_output/csv_output_did.csv
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This data management approach may be confusing and efforts will be made in future releases to improve directory management.</p>
 </div>
 </div>
 <div class="section" id="advanced-subsetting">
 <h2>Advanced Subsetting<a class="headerlink" href="#advanced-subsetting" title="Permalink to this headline">¶</a></h2>
 <p>In this example, a U.S. state boundary shapefile will be used to subset and aggregate three climate datasets. The aggregation will occur on a per-geometry + dataset basis. Hence, we will end up with daily aggregated &#8220;statewide&#8221; temperatures for the three climate variables. We also want to clip the climate data cells to the boundary of the selection geometry to take advantage of area-weighting and avoid data duplication.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">With no output directory specified, data is written to an &#8220;ocgis_output&#8221; folder in the system&#8217;s default temporary directory.</p>
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">OcgOperations</span><span class="p">,</span> <span class="n">RequestDataset</span><span class="p">,</span> <span class="n">RequestDatasetCollection</span><span class="p">,</span> <span class="n">env</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 
@@ -251,42 +256,27 @@ variables:
 <span class="c">## Data is returned as a dictionary with 51 keys (don&#39;t forget Puerto Rico...).</span>
 <span class="c">## A key in the returned dictionary corresponds to a geometry &quot;ugid&quot; with the</span>
 <span class="c">## value of type OcgCollection.</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;returning numpy...&#39;</span><span class="p">)</span>
 <span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rdc</span><span class="p">,</span><span class="n">spatial_operation</span><span class="o">=</span><span class="s">&#39;clip&#39;</span><span class="p">,</span><span class="n">aggregate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                     <span class="n">snippet</span><span class="o">=</span><span class="n">SNIPPET</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">)</span>
 <span class="n">ret</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
 <span class="c">## Write to Shapefile ##########################################################</span>
 
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;returning shapefile...&#39;</span><span class="p">)</span>
 <span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rdc</span><span class="p">,</span><span class="n">spatial_operation</span><span class="o">=</span><span class="s">&#39;clip&#39;</span><span class="p">,</span><span class="n">aggregate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                     <span class="n">snippet</span><span class="o">=</span><span class="n">SNIPPET</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">,</span><span class="n">output_format</span><span class="o">=</span><span class="s">&#39;shp&#39;</span><span class="p">)</span>
 <span class="n">path</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
 <span class="c">## Write All Data to Keyed Format ##############################################</span>
 
-<span class="c">## Without the snippet, we are writing all data to the linked CSV files. The</span>
-<span class="c">## operation will take considerably longer.</span>
+<span class="c">## Without the snippet, we are writing all data to the linked CSV-Shapefile</span>
+<span class="c">## output format. The operation will take considerably longer.</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;returning csv+...&#39;</span><span class="p">)</span>
 <span class="n">ops</span> <span class="o">=</span> <span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rdc</span><span class="p">,</span><span class="n">spatial_operation</span><span class="o">=</span><span class="s">&#39;clip&#39;</span><span class="p">,</span><span class="n">aggregate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                    <span class="n">snippet</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">,</span><span class="n">output_format</span><span class="o">=</span><span class="s">&#39;keyed&#39;</span><span class="p">)</span>
+                    <span class="n">snippet</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">,</span><span class="n">output_format</span><span class="o">=</span><span class="s">&#39;csv+&#39;</span><span class="p">)</span>
 <span class="n">path</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 </pre></div>
-</div>
-<p>The shapefile attribute table would like something like:</p>
-<div class="figure align-center" style="width: 75%">
-<a class="reference internal image-reference" href="_images/advanced_subset_shapefile.png"><img alt="_images/advanced_subset_shapefile.png" src="_images/advanced_subset_shapefile.png" style="width: 683.0px; height: 360.0px;" /></a>
-<p class="caption">An example shapefile output attribute table. Note how repeated elements may lead to large filesizes. This is a good output format when making an initial pass at a data request. Again the <cite>keyed</cite> output is recommended for data requests in general unless writing to NetCDF which is remains the most efficient format.</p>
-</div>
-<p>For the <cite>keyed</cite> output, the output folder will contain a number of CSV files with unique identifiers that may be linked via the <cite>ocgis_output_value.csv</cite> table. The <cite>ocgis_output_shp</cite> folder will contain a shapefile representing the data geometries &#8211; perfect for joining.</p>
-<div class="figure align-center" style="width: 75%">
-<a class="reference internal image-reference" href="_images/advanced_subset_keyed_folder_contents.png"><img alt="_images/advanced_subset_keyed_folder_contents.png" src="_images/advanced_subset_keyed_folder_contents.png" style="width: 400.5px; height: 180.5px;" /></a>
-<p class="caption">Folder contents for the <cite>keyed</cite> output.</p>
-</div>
-<div class="figure align-center" style="width: 75%">
-<a class="reference internal image-reference" href="_images/advanced_subset_value_csv.png"><img alt="_images/advanced_subset_value_csv.png" src="_images/advanced_subset_value_csv.png" style="width: 238.0px; height: 305.5px;" /></a>
-<p class="caption">A peak inside the <cite>ocgis_output_value.csv</cite> file.</p>
-</div>
-<div class="figure align-center" style="width: 75%">
-<a class="reference internal image-reference" href="_images/advanced_subset_vid_csv.png"><img alt="_images/advanced_subset_vid_csv.png" src="_images/advanced_subset_vid_csv.png" style="width: 147.0px; height: 190.5px;" /></a>
-<p class="caption">A peak inside the <cite>ocgis_output_vid.csv</cite> file which links to the <cite>VID</cite> attribute of the value file.</p>
 </div>
 </div>
 <div class="section" id="subsetting-with-a-time-level-range">
@@ -359,7 +349,7 @@ variables:
         <li class="right" style="margin-right: 10px">
           <a href="computation.html" title="Computation"
              >previous</a></li>
-        <li><a href="index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

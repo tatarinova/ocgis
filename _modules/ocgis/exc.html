@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.exc &mdash; OpenClimateGIS 0.05.1b documentation</title>
+    <title>ocgis.exc &mdash; OpenClimateGIS 0.05.1b-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.05.1b',
+        VERSION:     '0.05.1b-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.05.1b documentation" href="../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.05.1b-dev documentation" href="../../index.html" />
     <link rel="up" title="ocgis" href="../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
+        <li><a href="../../index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -48,8 +48,11 @@
 <div class="viewcode-block" id="OcgException"><a class="viewcode-back" href="../../api.html#ocgis.exc.OcgException">[docs]</a><span class="k">class</span> <span class="nc">OcgException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all OCGIS exceptions.&quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
 </div>
 <span class="k">class</span> <span class="nc">InterpreterException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
@@ -71,19 +74,18 @@
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ocg_argument</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span> <span class="o">=</span> <span class="n">ocg_argument</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
         
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Operations validation raised an exception on the argument or operation &#39;</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Operations validation raised an exception on the argument or operation &#39;</span>
                <span class="s">&#39;&quot;{0}&quot; with the message: &quot;{1}&quot;&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="p">,</span><span class="n">msg</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">msg</span>
 
 </div>
 <div class="viewcode-block" id="CannotEncodeUrl"><a class="viewcode-back" href="../../api.html#ocgis.exc.CannotEncodeUrl">[docs]</a><span class="k">class</span> <span class="nc">CannotEncodeUrl</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
@@ -97,8 +99,8 @@
     
 <span class="k">class</span> <span class="nc">UniqueIdNotFound</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span><span class="p">(</span><span class="s">&#39;No unique ids found.&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;No unique ids found.&#39;</span>
     
     
 <span class="k">class</span> <span class="nc">DummyDimensionEncountered</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
@@ -111,24 +113,35 @@
 
 </div>
 <span class="k">class</span> <span class="nc">MaskedDataError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Geometric intersection returns all masked values.&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Geometric intersection returned all masked values.&#39;</span>
     
     
 <span class="k">class</span> <span class="nc">ExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Geometric intersection is empty. {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span> <span class="ow">or</span> <span class="s">&#39;Geometry intersection is empty.&#39;</span>
+        
+        
+<span class="k">class</span> <span class="nc">TemporalExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Temporal subset returned empty.&#39;</span>
     
     
 <div class="viewcode-block" id="EmptyDataNotAllowed"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptyDataNotAllowed">[docs]</a><span class="k">class</span> <span class="nc">EmptyDataNotAllowed</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when the empty set for a geometry is returned and `allow_empty`_ is `False`.&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Intersection returned empty, but empty data not allowed.&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Intersection returned empty, but empty data not allowed.&#39;</span>
     
     </div>
 <span class="k">class</span> <span class="nc">EmptyData</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span><span class="p">(</span><span class="s">&#39;Empty data returned.&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span> <span class="ow">or</span> <span class="s">&#39;Empty data returned.&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
 </pre></div>
 
           </div>
@@ -156,7 +169,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
+        <li><a href="../../index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>

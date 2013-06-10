@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python API &mdash; OpenClimateGIS 0.05.1b documentation</title>
+    <title>Python API &mdash; OpenClimateGIS 0.05.1b-dev documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.05.1b',
+        VERSION:     '0.05.1b-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.05.1b documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.05.1b-dev documentation" href="index.html" />
     <link rel="next" title="Computation" href="computation.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -71,10 +71,10 @@
 <dd>Location of the shapefile directory for use by <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a>.</dd>
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_DATA</span></tt> = <cite>None</cite></dt>
 <dd>Directory(s) to search through to find data. If specified, this should be a sequence of directories. It may also be a single directory location. Note that the search may take considerable time if a very high level directory is chosen. If this variable is set, it is only necessary to specify the filename(s) when creating a <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a>.</dd>
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.SERIAL</span></tt> = <cite>True</cite></dt>
-<dd>If <cite>True</cite>, execute in serial. Only set to <cite>False</cite> if you are confident in your grasp of the software and its internal operation.</dd>
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.CORES</span></tt> = 6</dt>
-<dd>If operating in parallel (i.e. <tt class="xref py py-attr docutils literal"><span class="pre">env.SERIAL</span></tt> = <cite>False</cite>), specify the number of cores to use.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.WRITE_TO_REFERENCE_PROJECTION</span></tt> = <cite>False</cite></dt>
+<dd>If <cite>True</cite>, output vector data will be written to a common projection determined by <tt class="xref py py-attr docutils literal"><span class="pre">ocgis.constants.reference_projection</span></tt>.</dd>
+</dl>
+<dl class="docutils">
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.VERBOSE</span></tt> = <cite>False</cite></dt>
 <dd>Indicate if additional output information should be printed to terminal. (Currently not very useful.)</dd>
 </dl>
@@ -84,8 +84,7 @@
 <dl class="class">
 <dt id="ocgis.OcgOperations">
 <em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output=None</em>, <em>slice=None</em>, <em>file_only=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point for OCGIS operations. Parameters may be modified before an
-execution.</p>
+<dd><p>Entry point for OCGIS operations.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">The object SHOULD NOT be reused following an execution as the software may add/modify attribute contents. Instantiate a new object following an execution.</p>
@@ -124,7 +123,7 @@ values from internal objects.</p>
 <li><strong>select_ugid</strong> (<em>list of integers</em>) &#8211; The unique identifiers of specific geometries contained in canned geometry datasets. These unique identifiers will be selected and used for spatial operations.</li>
 <li><strong>vector_wrap</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, keep any vector output on a -180 to 180 longitudinal domain.</li>
 <li><strong>allow_empty</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, do not raise an exception in the case of an empty geometric selection.</li>
-<li><strong>dir_output</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The output directory to which any disk format folders are written. If the directory does not exist, an exception will be raised.</li>
+<li><strong>dir_output</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The output directory to which any disk format folders are written. If the directory does not exist, an exception will be raised. This will override <tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_OUTPUT</span></tt>.</li>
 </ul>
 </td>
 </tr>
@@ -138,34 +137,7 @@ values from internal objects.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Path to an output file/folder or <tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgCollection</span></tt></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ocgis.OcgOperations.as_dict">
-<tt class="descname">as_dict</tt><big>(</big><big>)</big><a class="headerlink" href="#ocgis.OcgOperations.as_dict" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ocgis.OcgOperations.as_qs">
-<tt class="descname">as_qs</tt><big>(</big><big>)</big><a class="headerlink" href="#ocgis.OcgOperations.as_qs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a query string representation of the request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Path to an output file/folder or dictionary composed of <tt class="xref py py-class docutils literal"><span class="pre">ocgis.api.collection.AbstractCollection</span></tt> objects.</td>
 </tr>
 </tbody>
 </table>
@@ -181,7 +153,7 @@ values from internal objects.</p>
 <p>A <cite>dataset</cite> is the target file(s) where data is stored. A <cite>dataset</cite> may be on the local machine or network location accessible by the software. Unsecured OpenDAP datasets may also be accessed.</p>
 <dl class="class">
 <dt id="ocgis.RequestDataset">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDataset</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>alias=None</em>, <em>time_range=None</em>, <em>level_range=None</em>, <em>s_proj=None</em>, <em>t_units=None</em>, <em>t_calendar=None</em>, <em>did=None</em>, <em>meta=None</em><big>)</big><a class="headerlink" href="#ocgis.RequestDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDataset</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>alias=None</em>, <em>time_range=None</em>, <em>time_region=None</em>, <em>level_range=None</em>, <em>s_proj=None</em>, <em>t_units=None</em>, <em>t_calendar=None</em>, <em>did=None</em>, <em>meta=None</em><big>)</big><a class="headerlink" href="#ocgis.RequestDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> contains all the information necessary to find
 and subset a variable (by time and/or level) contained in a local or 
 OpenDAP-hosted CF dataset.</p>
@@ -221,7 +193,7 @@ convenience method.</p>
 <dl class="class">
 <dt id="ocgis.RequestDatasetCollection">
 <em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDatasetCollection</tt><big>(</big><em>request_datasets=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#ocgis.RequestDatasetCollection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Contains business logic ensuring multi-<a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> objects are
+<dd><p>Contains business logic ensuring multiple <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> objects are
 compatible.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">RequestDatasetCollection</span><span class="p">,</span> <span class="n">RequestDataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uris</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;http://some.opendap.dataset1&#39;</span><span class="p">,</span> <span class="s">&#39;http://some.opendap.dataset2&#39;</span><span class="p">]</span>
@@ -289,37 +261,27 @@ compatible.</p>
 <li>Bounding Box</li>
 </ol>
 <p>This is a list of floats corresponding to: <cite>[min x, min y, max x, max y]</cite>. The coordinates should be WGS84 geographic.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">120.4</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">110.3</span><span class="p">,</span> <span class="mf">41.4</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">120.4</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">110.3</span><span class="p">,</span> <span class="mf">41.4</span><span class="p">]</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>Using <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.ShpCabinet</span></tt></a></li>
+<li>Point</li>
 </ol>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">ShpCabinet</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sc</span> <span class="o">=</span> <span class="n">ShpCabinet</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">geoms</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_geoms</span><span class="p">(</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">)</span>
+<p>This is a list of floats corresponding to: <cite>[longitude,latitude]</cite>. The coordinates should be WGS84 geographic.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">120.4</span><span class="p">,</span><span class="mf">36.5</span><span class="p">]</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>Using a <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.ShpCabinet</span></tt></a> Key</li>
+<li>Using <tt class="xref py py-class docutils literal"><span class="pre">ocgis.ShpDataset</span></tt></li>
 </ol>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">geom_key</span> <span class="o">=</span> <span class="s">&#39;state_boundaries&#39;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">ShpDataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span> <span class="o">=</span> <span class="n">ShpDataset</span><span class="p">(</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li>Direct Geometry Construction</li>
+<li>Using a <tt class="xref py py-class docutils literal"><span class="pre">ocgis.ShpDataset</span></tt> Key</li>
 </ol>
-<p>A geometry in OpenClimateGIS is a dictionary containing <cite>ugid</cite> (user geometry identifier) and <cite>geom</cite> keys. The <cite>ugid</cite> is a unique integer identifier &#8211; unique within the list of geometries &#8211; with the <cite>geom</cite> key value being a <tt class="xref py py-class docutils literal"><span class="pre">shapely.geometry.Polygon</span></tt> or <tt class="xref py py-class docutils literal"><span class="pre">shapely.geometry.MultiPolygon</span></tt> object. See <a class="reference external" href="http://toblerity.github.com/shapely/manual.html">shapely documentation</a>.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Remember to always keep coordinates in WGS84 geographic. The software will handle projecting to matching coordinate systems.</p>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis.util.helpers</span> <span class="kn">import</span> <span class="n">make_poly</span>
-<span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">geom1</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ugid&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;geom&#39;</span><span class="p">:</span><span class="n">make_poly</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">),(</span><span class="o">-</span><span class="mi">110</span><span class="p">,</span><span class="o">-</span><span class="mi">120</span><span class="p">))}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">geom2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ugid&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;geom&#39;</span><span class="p">:</span><span class="n">make_poly</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">),(</span><span class="o">-</span><span class="mi">110</span><span class="p">,</span><span class="o">-</span><span class="mi">120</span><span class="p">))}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">geoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">geom1</span><span class="p">,</span> <span class="n">geom2</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span> <span class="o">=</span> <span class="s">&#39;state_boundaries&#39;</span>
 </pre></div>
 </div>
 </div>
@@ -436,8 +398,8 @@ compatible.</p>
 <span id="output-format-headline"></span><h4>output_format<a class="headerlink" href="#output-format" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="87%" />
+<col width="12%" />
+<col width="88%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Value</th>
@@ -446,16 +408,16 @@ compatible.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><cite>numpy</cite> (default)</td>
-<td>Return a dict with keys matching <cite>ugid</cite> (see <a class="reference internal" href="#geom">geom</a>) and values of <tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgCollection</span></tt>.</td>
+<td>Return a dict with keys matching <cite>ugid</cite> (see <a class="reference internal" href="#geom">geom</a>) and values of <tt class="xref py py-class docutils literal"><span class="pre">ocgis.api.collection.AbstractCollection</span></tt>. The collection type depends on the operations.</td>
 </tr>
-<tr class="row-odd"><td><cite>keyed</cite></td>
-<td>A reduced data format composed of a shapfile geometry index and a series of CSV files for attributes. Best to think of this as a series of linked tables.</td>
-</tr>
-<tr class="row-even"><td><cite>shp</cite></td>
+<tr class="row-odd"><td><cite>shp</cite></td>
 <td>A shapefile representation of the data.</td>
 </tr>
-<tr class="row-odd"><td><cite>csv</cite></td>
+<tr class="row-even"><td><cite>csv</cite></td>
 <td>A CSV file representation of the data.</td>
+</tr>
+<tr class="row-odd"><td><cite>csv+</cite></td>
+<td>In addition to a CSV representation, shapefiles with primary key links to the CSV are provided.</td>
 </tr>
 <tr class="row-even"><td><cite>nc</cite></td>
 <td>A NetCDF4 file.</td>
@@ -697,8 +659,8 @@ accessible location.</p>
 <span id="ocgis-exc"></span><h2><a class="reference internal" href="#module-ocgis.exc" title="ocgis.exc"><tt class="xref py py-mod docutils literal"><span class="pre">ocgis.exc</span></tt></a><a class="headerlink" href="#module-ocgis.exc" title="Permalink to this headline">¶</a></h2>
 <dl class="exception">
 <dt id="ocgis.exc.CannotEncodeUrl">
-<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">CannotEncodeUrl</tt><big>(</big><em>msg=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#CannotEncodeUrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.CannotEncodeUrl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raised when a URL may not be encoded from an <a class="reference internal" href="#ocgis.OcgOperations.as_qs" title="ocgis.OcgOperations.as_qs"><tt class="xref py py-func docutils literal"><span class="pre">as_qs()</span></tt></a> call.</p>
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">CannotEncodeUrl</tt><big>(</big><em>message=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#CannotEncodeUrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.CannotEncodeUrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a URL may not be encoded from an <tt class="xref py py-func docutils literal"><span class="pre">as_qs()</span></tt> call.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -721,19 +683,19 @@ accessible location.</p>
 
 <dl class="exception">
 <dt id="ocgis.exc.EmptyDataNotAllowed">
-<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">EmptyDataNotAllowed</tt><big>(</big><em>msg=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#EmptyDataNotAllowed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.EmptyDataNotAllowed" title="Permalink to this definition">¶</a></dt>
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">EmptyDataNotAllowed</tt><a class="reference internal" href="_modules/ocgis/exc.html#EmptyDataNotAllowed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.EmptyDataNotAllowed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when the empty set for a geometry is returned and <a class="reference internal" href="#allow-empty">allow_empty</a> is <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="ocgis.exc.OcgException">
-<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">OcgException</tt><big>(</big><em>msg=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#OcgException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.OcgException" title="Permalink to this definition">¶</a></dt>
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">OcgException</tt><big>(</big><em>message=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#OcgException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.OcgException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for all OCGIS exceptions.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="ocgis.exc.SubsetException">
-<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">SubsetException</tt><big>(</big><em>msg=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#SubsetException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.SubsetException" title="Permalink to this definition">¶</a></dt>
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">SubsetException</tt><big>(</big><em>message=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#SubsetException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.SubsetException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for all subset exceptions.</p>
 </dd></dl>
 
@@ -818,7 +780,7 @@ accessible location.</p>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

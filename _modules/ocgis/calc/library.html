@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.calc.library &mdash; OpenClimateGIS 0.05.1b documentation</title>
+    <title>ocgis.calc.library &mdash; OpenClimateGIS 0.05.1b-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.05.1b',
+        VERSION:     '0.05.1b-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.05.1b documentation" href="../../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.05.1b-dev documentation" href="../../../index.html" />
     <link rel="up" title="ocgis" href="../../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -55,7 +55,7 @@
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;freq_perc&#39;</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Percentiles</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Percentile value matching &quot;perc&quot;.&#39;</span>
     
     <span class="nd">@staticmethod</span>
@@ -74,7 +74,7 @@
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;n&#39;</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Statistical sample size.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -91,7 +91,7 @@
 <span class="k">class</span> <span class="nc">Median</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Median value for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -101,7 +101,7 @@
 <span class="k">class</span> <span class="nc">Mean</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Mean value for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -111,7 +111,7 @@
 <span class="k">class</span> <span class="nc">Max</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Max value for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -121,7 +121,7 @@
 <span class="k">class</span> <span class="nc">Min</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Min value for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -131,7 +131,7 @@
 <span class="k">class</span> <span class="nc">StandardDeviation</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Standard deviation for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;std&#39;</span>
     
     <span class="nd">@staticmethod</span>
@@ -143,7 +143,7 @@
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;max_cons&#39;</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     <span class="n">description</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Maximum number of consecutive occurrences in the sequence&#39;</span>
                    <span class="s">&#39; where the logical operation returns TRUE.&#39;</span><span class="p">)</span>
     
@@ -194,7 +194,7 @@
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values falling within the limits lower and upper (inclusive).&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">upper</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -206,7 +206,7 @@
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values where the logical operation is True.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -249,7 +249,7 @@
 <span class="k">class</span> <span class="nc">HeatIndex</span><span class="p">(</span><span class="n">OcgCvArgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Heat Index following: http://en.wikipedia.org/wiki/Heat_index. If temperature is &lt; 80F or relative humidity is &lt; 40%, the value is masked during calculation. Output units are Fahrenheit.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">MultivariateStatistics</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tas&#39;</span><span class="p">,</span><span class="s">&#39;rhs&#39;</span><span class="p">]</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;heat_index&#39;</span>
@@ -310,7 +310,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.05.1b documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>
