@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python API &mdash; OpenClimateGIS 0.05.1b-dev documentation</title>
+    <title>Python API &mdash; OpenClimateGIS 0.06b documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.05.1b-dev',
+        VERSION:     '0.06b',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.05.1b-dev documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.06b documentation" href="index.html" />
     <link rel="next" title="Computation" href="computation.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.06b documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -211,7 +211,10 @@ convenience method.</p>
 <dl class="method">
 <dt id="ocgis.RequestDataset.inspect_as_dct">
 <tt class="descname">inspect_as_dct</tt><big>(</big><big>)</big><a class="headerlink" href="#ocgis.RequestDataset.inspect_as_dct" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dictionary representation of the target&#8217;s metadata.</p>
+<dd><p>Return a dictionary representation of the target&#8217;s metadata. If the variable
+is <cite>None</cite>. An attempt will be made to find the target dataset&#8217;s time bounds
+raising a warning if none is found or the time variable is lacking units
+and/or calendar attributes.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rd</span> <span class="o">=</span> <span class="n">ocgis</span><span class="o">.</span><span class="n">RequestDataset</span><span class="p">(</span><span class="s">&#39;rhs_day_CanCM4_decadal2010_r2i1p1_20110101-20201231.nc&#39;</span><span class="p">,</span><span class="s">&#39;rhs&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">inspect_as_dct</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
@@ -546,6 +549,13 @@ compatible.</p>
 </tbody>
 </table>
 </div>
+<div class="section" id="headers">
+<h4>headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h4>
+<p>Useful to limit the number of attributes included in an output file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;did&#39;</span><span class="p">,</span><span class="s">&#39;time&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="ocgis-shpcabinet">
@@ -591,15 +601,21 @@ accessible location.</p>
 
 <dl class="method">
 <dt id="ocgis.ShpCabinet.get_geoms">
-<tt class="descname">get_geoms</tt><big>(</big><em>key</em>, <em>attr_filter=None</em><big>)</big><a class="headerlink" href="#ocgis.ShpCabinet.get_geoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_geoms</tt><big>(</big><em>key</em>, <em>select_ugid=None</em><big>)</big><a class="headerlink" href="#ocgis.ShpCabinet.get_geoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return geometries from a shapefile specified by <cite>key</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sc</span> <span class="o">=</span> <span class="n">ShpCabinet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geoms</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_geoms</span><span class="p">(</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">,</span><span class="n">select_ugid</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">48</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">geoms</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>key</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The shapefile identifier.</li>
-<li><strong>attr_filter</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; A dict containing attribute filters. Keys indicate attribute fields and values should be lists that will match attribute values <cite>exactly</cite>.</li>
+<li><strong>select_ugid</strong> (<em>sequence</em>) &#8211; Sequence of unique identifiers matching values from the shapefile&#8217;s UGID attribute.</li>
 </ul>
 </td>
 </tr>
@@ -770,6 +786,7 @@ accessible location.</p>
 <li><a class="reference internal" href="#select-ugid">select_ugid</a></li>
 <li><a class="reference internal" href="#vector-wrap">vector_wrap</a></li>
 <li><a class="reference internal" href="#allow-empty">allow_empty</a></li>
+<li><a class="reference internal" href="#headers">headers</a></li>
 </ul>
 </li>
 </ul>
@@ -822,7 +839,7 @@ accessible location.</p>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.05.1b-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.06b documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
