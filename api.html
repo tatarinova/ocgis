@@ -193,7 +193,7 @@ OpenDAP-hosted CF dataset.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>level_range</strong> (<em>[int, int]</em>) &#8211; Upper and lower bounds for level dimension subsetting. If <cite>None</cite>, return all levels.</li>
-<li><strong>s_proj</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; A <a class="reference external" href="http://trac.osgeo.org/proj/wiki/FAQ">PROJ4 string</a> describing the dataset&#8217;s spatial reference.</li>
+<li><strong>s_proj</strong> (<cite>ocgis.interface.projection.OcgSpatialReference</cite>) &#8211; An ~`ocgis.interface.projection.OcgSpatialReference` object to overload the projectiona autodiscovery.</li>
 <li><strong>t_units</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Overload the autodiscover <a class="reference external" href="http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html#num2date">time units</a>.</li>
 <li><strong>t_calendar</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Overload the autodiscover <a class="reference external" href="http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html#num2date">time calendar</a>.</li>
 </ul>
@@ -358,12 +358,13 @@ compatible.</p>
 </div>
 <div class="section" id="calc-grouping">
 <span id="calc-grouping-headline"></span><h4>calc_grouping<a class="headerlink" href="#calc-grouping" title="Permalink to this headline">¶</a></h4>
-<p>Any combination of <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a> attribute strings.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
+<p>Any combination of &#8216;day&#8217;, &#8216;month&#8217;, and &#8216;year&#8217;.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;month&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="s">&#39;second&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>Any temporal aggregation applied to a dataset should be consistent with the input data&#8217;s temporal resolution. For example, aggregating by day, month, and year on daily input dataset is not a reasonable aggregation as the data selected for aggregation will have a sample size of one.</p>
 </div>
 <div class="section" id="calc-raw">
 <span id="calc-raw-headline"></span><h4>calc_raw<a class="headerlink" href="#calc-raw" title="Permalink to this headline">¶</a></h4>
@@ -719,6 +720,12 @@ accessible location.</p>
 <dt id="ocgis.exc.CannotEncodeUrl">
 <em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">CannotEncodeUrl</tt><big>(</big><em>message=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#CannotEncodeUrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.CannotEncodeUrl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when a URL may not be encoded from an <tt class="xref py py-func docutils literal"><span class="pre">as_qs()</span></tt> call.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ocgis.exc.DataNotCached">
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">DataNotCached</tt><big>(</big><em>message=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#DataNotCached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.DataNotCached" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8220;Raised when data is not cached.</p>
 </dd></dl>
 
 <dl class="exception">

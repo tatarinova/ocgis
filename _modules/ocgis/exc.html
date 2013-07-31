@@ -75,8 +75,8 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ocg_argument</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span> <span class="o">=</span> <span class="n">ocg_argument</span>
         
-        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Operations validation raised an exception on the argument or operation &#39;</span>
-               <span class="s">&#39;&quot;{0}&quot; with the message: &quot;{1}&quot;&#39;</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;OcgOperations validation raised an exception on the argument/operation &#39;</span>
+               <span class="s">&#39;&quot;{0}&quot; with the message: {1}&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -90,6 +90,11 @@
 </div>
 <div class="viewcode-block" id="CannotEncodeUrl"><a class="viewcode-back" href="../../api.html#ocgis.exc.CannotEncodeUrl">[docs]</a><span class="k">class</span> <span class="nc">CannotEncodeUrl</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when a URL may not be encoded from an :func:`~ocgis.OcgOperations.as_qs` call.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="DataNotCached"><a class="viewcode-back" href="../../api.html#ocgis.exc.DataNotCached">[docs]</a><span class="k">class</span> <span class="nc">DataNotCached</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;&quot;Raised when data is not cached.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
 </div>
@@ -118,6 +123,17 @@
     <span class="k">pass</span>
 
 </div>
+<span class="k">class</span> <span class="nc">OcgisEnvironmentError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">env_parm</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env_parm</span> <span class="o">=</span> <span class="n">env_parm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new_msg</span> <span class="o">=</span> <span class="s">&#39;Error when setting the ocgis.env variable {0}. The message is: {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env_parm</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">new_msg</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">MaskedDataError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

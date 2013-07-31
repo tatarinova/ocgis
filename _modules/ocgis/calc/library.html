@@ -49,6 +49,9 @@
 <span class="kn">from</span> <span class="nn">base</span> <span class="kn">import</span> <span class="n">OcgFunction</span><span class="p">,</span> <span class="n">OcgCvArgFunction</span><span class="p">,</span> <span class="n">OcgArgFunction</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ocgis.util.helpers</span> <span class="kn">import</span> <span class="n">iter_array</span>
+<span class="kn">from</span> <span class="nn">ocgis.calc.base</span> <span class="kn">import</span> <span class="n">KeyedFunctionOutput</span><span class="p">,</span> <span class="n">ProtectedFunction</span>
+<span class="kn">from</span> <span class="nn">ocgis.constants</span> <span class="kn">import</span> <span class="n">np_int</span>
+<span class="kn">from</span> <span class="nn">ocgis.exc</span> <span class="kn">import</span> <span class="n">DefinitionValidationError</span>
 
 
 <div class="viewcode-block" id="FrequencyPercentile"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyPercentile">[docs]</a><span class="k">class</span> <span class="nc">FrequencyPercentile</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
@@ -58,12 +61,12 @@
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Percentile value matching &quot;perc&quot;.&#39;</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FrequencyPercentile._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyPercentile._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">perc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">perc</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 
-</div>
+</div></div>
 <div class="viewcode-block" id="SampleSize"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.SampleSize">[docs]</a><span class="k">class</span> <span class="nc">SampleSize</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    .. note:: Automatically added by OpenClimateGIS. This should generally not be invoked manually.</span>
@@ -73,12 +76,12 @@
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="SampleSize._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.SampleSize._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">ret</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:])</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-    
+    </div>
     <span class="k">def</span> <span class="nf">_aggregate_spatial_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">weights</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
 
@@ -88,60 +91,81 @@
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="Median._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Median._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     
-    </div>
+    </div></div>
 <div class="viewcode-block" id="Mean"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Mean">[docs]</a><span class="k">class</span> <span class="nc">Mean</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Mean value for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="Mean._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Mean._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     
-    </div>
+    </div></div>
 <div class="viewcode-block" id="Max"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Max">[docs]</a><span class="k">class</span> <span class="nc">Max</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Max value for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="Max._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Max._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     
-    </div>
+    </div></div>
 <div class="viewcode-block" id="Min"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Min">[docs]</a><span class="k">class</span> <span class="nc">Min</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Min value for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="Min._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Min._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     
-    </div>
+    </div></div>
 <div class="viewcode-block" id="StandardDeviation"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.StandardDeviation">[docs]</a><span class="k">class</span> <span class="nc">StandardDeviation</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Standard deviation for the series.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;std&#39;</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardDeviation._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.StandardDeviation._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
-</div>
-<div class="viewcode-block" id="MaxConsecutive"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.MaxConsecutive">[docs]</a><span class="k">class</span> <span class="nc">MaxConsecutive</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;max_cons&#39;</span>
-    <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
+</div></div>
+<div class="viewcode-block" id="Duration"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Duration">[docs]</a><span class="k">class</span> <span class="nc">Duration</span><span class="p">(</span><span class="n">ProtectedFunction</span><span class="p">,</span><span class="n">OcgArgFunction</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;duration&#39;</span>
+    <span class="n">nargs</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Maximum number of consecutive occurrences in the sequence&#39;</span>
-                   <span class="s">&#39; where the logical operation returns TRUE.&#39;</span><span class="p">)</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Summarizes consecutive occurrences in a sequence where the logical operation returns TRUE. The summary operation is applied within the temporal aggregation.&#39;</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Duration._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Duration._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">summary</span><span class="o">=</span><span class="s">&#39;mean&#39;</span><span class="p">):</span>
+        <span class="c">## storage array for counts</span>
+        <span class="n">shp_out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">shp_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shp_out</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="c">## get the summary operation from the numpy library</span>
+        <span class="n">summary_operation</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span><span class="n">summary</span><span class="p">)</span>
+
+        <span class="c">## find longest sequence for each geometry across time dimension</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">fill</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_consecutive_</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span><span class="n">operation</span><span class="p">)):</span>
+            <span class="c">## case of only a singular occurrence</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">fill</span> <span class="o">=</span> <span class="n">summary_operation</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">fill</span> <span class="o">=</span> <span class="n">fill</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c">## value is likely masked</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">fill</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">store</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
+        
+        <span class="n">store</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">shp_out</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
+    </div>
+    <span class="k">def</span> <span class="nf">_iter_consecutive_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span><span class="n">operation</span><span class="p">):</span>
         <span class="c">## time index reference</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="c">## storage array for counts</span>
-        <span class="n">store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="c">## perform requested logical operation</span>
         <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;gt&#39;</span><span class="p">:</span>
             <span class="n">arr</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&gt;</span> <span class="n">threshold</span>
@@ -153,31 +177,56 @@
             <span class="n">arr</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&lt;=</span> <span class="n">threshold</span>
 
         <span class="c">## find longest sequence for each geometry across time dimension</span>
-        <span class="k">for</span> <span class="n">xidx</span><span class="p">,</span><span class="n">yidx</span> <span class="ow">in</span> <span class="n">iter_array</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]):</span>
-            <span class="n">vec</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[:,</span><span class="n">xidx</span><span class="p">,</span><span class="n">yidx</span><span class="p">]</span>
-<span class="c">#            ## collapse data if no axis provided</span>
-<span class="c">#            if axis is None:</span>
-<span class="c">#                vec = vec.reshape(-1)</span>
+        <span class="k">for</span> <span class="n">zidx</span><span class="p">,</span><span class="n">rowidx</span><span class="p">,</span><span class="n">colidx</span> <span class="ow">in</span> <span class="n">iter_array</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:,:],</span><span class="n">use_mask</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[:,</span><span class="n">zidx</span><span class="p">,</span><span class="n">rowidx</span><span class="p">,</span><span class="n">colidx</span><span class="p">]</span>
             <span class="c">## check first if there is a longer series than 1</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ref</span><span class="p">[</span><span class="n">vec</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="n">split_idx</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vec</span><span class="p">)]</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">splits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="n">split_idx</span><span class="p">)</span>
-                <span class="n">sums</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">splits</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
-                <span class="n">fill</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sums</span><span class="p">)</span>
+                <span class="n">fill</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">splits</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
             <span class="c">## case of only a singular occurrence</span>
             <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
-                <span class="n">fill</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">fill</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="c">## case for no occurrence</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">fill</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">store</span><span class="p">[</span><span class="n">xidx</span><span class="p">,</span><span class="n">yidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
-        
-<span class="c">#        ## summarize across geometries if axis is collapsed</span>
-<span class="c">#        if axis is None:</span>
-<span class="c">#            store = np.max(store)</span>
+                <span class="n">fill</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             
+            <span class="k">yield</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+    
+    <span class="nd">@classmethod</span> 
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">ops</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;year&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ops</span><span class="o">.</span><span class="n">calc_grouping</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Calculation grouping must include &quot;year&quot; for duration calculations.&#39;</span>
+            <span class="k">raise</span><span class="p">(</span><span class="n">DefinitionValidationError</span><span class="p">(</span><span class="s">&#39;calc&#39;</span><span class="p">,</span><span class="n">msg</span><span class="p">))</span>
+    
+    </div>
+<div class="viewcode-block" id="FrequencyDuration"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyDuration">[docs]</a><span class="k">class</span> <span class="nc">FrequencyDuration</span><span class="p">(</span><span class="n">KeyedFunctionOutput</span><span class="p">,</span><span class="n">Duration</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;freq_duration&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Counts the frequency of spell durations within the temporal aggregation.&#39;</span>
+    <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span>
+    <span class="n">output_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;duration&#39;</span><span class="p">,</span><span class="s">&#39;count&#39;</span><span class="p">]</span>
+    
+<div class="viewcode-block" id="FrequencyDuration._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyDuration._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">shp_out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">shp_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shp_out</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">duration</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_consecutive_</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span><span class="n">operation</span><span class="p">)):</span>
+            <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_summary_</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+            <span class="n">store</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">summary</span>
+        <span class="n">store</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">shp_out</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
-        
+        </div>
+    <span class="k">def</span> <span class="nf">_get_summary_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">duration</span><span class="p">):</span>
+        <span class="n">set_duration</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">set_duration</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;duration&#39;</span><span class="p">,</span><span class="n">np_int</span><span class="p">),(</span><span class="s">&#39;count&#39;</span><span class="p">,</span><span class="n">np_int</span><span class="p">)])</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">sd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">set_duration</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span> <span class="o">==</span> <span class="n">sd</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">ret</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sd</span>
+            <span class="n">ret</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="Between"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Between">[docs]</a><span class="k">class</span> <span class="nc">Between</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
@@ -185,18 +234,18 @@
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">upper</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Between._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Between._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">upper</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">lower</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     
-    </div>
+    </div></div>
 <div class="viewcode-block" id="Threshold"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Threshold">[docs]</a><span class="k">class</span> <span class="nc">Threshold</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values where the logical operation is True.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Threshold._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Threshold._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
         
         <span class="c">## perform requested logical operation</span>
@@ -213,7 +262,7 @@
         
         <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-        
+        </div>
     <span class="k">def</span> <span class="nf">_aggregate_spatial_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">weights</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
     
@@ -226,7 +275,7 @@
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tas&#39;</span><span class="p">,</span><span class="s">&#39;rhs&#39;</span><span class="p">]</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;heat_index&#39;</span>
     
-    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">rhs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HeatIndex._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.HeatIndex._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">rhs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s">&#39;k&#39;</span><span class="p">:</span>
             <span class="n">tas</span> <span class="o">=</span> <span class="mf">1.8</span><span class="o">*</span><span class="p">(</span><span class="n">tas</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">)</span> <span class="o">+</span> <span class="mi">32</span>
         <span class="k">else</span><span class="p">:</span>
@@ -253,7 +302,7 @@
         <span class="n">hi</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span><span class="o">*</span><span class="n">tas</span> <span class="o">+</span> <span class="n">c3</span><span class="o">*</span><span class="n">rhs</span> <span class="o">+</span> <span class="n">c4</span><span class="o">*</span><span class="n">tas</span><span class="o">*</span><span class="n">rhs</span> <span class="o">+</span> <span class="n">c5</span><span class="o">*</span><span class="n">tas_sq</span> <span class="o">+</span> <span class="n">c6</span><span class="o">*</span><span class="n">rhs_sq</span> <span class="o">+</span> \
              <span class="n">c7</span><span class="o">*</span><span class="n">tas_sq</span><span class="o">*</span><span class="n">rhs</span> <span class="o">+</span> <span class="n">c8</span><span class="o">*</span><span class="n">tas</span><span class="o">*</span><span class="n">rhs_sq</span> <span class="o">+</span> <span class="n">c9</span><span class="o">*</span><span class="n">tas_sq</span><span class="o">*</span><span class="n">rhs_sq</span>
         
-        <span class="k">return</span><span class="p">(</span><span class="n">hi</span><span class="p">)</span></div>
+        <span class="k">return</span><span class="p">(</span><span class="n">hi</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

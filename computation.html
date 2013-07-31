@@ -61,7 +61,7 @@
 <li>NumPy-based array calculations</li>
 <li>Temporal grouping (level grouping not supported)</li>
 <li>Argumented and multivariate functions (e.g. heat index)</li>
-<li>Overload hooks for spatial aggregation - temporal aggregation implicit to calculation function</li>
+<li>Overload hooks for aggregation operations</li>
 </ol>
 </dd>
 </dl>
@@ -239,24 +239,44 @@ avoid dereferencing. Reducing along the time axis is required (i.e. axis=0).</p>
 <dt id="ocgis.calc.library.Max">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">Max</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Max" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgFunction" title="ocgis.calc.base.OcgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.Max._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Max._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Max._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="ocgis.calc.library.Mean">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">Mean</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgFunction" title="ocgis.calc.base.OcgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.Mean._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Mean._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Mean._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="ocgis.calc.library.Median">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">Median</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Median"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Median" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgFunction" title="ocgis.calc.base.OcgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.Median._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Median._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Median._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="ocgis.calc.library.Min">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">Min</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgFunction" title="ocgis.calc.base.OcgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.Min._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Min._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Min._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -267,12 +287,22 @@ avoid dereferencing. Reducing along the time axis is required (i.e. axis=0).</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Automatically added by OpenClimateGIS. This should generally not be invoked manually.</p>
 </div>
+<dl class="method">
+<dt id="ocgis.calc.library.SampleSize._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#SampleSize._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.SampleSize._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="ocgis.calc.library.StandardDeviation">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">StandardDeviation</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#StandardDeviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.StandardDeviation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgFunction" title="ocgis.calc.base.OcgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.StandardDeviation._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#StandardDeviation._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.StandardDeviation._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -282,6 +312,11 @@ avoid dereferencing. Reducing along the time axis is required (i.e. axis=0).</p>
 <dt id="ocgis.calc.library.HeatIndex">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">HeatIndex</tt><big>(</big><em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#HeatIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.HeatIndex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgCvArgFunction" title="ocgis.calc.base.OcgCvArgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgCvArgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.HeatIndex._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>tas=None</em>, <em>rhs=None</em>, <em>units=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#HeatIndex._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.HeatIndex._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -291,6 +326,11 @@ avoid dereferencing. Reducing along the time axis is required (i.e. axis=0).</p>
 <dt id="ocgis.calc.library.FrequencyPercentile">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">FrequencyPercentile</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#FrequencyPercentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.FrequencyPercentile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgArgFunction" title="ocgis.calc.base.OcgArgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgArgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.FrequencyPercentile._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em>, <em>perc=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#FrequencyPercentile._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.FrequencyPercentile._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -300,18 +340,44 @@ avoid dereferencing. Reducing along the time axis is required (i.e. axis=0).</p>
 <dt id="ocgis.calc.library.Between">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">Between</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Between" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgArgFunction" title="ocgis.calc.base.OcgArgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgArgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.Between._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em>, <em>lower=None</em>, <em>upper=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Between._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Between._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
-<dt id="ocgis.calc.library.MaxConsecutive">
-<em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">MaxConsecutive</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#MaxConsecutive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.MaxConsecutive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgArgFunction" title="ocgis.calc.base.OcgArgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgArgFunction</span></tt></a></p>
+<dt id="ocgis.calc.library.Duration">
+<em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">Duration</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Duration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.ProtectedFunction</span></tt>, <a class="reference internal" href="#ocgis.calc.base.OcgArgFunction" title="ocgis.calc.base.OcgArgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgArgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.Duration._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em>, <em>threshold=None</em>, <em>operation=None</em>, <em>summary='mean'</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Duration._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Duration._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ocgis.calc.library.FrequencyDuration">
+<em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">FrequencyDuration</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#FrequencyDuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.FrequencyDuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.KeyedFunctionOutput</span></tt>, <a class="reference internal" href="#ocgis.calc.library.Duration" title="ocgis.calc.library.Duration"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.library.Duration</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.FrequencyDuration._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em>, <em>threshold=None</em>, <em>operation=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#FrequencyDuration._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.FrequencyDuration._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="ocgis.calc.library.Threshold">
 <em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">Threshold</tt><big>(</big><em>values=None</em>, <em>groups=None</em>, <em>agg=False</em>, <em>weights=None</em>, <em>kwds={}</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Threshold" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgArgFunction" title="ocgis.calc.base.OcgArgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgArgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.Threshold._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em>, <em>threshold=None</em>, <em>operation=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#Threshold._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.Threshold._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
