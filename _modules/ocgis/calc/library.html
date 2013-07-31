@@ -59,11 +59,14 @@
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Percentiles</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Percentile value matching &quot;perc&quot;.&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;The percentile value along the time axis. See: http://docs.scipy.org/doc/numpy-dev/reference/generated/numpy.percentile.html.&#39;</span>
     
-<div class="viewcode-block" id="FrequencyPercentile._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyPercentile._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">perc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">perc</span><span class="p">)</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">perc</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="viewcode-block" id="FrequencyPercentile._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyPercentile._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">percentile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param percentile: Percentile to compute.</span>
+<span class="sd">        :type percentile: float on the interval [0,100]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">percentile</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 
 </div></div>
@@ -140,6 +143,14 @@
     <span class="n">description</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Summarizes consecutive occurrences in a sequence where the logical operation returns TRUE. The summary operation is applied within the temporal aggregation.&#39;</span><span class="p">)</span>
     
 <div class="viewcode-block" id="Duration._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Duration._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">summary</span><span class="o">=</span><span class="s">&#39;mean&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param threshold: The threshold value to use for the logical operation.</span>
+<span class="sd">        :type threshold: float</span>
+<span class="sd">        :param operation: The logical operation. One of &#39;gt&#39;,&#39;gte&#39;,&#39;lt&#39;, or &#39;lte&#39;.</span>
+<span class="sd">        :type operation: str</span>
+<span class="sd">        :param summary: The summary operation to apply the durations. One of &#39;mean&#39;,&#39;median&#39;,&#39;std&#39;,&#39;max&#39;, or &#39;min&#39;.</span>
+<span class="sd">        :type summary: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c">## storage array for counts</span>
         <span class="n">shp_out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">shp_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -208,6 +219,12 @@
     <span class="n">output_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;duration&#39;</span><span class="p">,</span><span class="s">&#39;count&#39;</span><span class="p">]</span>
     
 <div class="viewcode-block" id="FrequencyDuration._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyDuration._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param threshold: The threshold value to use for the logical operation.</span>
+<span class="sd">        :type threshold: float</span>
+<span class="sd">        :param operation: The logical operation. One of &#39;gt&#39;,&#39;gte&#39;,&#39;lt&#39;, or &#39;lte&#39;.</span>
+<span class="sd">        :type operation: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">shp_out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">shp_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shp_out</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
@@ -235,7 +252,13 @@
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
 <div class="viewcode-block" id="Between._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Between._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">upper</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">lower</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">)</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param lower: The lower value of the range.</span>
+<span class="sd">        :type lower: float</span>
+<span class="sd">        :param upper: The upper value of the range.</span>
+<span class="sd">        :type upper: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lower</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">upper</span><span class="p">))</span>
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     
     </div></div>
@@ -246,6 +269,12 @@
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
 <div class="viewcode-block" id="Threshold._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Threshold._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param threshold: The threshold value to use for the logical operation.</span>
+<span class="sd">        :type threshold: float</span>
+<span class="sd">        :param operation: The logical operation. One of &#39;gt&#39;,&#39;gte&#39;,&#39;lt&#39;, or &#39;lte&#39;.</span>
+<span class="sd">        :type operation: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
         
         <span class="c">## perform requested logical operation</span>
