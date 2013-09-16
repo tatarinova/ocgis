@@ -49,9 +49,12 @@
 <span class="kn">from</span> <span class="nn">base</span> <span class="kn">import</span> <span class="n">OcgFunction</span><span class="p">,</span> <span class="n">OcgCvArgFunction</span><span class="p">,</span> <span class="n">OcgArgFunction</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ocgis.util.helpers</span> <span class="kn">import</span> <span class="n">iter_array</span>
-<span class="kn">from</span> <span class="nn">ocgis.calc.base</span> <span class="kn">import</span> <span class="n">KeyedFunctionOutput</span><span class="p">,</span> <span class="n">ProtectedFunction</span>
+<span class="kn">from</span> <span class="nn">ocgis.calc.base</span> <span class="kn">import</span> <span class="n">KeyedFunctionOutput</span>
 <span class="kn">from</span> <span class="nn">ocgis.constants</span> <span class="kn">import</span> <span class="n">np_int</span>
 <span class="kn">from</span> <span class="nn">ocgis.exc</span> <span class="kn">import</span> <span class="n">DefinitionValidationError</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">csv</span>
 
 
 <div class="viewcode-block" id="FrequencyPercentile"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyPercentile">[docs]</a><span class="k">class</span> <span class="nc">FrequencyPercentile</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
@@ -78,6 +81,8 @@
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Statistical sample size.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">BasicStatistics</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="s">&#39;NA&#39;</span>
+    <span class="n">long_name</span> <span class="o">=</span> <span class="s">&#39;Statistical Sample Size&#39;</span>
     
 <div class="viewcode-block" id="SampleSize._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.SampleSize._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
@@ -135,12 +140,12 @@
         <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
 </div></div>
-<div class="viewcode-block" id="Duration"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Duration">[docs]</a><span class="k">class</span> <span class="nc">Duration</span><span class="p">(</span><span class="n">ProtectedFunction</span><span class="p">,</span><span class="n">OcgArgFunction</span><span class="p">):</span>
+<div class="viewcode-block" id="Duration"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Duration">[docs]</a><span class="k">class</span> <span class="nc">Duration</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;duration&#39;</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Summarizes consecutive occurrences in a sequence where the logical operation returns TRUE. The summary operation is applied within the temporal aggregation.&#39;</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Summarizes consecutive occurrences in a sequence where the logical operation returns TRUE. The summary operation is applied to the sequences within a temporal aggregation.&#39;</span>
     
 <div class="viewcode-block" id="Duration._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Duration._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">summary</span><span class="o">=</span><span class="s">&#39;mean&#39;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -192,7 +197,11 @@
             <span class="n">vec</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[:,</span><span class="n">zidx</span><span class="p">,</span><span class="n">rowidx</span><span class="p">,</span><span class="n">colidx</span><span class="p">]</span>
             <span class="c">## check first if there is a longer series than 1</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ref</span><span class="p">[</span><span class="n">vec</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">split_idx</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vec</span><span class="p">)]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="c">## find locations where the values switch</span>
+                <span class="n">diff_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">diff_idx</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">ref</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="n">diff_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff_idx</span><span class="p">,[</span><span class="bp">False</span><span class="p">])</span>
+                <span class="n">split_idx</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="n">diff_idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">splits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="n">split_idx</span><span class="p">)</span>
                 <span class="n">fill</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">splits</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
             <span class="c">## case of only a singular occurrence</span>
@@ -213,7 +222,7 @@
     </div>
 <div class="viewcode-block" id="FrequencyDuration"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.FrequencyDuration">[docs]</a><span class="k">class</span> <span class="nc">FrequencyDuration</span><span class="p">(</span><span class="n">KeyedFunctionOutput</span><span class="p">,</span><span class="n">Duration</span><span class="p">):</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;freq_duration&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Counts the frequency of spell durations within the temporal aggregation.&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count the frequency of spell durations within the temporal aggregation.&#39;</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span>
     <span class="n">output_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;duration&#39;</span><span class="p">,</span><span class="s">&#39;count&#39;</span><span class="p">]</span>
@@ -243,8 +252,177 @@
             <span class="n">ret</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sd</span>
             <span class="n">ret</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-
+    
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">ops</span><span class="p">):</span>
+        <span class="n">KeyedFunctionOutput</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+        <span class="n">Duration</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+        
 </div>
+<span class="k">class</span> <span class="nc">QEDDynamicPercentileThreshold</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;qed_dynamic_percentile_threshold&#39;</span>
+    <span class="n">nargs</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Compares to a dynamic base dataset of daily thresholds. Only relevant for daily Maurer spatially coincident with QED City Centroids or North Carolina. Only works for &quot;standard&quot; calendars.&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__map_day_index</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">percentile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c">## first map the dates to dynamic percentiles index days</span>
+        <span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">env</span>
+        <span class="n">day_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_day_index_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">temporal</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_curr_group</span><span class="p">])</span>
+        <span class="n">dy_day_idx</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_dynamic_index_</span><span class="p">,</span><span class="n">day_idx</span><span class="o">.</span><span class="n">flat</span><span class="p">)</span>
+        <span class="n">gp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_geometries_with_percentiles_</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span><span class="n">env</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">key</span><span class="p">,</span><span class="n">env</span><span class="o">.</span><span class="n">DIR_BIN</span><span class="p">,</span><span class="n">percentile</span><span class="p">)</span>
+        <span class="c">## get threshold for each geometry</span>
+        <span class="c">## special case for north carolina counties</span>
+        <span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="s">&#39;us_counties&#39;</span><span class="p">:</span>
+            <span class="n">select_ugid</span> <span class="o">=</span> <span class="mi">39</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">select_ugid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">_ugid</span>
+        <span class="n">ugid_ref</span> <span class="o">=</span> <span class="n">gp</span><span class="p">[</span><span class="n">select_ugid</span><span class="p">]</span>
+        <span class="n">compare</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">jj</span><span class="p">,</span><span class="n">kk</span><span class="p">,</span><span class="n">ll</span> <span class="ow">in</span> <span class="n">iter_array</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+            <span class="c">## get the geometry id</span>
+            <span class="n">gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">uid</span><span class="p">[</span><span class="n">kk</span><span class="p">,</span><span class="n">ll</span><span class="p">]</span>
+            <span class="n">gid_ref</span> <span class="o">=</span> <span class="n">ugid_ref</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span>
+            <span class="n">percentile_static</span> <span class="o">=</span> <span class="n">gid_ref</span><span class="p">[</span><span class="n">dy_day_idx</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+            <span class="n">compare</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span><span class="n">jj</span><span class="p">,</span><span class="n">kk</span><span class="p">,</span><span class="n">ll</span><span class="p">]</span> <span class="o">=</span> <span class="n">percentile_static</span>
+            
+        <span class="c">## perform requested logical operation</span>
+        <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;gt&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&gt;</span> <span class="n">compare</span>
+        <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;lt&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="n">compare</span>
+        <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;gte&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&gt;=</span> <span class="n">compare</span>
+        <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;lte&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&lt;=</span> <span class="n">compare</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;The operation &quot;{0}&quot; was not recognized.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">operation</span><span class="p">)))</span>
+        
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_map_day_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__map_day_index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__map_day_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_day_index_reference_</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">year</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s">&#39;leap&#39;</span><span class="p">,</span><span class="s">&#39;noleap&#39;</span><span class="p">],[</span><span class="mi">1996</span><span class="p">,</span><span class="mi">1995</span><span class="p">])}</span>
+        <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__map_day_index</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_get_day_index_reference_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">year</span><span class="p">):</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ctr</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">31</span><span class="p">):</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">start</span><span class="o">.</span><span class="n">month</span><span class="p">,</span><span class="n">start</span><span class="o">.</span><span class="n">day</span><span class="p">,</span><span class="n">ctr</span><span class="p">])</span>
+            <span class="n">ctr</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="n">fill</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">store</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;month&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">),(</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">),(</span><span class="s">&#39;index&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">)])</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">store</span><span class="p">):</span>
+            <span class="n">fill</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_get_day_index_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dates</span><span class="p">):</span>
+        <span class="c">## make date index</span>
+        <span class="n">fill_day_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;index&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">),(</span><span class="s">&#39;is_leap&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)])</span>
+        <span class="c">## make leap year designation</span>
+        <span class="n">is_leap_year</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_is_leap_year_</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">)</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">])</span>
+        <span class="c">## reference the day index</span>
+        <span class="n">map_day_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_day_index</span>
+        <span class="c">## calculate index for each date</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">date</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dates</span><span class="o">.</span><span class="n">flat</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_leap_year</span><span class="p">[</span><span class="n">ii</span><span class="p">]:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;leap&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;noleap&#39;</span>
+            <span class="n">ref_map_day_index</span> <span class="o">=</span> <span class="n">map_day_index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">idx1</span> <span class="o">=</span> <span class="n">ref_map_day_index</span><span class="p">[</span><span class="s">&#39;month&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">date</span><span class="o">.</span><span class="n">month</span>
+            <span class="n">idx2</span> <span class="o">=</span> <span class="n">ref_map_day_index</span><span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">date</span><span class="o">.</span><span class="n">day</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span><span class="n">idx2</span><span class="p">)</span>
+            <span class="n">fill_day_idx</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ref_map_day_index</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s">&#39;index&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">is_leap_year</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">fill_day_idx</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_get_dynamic_index_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">ref_idx</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="s">&#39;index&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s">&#39;is_leap&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">ref_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">ref_idx</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">ref_idx</span> <span class="o">&lt;=</span> <span class="mi">59</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ref_idx</span> <span class="o">-</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="n">ref_idx</span> <span class="o">&gt;=</span> <span class="mi">60</span> <span class="ow">and</span> <span class="n">ref_idx</span> <span class="o">&lt;=</span> <span class="mi">364</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ref_idx</span> <span class="o">-</span> <span class="mi">3</span>
+            <span class="k">elif</span> <span class="n">ref_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">365</span><span class="p">,</span><span class="mi">366</span><span class="p">):</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">361</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ref_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">ref_idx</span> <span class="o">&gt;=</span> <span class="mi">364</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">361</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ref_idx</span> <span class="o">-</span> <span class="mi">2</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_get_is_leap_year_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">year</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">29</span><span class="p">)</span>
+            <span class="n">is_leap</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">is_leap</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">is_leap</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_get_geometries_with_percentiles_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable</span><span class="p">,</span><span class="n">shp_key</span><span class="p">,</span><span class="n">bin_directory</span><span class="p">,</span><span class="n">percentile</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        :returns: {ugid(int):gid(int),...:window(int),...:dynamic_percent(float)}</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">_get_or_create_dict_</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">dct</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">dct</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:{}})</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        
+        <span class="n">variable_map</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tasmax&#39;</span><span class="p">:</span><span class="s">&#39;tmax&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;tasmin&#39;</span><span class="p">:</span><span class="s">&#39;tmin&#39;</span><span class="p">}</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">variable_map</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">shp_key</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">,</span><span class="s">&#39;us_counties&#39;</span><span class="p">):</span>
+            <span class="n">shp_key</span> <span class="o">=</span> <span class="s">&#39;north_carolina&#39;</span>
+        <span class="n">select_key</span> <span class="o">=</span> <span class="n">variable</span> <span class="o">+</span> <span class="s">&#39;_&#39;</span> <span class="o">+</span> <span class="n">shp_key</span>
+        <span class="n">data_map</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tmax_qed_city_centroids&#39;</span><span class="p">:</span><span class="s">&#39;DynPercTmax_19712000_maurer_citycentroids.csv&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;tmin_qed_city_centroids&#39;</span><span class="p">:</span><span class="s">&#39;DynPercTmin_19712000_maurer_citycentroids.csv&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;tmax_north_carolina&#39;</span><span class="p">:</span><span class="s">&#39;DynPercTmax_19712000_maurer_NCarolina.csv&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;tmin_north_carolina&#39;</span><span class="p">:</span><span class="s">&#39;DynPercTmin_19712000_maurer_NCarolina.csv&#39;</span><span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">csv_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bin_directory</span><span class="p">,</span><span class="n">data_map</span><span class="p">[</span><span class="n">select_key</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">csv_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;/usr/local/ocgis/bin/QED_2013_dynamic_percentiles&#39;</span><span class="p">,</span><span class="n">data_map</span><span class="p">[</span><span class="n">select_key</span><span class="p">])</span>
+        <span class="n">percentile_key</span> <span class="o">=</span> <span class="s">&#39;q{0}{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">percentile</span><span class="p">,</span><span class="n">variable</span><span class="p">)</span>
+        
+        <span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">reader</span><span class="o">.</span><span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+                <span class="n">ugid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;ugid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">gid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;gid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">window</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;5-day window number&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">dypercentile</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">percentile_key</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                
+                <span class="n">ref_ugid</span> <span class="o">=</span> <span class="n">_get_or_create_dict_</span><span class="p">(</span><span class="n">ugid</span><span class="p">,</span><span class="n">store</span><span class="p">)</span>
+                <span class="n">ref_gid</span> <span class="o">=</span> <span class="n">_get_or_create_dict_</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span><span class="n">ref_ugid</span><span class="p">)</span>
+                <span class="n">ref_gid</span><span class="p">[</span><span class="n">window</span><span class="p">]</span> <span class="o">=</span> <span class="n">dypercentile</span>
+        
+        <span class="k">return</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="Between"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Between">[docs]</a><span class="k">class</span> <span class="nc">Between</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values falling within the limits lower and upper (inclusive).&#39;</span>
@@ -264,7 +442,7 @@
     </div></div>
 <div class="viewcode-block" id="Threshold"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.library.Threshold">[docs]</a><span class="k">class</span> <span class="nc">Threshold</span><span class="p">(</span><span class="n">OcgArgFunction</span><span class="p">):</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values where the logical operation is True.&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values where the logical operation returns TRUE.&#39;</span>
     <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">Thresholds</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
     
@@ -331,7 +509,65 @@
         <span class="n">hi</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span><span class="o">*</span><span class="n">tas</span> <span class="o">+</span> <span class="n">c3</span><span class="o">*</span><span class="n">rhs</span> <span class="o">+</span> <span class="n">c4</span><span class="o">*</span><span class="n">tas</span><span class="o">*</span><span class="n">rhs</span> <span class="o">+</span> <span class="n">c5</span><span class="o">*</span><span class="n">tas_sq</span> <span class="o">+</span> <span class="n">c6</span><span class="o">*</span><span class="n">rhs_sq</span> <span class="o">+</span> \
              <span class="n">c7</span><span class="o">*</span><span class="n">tas_sq</span><span class="o">*</span><span class="n">rhs</span> <span class="o">+</span> <span class="n">c8</span><span class="o">*</span><span class="n">tas</span><span class="o">*</span><span class="n">rhs_sq</span> <span class="o">+</span> <span class="n">c9</span><span class="o">*</span><span class="n">tas_sq</span><span class="o">*</span><span class="n">rhs_sq</span>
         
-        <span class="k">return</span><span class="p">(</span><span class="n">hi</span><span class="p">)</span></div></div>
+        <span class="k">return</span><span class="p">(</span><span class="n">hi</span><span class="p">)</span>
+    
+</div></div>
+<span class="k">class</span> <span class="nc">SnowfallWaterEquivalent</span><span class="p">(</span><span class="n">OcgCvArgFunction</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;sfwe&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Snowfall water equivalent - total precipitation on days when temperature less than 0.&#39;</span>
+    <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">MultivariateStatistics</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="n">nargs</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tas&#39;</span><span class="p">,</span><span class="s">&#39;pr&#39;</span><span class="p">]</span>
+    <span class="n">long_name</span> <span class="o">=</span> <span class="s">&#39;Snowfall Water Equivalent&#39;</span>
+    <span class="n">standard_name</span> <span class="o">=</span> <span class="s">&#39;snowfall_water_equivalent&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="s">&#39;mm&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">pr</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">sfwe</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">sfwe_is_0</span> <span class="o">=</span> <span class="n">tas</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="n">sfwe</span><span class="p">[</span><span class="n">sfwe_is_0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c">## we want to maintain the precipitation mask regardless</span>
+        <span class="n">sfwe</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">mask</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">sfwe</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_aggregate_temporal_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+    
+    
+<span class="k">class</span> <span class="nc">Sum</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;sum&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Sum the data within the temporal aggregation.&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">MathematicalOperations</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="s">&#39;mm&#39;</span>
+    <span class="n">standard_name</span> <span class="o">=</span> <span class="s">&#39;P&#39;</span>
+    <span class="n">long_name</span> <span class="o">=</span> <span class="s">&#39;Precipitation for the Period&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">RatioSfweP</span><span class="p">(</span><span class="n">OcgCvArgFunction</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;ratio_sfwe_p&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Divide the first array by the second.&#39;</span>
+    <span class="n">Group</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">MathematicalOperations</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="n">nargs</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;sfwe&#39;</span><span class="p">,</span><span class="s">&#39;p&#39;</span><span class="p">]</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">long_name</span> <span class="o">=</span> <span class="s">&#39;Ratio SFWE/Pr&#39;</span>
+    <span class="n">standard_name</span> <span class="o">=</span> <span class="s">&#39;sfwe/p&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sfwe</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="c">## index does not apply when there is no precipitation</span>
+        <span class="n">p_is_0</span> <span class="o">=</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="n">ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">sfwe</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">ratio</span><span class="p">[</span><span class="n">p_is_0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+    
 </pre></div>
 
           </div>

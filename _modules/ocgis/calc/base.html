@@ -54,6 +54,7 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">ocgis.calc.groups</span> <span class="kn">import</span> <span class="n">OcgFunctionGroup</span>
 <span class="kn">from</span> <span class="nn">ocgis.util.logging_ocgis</span> <span class="kn">import</span> <span class="n">ocgis_lh</span>
+<span class="kn">from</span> <span class="nn">ocgis.exc</span> <span class="kn">import</span> <span class="n">DefinitionValidationError</span>
 
 
 <span class="k">class</span> <span class="nc">OcgFunctionTree</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -145,15 +146,22 @@
     <span class="nd">@abc.abstractproperty</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="nb">type</span>
     
+    <span class="n">standard_name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">long_name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
     <span class="n">nargs</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">agg</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">kwds</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">agg</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">kwds</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="n">dataset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">calc_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">file_only</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">agg</span> <span class="o">=</span> <span class="n">agg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwds</span> <span class="o">=</span> <span class="n">kwds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_name</span> <span class="o">=</span> <span class="n">calc_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_only</span> <span class="o">=</span> <span class="n">file_only</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -166,21 +174,35 @@
 <span class="sd">        </span>
 <span class="sd">        :rtype: :class:`numpy.ma.MaskedArray`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c">## holds output from calculation</span>
-        <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fill_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-        <span class="c">## iterate over temporal groups and levels</span>
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
-            <span class="n">value_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">group</span><span class="p">,:,:,:]</span>
-            <span class="n">calc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_</span><span class="p">(</span><span class="n">value_slice</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">)</span>
-            <span class="c">## we want to leave the mask alone and only fill the data. calculations</span>
-            <span class="c">## are not concerned with the global mask (though they can be).</span>
-            <span class="n">fill</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc</span>
-        <span class="c">## if data is calculated on raw values, but area-weighting is required</span>
-        <span class="c">## aggregate the data using provided weights.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_spatial</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+        <span class="c">## return empty for file only</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_only</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_file_only_fill_</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">fill</span>
+            <span class="c">## holds output from calculation</span>
+            <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fill_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="c">## iterate over temporal groups and levels</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
+                <span class="n">value_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">group</span><span class="p">,:,:,:]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_curr_group</span> <span class="o">=</span> <span class="n">group</span>
+                <span class="n">calc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_</span><span class="p">(</span><span class="n">value_slice</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">)</span>
+                <span class="c">## we want to leave the mask alone and only fill the data. calculations</span>
+                <span class="c">## are not concerned with the global mask (though they can be).</span>
+                <span class="n">fill</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc</span>
+            <span class="c">## if data is calculated on raw values, but area-weighting is required</span>
+            <span class="c">## aggregate the data using provided weights.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_aggregated_</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_spatial</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">fill</span>
+                
+        <span class="c">## add calculation metadata</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;calculations&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;calculations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">calculation_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_name</span><span class="p">:{</span><span class="s">&#39;attrs&#39;</span><span class="p">:{</span><span class="s">&#39;long_name&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">long_name</span><span class="p">,</span>
+                                                     <span class="s">&#39;standard_name&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">standard_name</span><span class="p">,</span>
+                                                     <span class="s">&#39;units&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">}}}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;calculations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">calculation_attrs</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">aggregate_spatial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fill</span><span class="p">):</span>
@@ -191,6 +213,10 @@
             <span class="n">aw</span><span class="p">[</span><span class="n">tidx</span><span class="p">,</span><span class="n">lidx</span><span class="p">,:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregate_spatial_</span><span class="p">(</span><span class="n">fill</span><span class="p">[</span><span class="n">tidx</span><span class="p">,</span><span class="n">lidx</span><span class="p">,:],</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">aw</span>
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+    
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">ops</span><span class="p">):</span>
+        <span class="k">pass</span>
     
     <span class="nd">@abc.abstractmethod</span>
 <div class="viewcode-block" id="OcgFunction._calculate_"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.base.OcgFunction._calculate_">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
@@ -221,16 +247,22 @@
         <span class="n">mask</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span>
         <span class="n">fill</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fill</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_get_file_only_fill_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span><span class="n">mask</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">_is_aggregated_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fill</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Based on the shape of `fill`, return True if the data is spatially aggregated.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fill</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">)</span>
-<span class="c">#        ret = dict(text=self.text,</span>
-<span class="c">#                   checked=self.checked,</span>
-<span class="c">#                   leaf=True,</span>
-<span class="c">#                   value=self.name,</span>
-<span class="c">#                   desc=self.description,</span>
-<span class="c">#                   nargs=self.nargs)</span>
-<span class="c">#        return(ret)</span>
 
 </div>
 <div class="viewcode-block" id="OcgArgFunction"><a class="viewcode-back" href="../../../computation.html#ocgis.calc.base.OcgArgFunction">[docs]</a><span class="k">class</span> <span class="nc">OcgArgFunction</span><span class="p">(</span><span class="n">OcgFunction</span><span class="p">):</span>
@@ -256,25 +288,40 @@
     <span class="nd">@abc.abstractproperty</span>
     <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">agg</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">kwds</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">OcgCvArgFunction</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">kwds</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span><span class="n">agg</span><span class="o">=</span><span class="n">agg</span><span class="p">,</span><span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span><span class="n">kwds</span><span class="o">=</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">agg</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">kwds</span><span class="o">=</span><span class="p">{},</span><span class="n">dataset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">calc_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">file_only</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OcgCvArgFunction</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">kwds</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span><span class="n">agg</span><span class="o">=</span><span class="n">agg</span><span class="p">,</span>
+                                              <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span><span class="n">kwds</span><span class="o">=</span><span class="n">kwds</span><span class="p">,</span><span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+                                              <span class="n">calc_name</span><span class="o">=</span><span class="n">calc_name</span><span class="p">,</span><span class="n">file_only</span><span class="o">=</span><span class="n">file_only</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_only</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_file_only_fill_</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">arch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-            <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fill_</span><span class="p">(</span><span class="n">arch</span><span class="p">)</span>
-            <span class="c">## iterate over temporal groups and levels</span>
-            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
-                <span class="n">kwds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_kwds_</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">)</span>
-                <span class="n">calc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_</span><span class="p">(</span><span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-                <span class="n">calc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_temporal</span><span class="p">(</span><span class="n">calc</span><span class="p">)</span>
-                <span class="n">fill</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_spatial</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">fill</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">arch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fill_</span><span class="p">(</span><span class="n">arch</span><span class="p">)</span>
+                <span class="c">## iterate over temporal groups and levels</span>
+                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
+                    <span class="n">kwds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset_kwds_</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">kwds</span><span class="p">)</span>
+                    <span class="n">calc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_</span><span class="p">(</span><span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+                    <span class="n">calc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_temporal</span><span class="p">(</span><span class="n">calc</span><span class="p">)</span>
+                    <span class="n">fill</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_aggregated_</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_spatial</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">fill</span>
+            
+        <span class="c">## add calculation metadata</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">calculation_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_name</span><span class="p">:{</span><span class="s">&#39;attrs&#39;</span><span class="p">:{</span><span class="s">&#39;long_name&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">long_name</span><span class="p">,</span>
+                                                         <span class="s">&#39;standard_name&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">standard_name</span><span class="p">,</span>
+                                                         <span class="s">&#39;units&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">}}}</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;calculations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculation_attrs</span>
+        
         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
     
     <span class="nd">@abc.abstractmethod</span>
@@ -325,15 +372,10 @@
         <span class="n">exc</span> <span class="o">=</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;Spatial aggregation of raw input values not implemented for keyed output functions.&#39;</span><span class="p">)</span>
         <span class="n">ocgis_lh</span><span class="p">(</span><span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">,</span><span class="n">logger</span><span class="o">=</span><span class="s">&#39;calc.library&#39;</span><span class="p">)</span>
         
-        
-<span class="k">class</span> <span class="nc">ProtectedFunction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    For functions that should be run under certain operational conditions.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
     <span class="nd">@classmethod</span>
-    <span class="nd">@abc.abstractmethod</span>
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ops</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">ops</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ops</span><span class="o">.</span><span class="n">calc_raw</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="n">DefinitionValidationError</span><span class="p">(</span><span class="s">&#39;calc&#39;</span><span class="p">,</span><span class="s">&#39;Keyed function output may not have calc_raw=True.&#39;</span><span class="p">))</span>
 </pre></div>
 
           </div>
