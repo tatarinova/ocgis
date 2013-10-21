@@ -83,7 +83,7 @@
 <h2><a class="reference internal" href="#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgOperations</span></tt></a><a class="headerlink" href="#ocgis-ocgoperations" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.OcgOperations">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output=None</em>, <em>slice=None</em>, <em>file_only=False</em>, <em>headers=None</em>, <em>format_time=True</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction='polygon'</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output=None</em>, <em>slice=None</em>, <em>file_only=False</em>, <em>headers=None</em>, <em>format_time=True</em>, <em>calc_sample_size=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for OCGIS operations.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -126,6 +126,7 @@ values from internal objects.</p>
 <li><strong>dir_output</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The output directory to which any disk format folders are written. If the directory does not exist, an exception will be raised. This will override <tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_OUTPUT</span></tt>.</li>
 <li><strong>headers</strong> (<em>sequence</em>) &#8211; A sequence of strings specifying the output headers.</li>
 <li><strong>format_time</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite> (the default), attempt to coerce time values to datetime stamps. If <cite>False</cite>, pass values through without a coercion attempt.</li>
+<li><strong>calc_sample_size</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, calculate statistical sample sizes for calculations.</li>
 </ul>
 </td>
 </tr>
