@@ -341,6 +341,57 @@ avoid dereferencing. Reducing along the time axis is required (i.e. axis=0).</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="ocgis.calc.library.DynamicDailyKernelPercentileThreshold">
+<em class="property">class </em><tt class="descclassname">ocgis.calc.library.</tt><tt class="descname">DynamicDailyKernelPercentileThreshold</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#DynamicDailyKernelPercentileThreshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.DynamicDailyKernelPercentileThreshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ocgis.calc.base.OcgArgFunction" title="ocgis.calc.base.OcgArgFunction"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.calc.base.OcgArgFunction</span></tt></a></p>
+<dl class="method">
+<dt id="ocgis.calc.library.DynamicDailyKernelPercentileThreshold._calculate_">
+<tt class="descname">_calculate_</tt><big>(</big><em>values</em>, <em>operation=None</em>, <em>percentile=None</em>, <em>daily_percentile=None</em>, <em>width=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#DynamicDailyKernelPercentileThreshold._calculate_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.DynamicDailyKernelPercentileThreshold._calculate_" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>operation</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; One of &#8216;gt&#8217;, &#8216;lt&#8217;, &#8216;lte&#8217;, or &#8216;gte&#8217;.</li>
+<li><strong>percentile</strong> (<em>int or float from 0 to 100</em>) &#8211; Percentile threshold to use in the <cite>numpy.percentile</cite> calculation.</li>
+<li><strong>width</strong> (<em>int, oddly-numbered, at least 3 or greater</em>) &#8211; Width of kernel (in days) to use for the moving window percentile.</li>
+<li><strong>daily_percentile</strong> (<cite>numpy.ndarray</cite>) &#8211; Optional structure array as returned by <a class="reference internal" href="#ocgis.calc.library.DynamicDailyKernelPercentileThreshold.get_daily_percentile" title="ocgis.calc.library.DynamicDailyKernelPercentileThreshold.get_daily_percentile"><tt class="xref py py-meth docutils literal"><span class="pre">get_daily_percentile()</span></tt></a>. 
+If this is passed, it will not be calculated internally by the object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ocgis.calc.library.DynamicDailyKernelPercentileThreshold.get_daily_percentile">
+<tt class="descname">get_daily_percentile</tt><big>(</big><em>all_values</em>, <em>temporal</em>, <em>percentile</em>, <em>width</em><big>)</big><a class="reference internal" href="_modules/ocgis/calc/library.html#DynamicDailyKernelPercentileThreshold.get_daily_percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.calc.library.DynamicDailyKernelPercentileThreshold.get_daily_percentile" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>all_values</strong> (<em>numpy.MaskedArray</em>) &#8211; Array holding all values to use for base percentile calculations.</li>
+<li><strong>temporal</strong> (<em>numpy.ndarray</em>) &#8211; Vector holding <cite>datetime.datetime</cite> objects with same length as the time axis of <cite>all_values</cite>.</li>
+<li><strong>percentile</strong> (<em>int or float from 0 to 100</em>) &#8211; Percentile threshold to use in the <cite>numpy.percentile</cite> calculation.</li>
+<li><strong>width</strong> (<em>int, oddly-number, at least 3 or greater</em>) &#8211; Width of kernel to use for the moving window percentile.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A structure array with four fields: month, day, index, and percentile.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="thresholds">
 <h3>Thresholds<a class="headerlink" href="#thresholds" title="Permalink to this headline">¶</a></h3>
