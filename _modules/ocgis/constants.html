@@ -1,0 +1,132 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ocgis.constants &mdash; OpenClimateGIS 0.07b documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.07b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.07b documentation" href="../../index.html" />
+    <link rel="up" title="ocgis" href="../ocgis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../index.html">OpenClimateGIS 0.07b documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ocgis.constants</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c">#: Potential bounds names used to find the bounds dimension on a netCDF.</span>
+<span class="n">name_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">,</span><span class="s">&#39;bnds&#39;</span><span class="p">,</span><span class="s">&#39;bound&#39;</span><span class="p">,</span><span class="s">&#39;bnd&#39;</span><span class="p">]</span>
+<span class="n">name_bounds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s">&#39;d_&#39;</span><span class="o">+</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">name_bounds</span><span class="p">])</span>
+<span class="c">#: Standard bounds name used bo OCGIS.</span>
+<span class="n">ocgis_bounds</span> <span class="o">=</span> <span class="s">&#39;bounds&#39;</span>
+
+<span class="c">#: Default fill value for masked data.</span>
+<span class="n">fill_value</span> <span class="o">=</span> <span class="mf">1e20</span>
+
+<span class="c">#: Standard headers for subset operations.</span>
+<span class="n">raw_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;did&#39;</span><span class="p">,</span><span class="s">&#39;vid&#39;</span><span class="p">,</span><span class="s">&#39;ugid&#39;</span><span class="p">,</span><span class="s">&#39;tid&#39;</span><span class="p">,</span><span class="s">&#39;lid&#39;</span><span class="p">,</span><span class="s">&#39;gid&#39;</span><span class="p">,</span><span class="s">&#39;variable&#39;</span><span class="p">,</span><span class="s">&#39;alias&#39;</span><span class="p">,</span><span class="s">&#39;time&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">,</span><span class="s">&#39;month&#39;</span><span class="p">,</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="s">&#39;level&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+<span class="c">#: Standard headers for computation.</span>
+<span class="n">calc_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;did&#39;</span><span class="p">,</span><span class="s">&#39;vid&#39;</span><span class="p">,</span><span class="s">&#39;cid&#39;</span><span class="p">,</span><span class="s">&#39;ugid&#39;</span><span class="p">,</span><span class="s">&#39;tid&#39;</span><span class="p">,</span><span class="s">&#39;lid&#39;</span><span class="p">,</span><span class="s">&#39;gid&#39;</span><span class="p">,</span><span class="s">&#39;variable&#39;</span><span class="p">,</span><span class="s">&#39;alias&#39;</span><span class="p">,</span><span class="s">&#39;calc_key&#39;</span><span class="p">,</span><span class="s">&#39;calc_alias&#39;</span><span class="p">,</span><span class="s">&#39;time&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">,</span><span class="s">&#39;month&#39;</span><span class="p">,</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="s">&#39;level&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+<span class="c">#: Standard headers for multivariate calculations.</span>
+<span class="n">multi_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;did&#39;</span><span class="p">,</span><span class="s">&#39;cid&#39;</span><span class="p">,</span><span class="s">&#39;ugid&#39;</span><span class="p">,</span><span class="s">&#39;tid&#39;</span><span class="p">,</span><span class="s">&#39;lid&#39;</span><span class="p">,</span><span class="s">&#39;gid&#39;</span><span class="p">,</span><span class="s">&#39;calc_key&#39;</span><span class="p">,</span><span class="s">&#39;calc_alias&#39;</span><span class="p">,</span><span class="s">&#39;time&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">,</span><span class="s">&#39;month&#39;</span><span class="p">,</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="s">&#39;level&#39;</span><span class="p">,</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+
+<span class="n">level_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;lid&#39;</span><span class="p">,</span><span class="s">&#39;level&#39;</span><span class="p">]</span>
+
+<span class="c">#: Required headers for every request.</span>
+<span class="n">required_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;did&#39;</span><span class="p">,</span><span class="s">&#39;ugid&#39;</span><span class="p">,</span><span class="s">&#39;gid&#39;</span><span class="p">]</span>
+
+<span class="c">#: Key identifiers for output formats.</span>
+<span class="n">output_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;numpy&#39;</span><span class="p">,</span><span class="s">&#39;nc&#39;</span><span class="p">,</span><span class="s">&#39;csv&#39;</span><span class="p">,</span><span class="s">&#39;csv+&#39;</span><span class="p">,</span><span class="s">&#39;shp&#39;</span><span class="p">,</span><span class="s">&#39;geojson&#39;</span><span class="p">,</span><span class="s">&#39;meta&#39;</span><span class="p">]</span>
+
+<span class="c">#test_data_download_url_prefix = &#39;https://dl.dropboxusercontent.com/u/867854/test_data_download/&#39;</span>
+<span class="n">test_data_download_url_prefix</span> <span class="o">=</span> <span class="s">&#39;http://www.earthsystemmodeling.org/download/data/ocgis/nc/&#39;</span>
+
+<span class="c">#: The day value to use for month centroids.</span>
+<span class="n">calc_month_centroid</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="c">#: The month value to use for year centroids.</span>
+<span class="n">calc_year_centroid_month</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="c">#: The default day value for year centroids.</span>
+<span class="n">calc_year_centroid_day</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c">#: The number of values to use when calculating data resolution.</span>
+<span class="n">resolution_limit</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c">#: The data type to use for NumPy integers.</span>
+<span class="n">np_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+<span class="c">#: The data type to use for NumPy floats.</span>
+<span class="n">np_float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+
+
+<span class="n">test_run_long_tests</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">test_run_dev_tests</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../index.html">OpenClimateGIS 0.07b documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../ocgis.html" >ocgis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, University of Michigan-Ann Arbor, Michigan Technological University, University of Colorado-Boulder.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

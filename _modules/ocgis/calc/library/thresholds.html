@@ -1,0 +1,138 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ocgis.calc.library.thresholds &mdash; OpenClimateGIS 0.07b documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.07b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.07b documentation" href="../../../../index.html" />
+    <link rel="up" title="ocgis" href="../../../ocgis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../../../index.html">OpenClimateGIS 0.07b documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ocgis.calc.library.thresholds</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">ocgis.calc</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="Between"><a class="viewcode-back" href="../../../../computation.html#ocgis.calc.library.thresholds.Between">[docs]</a><span class="k">class</span> <span class="nc">Between</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AbstractUnivariateSetFunction</span><span class="p">,</span><span class="n">base</span><span class="o">.</span><span class="n">AbstractParameterizedFunction</span><span class="p">):</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values falling within the limits lower and upper (inclusive).&#39;</span>
+    <span class="n">parms_definition</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;lower&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span><span class="s">&#39;upper&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">}</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;between&#39;</span>
+    
+<div class="viewcode-block" id="Between.calculate"><a class="viewcode-back" href="../../../../computation.html#ocgis.calc.library.thresholds.Between.calculate">[docs]</a>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">upper</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param lower: The lower value of the range.</span>
+<span class="sd">        :type lower: float</span>
+<span class="sd">        :param upper: The upper value of the range.</span>
+<span class="sd">        :type upper: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">lower</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lower</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">upper</span><span class="p">))</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+    
+    </div></div>
+<div class="viewcode-block" id="Threshold"><a class="viewcode-back" href="../../../../computation.html#ocgis.calc.library.thresholds.Threshold">[docs]</a><span class="k">class</span> <span class="nc">Threshold</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AbstractUnivariateSetFunction</span><span class="p">,</span><span class="n">base</span><span class="o">.</span><span class="n">AbstractParameterizedFunction</span><span class="p">):</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Count of values where the logical operation returns TRUE.&#39;</span>
+    <span class="n">parms_definition</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;threshold&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span><span class="s">&#39;operation&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">}</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;threshold&#39;</span>
+    
+<div class="viewcode-block" id="Threshold.calculate"><a class="viewcode-back" href="../../../../computation.html#ocgis.calc.library.thresholds.Threshold.calculate">[docs]</a>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param threshold: The threshold value to use for the logical operation.</span>
+<span class="sd">        :type threshold: float</span>
+<span class="sd">        :param operation: The logical operation. One of &#39;gt&#39;,&#39;gte&#39;,&#39;lt&#39;, or &#39;lte&#39;.</span>
+<span class="sd">        :type operation: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="c">## perform requested logical operation</span>
+        <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;gt&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&gt;</span> <span class="n">threshold</span>
+        <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;lt&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="n">threshold</span>
+        <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;gte&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+        <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s">&#39;lte&#39;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&lt;=</span> <span class="n">threshold</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;The operation &quot;{0}&quot; was not recognized.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">operation</span><span class="p">)))</span>
+        
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        </div>
+    <span class="k">def</span> <span class="nf">_aggregate_spatial_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">weights</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">values</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../../../index.html">OpenClimateGIS 0.07b documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../ocgis.html" >ocgis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, University of Michigan-Ann Arbor, Michigan Technological University, University of Colorado-Boulder.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
