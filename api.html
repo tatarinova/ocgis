@@ -67,6 +67,8 @@
 </dd>
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.PREFIX</span></tt> = &#8216;ocgis_output&#8217;</dt>
 <dd>The default prefix to apply to output files. This is also the output folder name.</dd>
+</dl>
+<dl class="docutils" id="env-dir-shpcabinet">
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_SHPCABINET</span></tt> = &lt;path-to-directory&gt;</dt>
 <dd>Location of the shapefile directory for use by <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a>.</dd>
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_DATA</span></tt> = <cite>None</cite></dt>
@@ -317,7 +319,7 @@ compatible.</p>
 </table>
 </div>
 <div class="section" id="geom">
-<h4>geom<a class="headerlink" href="#geom" title="Permalink to this headline">¶</a></h4>
+<span id="id2"></span><h4>geom<a class="headerlink" href="#geom" title="Permalink to this headline">¶</a></h4>
 <p>If a geometry(s) is provided, it is used to subset <cite>every</cite> <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> object. Again, supplying a value of <cite>None</cite> (the default) results in the return of the entire spatial domain. There are four ways to parameterize the <cite>geom</cite> keyword argument:</p>
 <ol class="arabic simple">
 <li>Bounding Box</li>
@@ -340,7 +342,7 @@ compatible.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span> <span class="o">=</span> <span class="n">ShpCabinetIterator</span><span class="p">(</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">,</span><span class="n">select_ugid</span><span class="o">=</span><span class="p">[</span><span class="mi">16</span><span class="p">])</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple" id="geom-key" start="4">
 <li>Using a <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.ShpCabinet</span></tt></a> Key</li>
 </ol>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span> <span class="o">=</span> <span class="s">&#39;state_boundaries&#39;</span>
@@ -390,13 +392,31 @@ compatible.</p>
 </div>
 <div class="section" id="calc-grouping">
 <span id="calc-grouping-headline"></span><h4>calc_grouping<a class="headerlink" href="#calc-grouping" title="Permalink to this headline">¶</a></h4>
-<p>Any combination of &#8216;day&#8217;, &#8216;month&#8217;, and &#8216;year&#8217;.</p>
+<p>There are two forms for this argument:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Date Part Grouping: Any combination of &#8216;day&#8217;, &#8216;month&#8217;, and &#8216;year&#8217;.</li>
+</ol>
+</div></blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;month&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Any temporal aggregation applied to a dataset should be consistent with the input data&#8217;s temporal resolution. For example, aggregating by day, month, and year on daily input dataset is not a reasonable aggregation as the data selected for aggregation will have a sample size of one.</p>
+<p>Any temporal aggregation applied to a dataset should be consistent with the input data&#8217;s temporal resolution. For example, aggregating by day, month, and year on daily input dataset is not a reasonable aggregation as the data selected for aggregation will have a sample size of one (i.e. one day per aggregation group).</p>
+<blockquote>
+<div><ol class="arabic simple" start="2">
+<li>Seasonal Groups: A sequence of integer sequences. Element sequences must be mutually exclusive (i.e. no repeated integers).</li>
+</ol>
+</div></blockquote>
+<p>Month integers map as expected (1=January, 2=February, etc.). The example below constructs a single season composed of March, April, and May. Note the nested lists.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>The next example consumes all the months in a year.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">]]</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="calc-raw">
 <span id="calc-raw-headline"></span><h4>calc_raw<a class="headerlink" href="#calc-raw" title="Permalink to this headline">¶</a></h4>
@@ -480,8 +500,8 @@ compatible.</p>
 <span id="output-format-headline"></span><h4>output_format<a class="headerlink" href="#output-format" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="88%" />
+<col width="19%" />
+<col width="81%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Value</th>
@@ -490,7 +510,7 @@ compatible.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><cite>numpy</cite> (default)</td>
-<td>Return a dict with keys matching <cite>ugid</cite> (see <a class="reference internal" href="#geom">geom</a>) and values of <tt class="xref py py-class docutils literal"><span class="pre">ocgis.api.collection.AbstractCollection</span></tt>. The collection type depends on the operations.</td>
+<td>Return a <cite>ocgis.SpatialCollection</cite> with keys matching <cite>ugid</cite> (see <a class="reference internal" href="#geom">geom</a>).</td>
 </tr>
 <tr class="row-odd"><td><cite>shp</cite></td>
 <td>A shapefile representation of the data.</td>
@@ -514,8 +534,8 @@ compatible.</p>
 <h4>agg_selection<a class="headerlink" href="#agg-selection" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="29%" />
-<col width="71%" />
+<col width="27%" />
+<col width="73%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Value</th>
@@ -524,20 +544,50 @@ compatible.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><cite>True</cite></td>
-<td>Aggregate <a class="reference internal" href="#geom">geom</a> to a single geometry.</td>
+<td>Aggregate (union) <a class="reference internal" href="#geom">geom</a> to a single geometry.</td>
 </tr>
 <tr class="row-odd"><td><cite>False</cite> (default)</td>
 <td>Leave <a class="reference internal" href="#geom">geom</a> as is.</td>
 </tr>
 </tbody>
 </table>
+<p>The purpose of this data manipulation is to ease the method required to aggregate (union) geometries into arbitrary regions. A simple example would be unioning the U.S. state boundaries of Utah, Nevada, Arizona, and New Mexico into a single polygon representing a &#8220;Southwestern Region&#8221;.</p>
 </div>
 <div class="section" id="select-ugid">
-<h4>select_ugid<a class="headerlink" href="#select-ugid" title="Permalink to this headline">¶</a></h4>
-<p>Select specific geometries from <cite>geom</cite>.</p>
+<span id="id3"></span><h4>select_ugid<a class="headerlink" href="#select-ugid" title="Permalink to this headline">¶</a></h4>
+<p>Select specific geometries from the target shapefile chosen using &#8220;<a class="reference internal" href="#geom">geom</a>&#8221;. The integer sequence selects matching UGID values from the shapefiles. For more information on adding new shapefiles or the requirements of input shapefiles, please see the section titled <a class="reference internal" href="#adding-additional-shapefile-data">Adding Additional Shapefile Data</a>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">select_ugid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">select_ugid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">55</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">select_ugid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As clarification, suppose there is a shapefile called &#8220;basins.shp&#8221; (this assumes the folder containing the shapefile has been set as the value for <a class="reference internal" href="#env-dir-shpcabinet">env.DIR_SHPCABINET</a>) with the following attribute table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">UGID</th>
+<th class="head">Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Basin A</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Basin B</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Basin C</td>
+</tr>
+</tbody>
+</table>
+<p>If the goal is to subset the data by the boundary of &#8220;Basin A&#8221; and write the resulting data to netCDF, a call to OCGIS looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ocgis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rd</span> <span class="o">=</span> <span class="n">ocgis</span><span class="o">.</span><span class="n">RequestDataset</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s">&#39;/path/to/data.nc&#39;</span><span class="p">,</span><span class="n">variable</span><span class="o">=</span><span class="s">&#39;tas&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">ocgis</span><span class="o">.</span><span class="n">OcgOperations</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">rd</span><span class="p">,</span><span class="n">geom</span><span class="o">=</span><span class="s">&#39;basins&#39;</span><span class="p">,</span><span class="n">select_ugid</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">output_format</span><span class="o">=</span><span class="s">&#39;nc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -686,7 +736,8 @@ accessible location.</p>
 <p class="first admonition-title">Warning</p>
 <p class="last">Only add data WGS84 geographic data, ESPS=4326.</p>
 </div>
-<p>Shapefiles may be added to the directory mapped by the environment variable <tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt>. Shapefiles must have a unique integer attribute called &#8216;UGID&#8217;. The shapefile&#8217;s &#8220;geom key&#8221; is the name of the shapefile. It may have an alphanumeric name with no spaces and must only include underscores &#8220;_&#8221;.</p>
+<p>Shapefiles may be added to the directory mapped by the environment variable <tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt>. Shapefiles must have a unique integer attribute called &#8216;UGID&#8217;. This attribute is required for the &#8220;<a class="reference internal" href="#select-ugid">select_ugid</a>&#8221; argument to find specific geometries inside the shapefile.</p>
+<p>The shapefile&#8217;s &#8220;<a class="reference internal" href="#geom-key">geom key</a>&#8221; is the name of the shapefile. It must have an alphanumeric name with no spaces with the only allowable special character being underscores &#8220;_&#8221;.</p>
 </div>
 </div>
 <div class="section" id="ocgis-inspect">
