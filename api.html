@@ -83,7 +83,7 @@
 <h2><a class="reference internal" href="#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgOperations</span></tt></a><a class="headerlink" href="#ocgis-ocgoperations" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.OcgOperations">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction=None</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output=None</em>, <em>slice=None</em>, <em>file_only=False</em>, <em>headers=None</em>, <em>format_time=True</em>, <em>calc_sample_size=False</em>, <em>search_radius_mult=0.75</em>, <em>output_crs=None</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction=None</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output=None</em>, <em>slice=None</em>, <em>file_only=False</em>, <em>headers=None</em>, <em>format_time=True</em>, <em>calc_sample_size=False</em>, <em>search_radius_mult=0.75</em>, <em>output_crs=None</em>, <em>interpolate_spatial_bounds=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for OCGIS operations.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -128,6 +128,7 @@ validation and input formatting.</p>
 <li><strong>calc_sample_size</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, calculate statistical sample sizes for calculations.</li>
 <li><strong>output_crs</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ocgis.crs.CoordinateReferenceSystem</span></tt>) &#8211; If provided, all output geometries will be projected to match the provided CRS.</li>
 <li><strong>search_radius_mult</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; This value is multiplied by the target data&#8217;s spatial resolution to determine the buffer radius for point selection geometries.</li>
+<li><strong>interpolate_spatial_bounds</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True and no bounds are available, attempt to interpolate bounds from centroids.</li>
 </ul>
 </td>
 </tr>
@@ -646,6 +647,10 @@ compatible.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="interpolate-spatial-bounds">
+<h4>interpolate_spatial_bounds<a class="headerlink" href="#interpolate-spatial-bounds" title="Permalink to this headline">¶</a></h4>
+<p>If <cite>True</cite>, attempt to interpolate bounds coordinates if they are absent. This will also extrapolate exterior bounds to avoid losing spatial coverage.</p>
+</div>
 </div>
 </div>
 <div class="section" id="ocgis-shpcabinet">
@@ -1086,6 +1091,7 @@ accessible location.</p>
 <li><a class="reference internal" href="#vector-wrap">vector_wrap</a></li>
 <li><a class="reference internal" href="#allow-empty">allow_empty</a></li>
 <li><a class="reference internal" href="#headers">headers</a></li>
+<li><a class="reference internal" href="#interpolate-spatial-bounds">interpolate_spatial_bounds</a></li>
 </ul>
 </li>
 </ul>
