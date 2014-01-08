@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python API &mdash; OpenClimateGIS 0.07b-snapshot-03 documentation</title>
+    <title>Python API &mdash; OpenClimateGIS 0.07b-snapshot-04 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.07b-snapshot-03',
+        VERSION:     '0.07b-snapshot-04',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.07b-snapshot-03 documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.07b-snapshot-04 documentation" href="index.html" />
     <link rel="next" title="Computation" href="computation.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-03 documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-04 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -301,8 +301,8 @@ compatible.</p>
 <h4>spatial_operation<a class="headerlink" href="#spatial-operation" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="84%" />
+<col width="15%" />
+<col width="85%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Value</th>
@@ -310,11 +310,11 @@ compatible.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><cite>intersects</cite> (default)</td>
-<td>Source geometries touching or overlapping selection geometries are returned.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">intersects</span></tt> (default)</td>
+<td>Source geometries touching or overlapping selection geometries are returned (see <a class="reference internal" href="appendix.html#appendix-intersects"><em>Intersects (Select)</em></a>).</td>
 </tr>
-<tr class="row-odd"><td><cite>clip</cite></td>
-<td>A full geometric intersection is performed between source and selection geometries. New geometries may be created.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">clip</span></tt></td>
+<td>A full geometric intersection is performed between source and selection geometries. New geometries may be created. (see <a class="reference internal" href="appendix.html#appendix-clip"><em>Clip (Intersection)</em></a>)</td>
 </tr>
 </tbody>
 </table>
@@ -358,8 +358,8 @@ compatible.</p>
 </div>
 </div>
 <div class="section" id="search-radius-mult">
-<h4>search_radius_mult<a class="headerlink" href="#search-radius-mult" title="Permalink to this headline">¶</a></h4>
-<p>This is a scalar float value multiplied by the target data&#8217;s resolution to determine the buffer radius for the point.</p>
+<span id="search-radius-mult-key"></span><h4>search_radius_mult<a class="headerlink" href="#search-radius-mult" title="Permalink to this headline">¶</a></h4>
+<p>This is a scalar float value multiplied by the target data&#8217;s resolution to determine the buffer radius for the point. The default is <tt class="docutils literal"><span class="pre">0.75</span></tt>.</p>
 </div>
 <div class="section" id="output-crs">
 <h4>output_crs<a class="headerlink" href="#output-crs" title="Permalink to this headline">¶</a></h4>
@@ -369,8 +369,8 @@ compatible.</p>
 <h4>aggregate<a class="headerlink" href="#aggregate" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="28%" />
-<col width="72%" />
+<col width="18%" />
+<col width="82%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Value</th>
@@ -378,10 +378,10 @@ compatible.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><cite>True</cite></td>
-<td>Selected geometries are combined into a single geometry.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">True</span></tt></td>
+<td>Selected geometries are combined into a single geometry (see <a class="reference internal" href="appendix.html#appendix-aggregate"><em>Aggregate (Union)</em></a>).</td>
 </tr>
-<tr class="row-odd"><td><cite>False</cite> (default)</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">False</span></tt> (default)</td>
 <td>Selected geometries are not combined.</td>
 </tr>
 </tbody>
@@ -394,28 +394,29 @@ compatible.</p>
 <div class="section" id="calc-grouping">
 <span id="calc-grouping-headline"></span><h4>calc_grouping<a class="headerlink" href="#calc-grouping" title="Permalink to this headline">¶</a></h4>
 <p>There are two forms for this argument:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li>Date Part Grouping: Any combination of &#8216;day&#8217;, &#8216;month&#8217;, and &#8216;year&#8217;.</li>
+<ol class="arabic simple">
+<li><strong>Date Part Grouping</strong>: Any combination of &#8216;day&#8217;, &#8216;month&#8217;, and &#8216;year&#8217;.</li>
 </ol>
-</div></blockquote>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;month&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;day&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>Temporal aggregation splits date/time coordinates into parts and groups them according to <cite>unique combinations</cite> of those parts. If data is grouped by month, then all of the January times would be in one group with all of the August times in another. If a grouping of month and year are applied, then all of the January 2000 times would be in a group with all of the January 2001 times and so on.</p>
 <p>Any temporal aggregation applied to a dataset should be consistent with the input data&#8217;s temporal resolution. For example, aggregating by day, month, and year on daily input dataset is not a reasonable aggregation as the data selected for aggregation will have a sample size of one (i.e. one day per aggregation group).</p>
-<blockquote>
-<div><ol class="arabic simple" start="2">
-<li>Seasonal Groups: A sequence of integer sequences. Element sequences must be mutually exclusive (i.e. no repeated integers). Representatative times for the climatology are chosen as the center month in a sequence (i.e. January in the sequence [12,1,2]).</li>
+<ol class="arabic simple" start="2">
+<li><strong>Seasonal Groups</strong>: A sequence of integer sequences. Element sequences must be mutually exclusive (i.e. no repeated integers). Representatative times for the climatology are chosen as the center month in a sequence (i.e. January in the sequence [12,1,2]).</li>
 </ol>
-</div></blockquote>
 <p>Month integers map as expected (1=January, 2=February, etc.). The example below constructs a single season composed of March, April, and May. Note the nested lists.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]]</span>
 </pre></div>
 </div>
 <p>The next example consumes all the months in a year.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>It is also possible to group the seasons by year.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">],</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1145,7 +1146,7 @@ accessible location.</p>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-03 documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-04 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

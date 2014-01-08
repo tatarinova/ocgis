@@ -1,0 +1,146 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendix &mdash; OpenClimateGIS 0.07b-snapshot-04 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.07b-snapshot-04',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.07b-snapshot-04 documentation" href="index.html" />
+    <link rel="prev" title="Utility Functions" href="utility.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="utility.html" title="Utility Functions"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-04 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="appendix">
+<h1>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="spatial-operations">
+<h2>Spatial Operations<a class="headerlink" href="#spatial-operations" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Differences between point and polygon geometry representations are discussed in the respective sections. The greatest differences between how the geometries are handled occurs in the way point aggregations are constructued (see <a class="reference internal" href="#aggregate-union">Aggregate (Union)</a>).</p>
+</div>
+<div class="section" id="intersects-select">
+<span id="appendix-intersects"></span><h3>Intersects (Select)<a class="headerlink" href="#intersects-select" title="Permalink to this headline">¶</a></h3>
+<p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if the boundary of two spatial objects overlap. This differs from the classical set-theoretic definition of <a class="reference external" href="http://toblerity.org/shapely/manual.html#object.intersects">intersects</a> for spatial analysis. In OpenClimateGIS, geometric objects that <a class="reference external" href="http://toblerity.org/shapely/manual.html#object.touches">touch</a> only are excluded.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/intersects.png"><img alt="_images/intersects.png" src="_images/intersects.png" style="width: 475.6px; height: 186.0px;" /></a>
+<p class="caption">The <cite>intersects</cite> operation returns only overlapping geometries.</p>
+</div>
+</div>
+<div class="section" id="clip-intersection">
+<span id="appendix-clip"></span><h3>Clip (Intersection)<a class="headerlink" href="#clip-intersection" title="Permalink to this headline">¶</a></h3>
+<p>A clip operation is synonymous with an <a class="reference external" href="http://toblerity.org/shapely/manual.html#object.intersection">intersection</a>. If the source data may only be represented as points, then an intersects operation is executed (see <a class="reference internal" href="#intersects-select">Intersects (Select)</a>).</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/clip.png"><img alt="_images/clip.png" src="_images/clip.png" style="width: 330.8px; height: 181.2px;" /></a>
+<p class="caption">The <cite>clip</cite> operation creates new geometries by cutting features given the boundary of another feature.</p>
+</div>
+</div>
+<div class="section" id="aggregate-union">
+<span id="appendix-aggregate"></span><h3>Aggregate (Union)<a class="headerlink" href="#aggregate-union" title="Permalink to this headline">¶</a></h3>
+<p>Aggregation or union is the merging of feature geometries to create a new geometry. For polygons, this will result in a single features. For points, the result is a multi-point collection.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/aggregate.png"><img alt="_images/aggregate.png" src="_images/aggregate.png" style="width: 228.0px; height: 142.0px;" /></a>
+<p class="caption">Multiple polygons are combined into a single polygon during spatial aggregation.</p>
+</div>
+</div>
+</div>
+<div class="section" id="point-selection-geometries">
+<h2>Point Selection Geometries<a class="headerlink" href="#point-selection-geometries" title="Permalink to this headline">¶</a></h2>
+<p>When selecting data with a point, the point is automatically buffered according to <a class="reference internal" href="api.html#search-radius-mult-key"><em>search_radius_mult</em></a>. This may result in multiple geometries or cells being returned by a request.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Appendix</a><ul>
+<li><a class="reference internal" href="#spatial-operations">Spatial Operations</a><ul>
+<li><a class="reference internal" href="#intersects-select">Intersects (Select)</a></li>
+<li><a class="reference internal" href="#clip-intersection">Clip (Intersection)</a></li>
+<li><a class="reference internal" href="#aggregate-union">Aggregate (Union)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#point-selection-geometries">Point Selection Geometries</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="utility.html"
+                        title="previous chapter">Utility Functions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/appendix.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="utility.html" title="Utility Functions"
+             >previous</a></li>
+        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-04 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, University of Michigan-Ann Arbor, Michigan Technological University, University of Colorado-Boulder.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
