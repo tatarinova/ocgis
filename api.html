@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python API &mdash; OpenClimateGIS 0.07b-snapshot-04 documentation</title>
+    <title>Python API &mdash; OpenClimateGIS 0.07b-snapshot-05 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.07b-snapshot-04',
+        VERSION:     '0.07b-snapshot-05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.07b-snapshot-04 documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.07b-snapshot-05 documentation" href="index.html" />
     <link rel="next" title="Computation" href="computation.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-04 documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-05 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -393,7 +393,7 @@ compatible.</p>
 </div>
 <div class="section" id="calc-grouping">
 <span id="calc-grouping-headline"></span><h4>calc_grouping<a class="headerlink" href="#calc-grouping" title="Permalink to this headline">¶</a></h4>
-<p>There are two forms for this argument:</p>
+<p>There are three forms for this argument:</p>
 <ol class="arabic simple">
 <li><strong>Date Part Grouping</strong>: Any combination of &#8216;day&#8217;, &#8216;month&#8217;, and &#8216;year&#8217;.</li>
 </ol>
@@ -405,6 +405,12 @@ compatible.</p>
 <p>Temporal aggregation splits date/time coordinates into parts and groups them according to <cite>unique combinations</cite> of those parts. If data is grouped by month, then all of the January times would be in one group with all of the August times in another. If a grouping of month and year are applied, then all of the January 2000 times would be in a group with all of the January 2001 times and so on.</p>
 <p>Any temporal aggregation applied to a dataset should be consistent with the input data&#8217;s temporal resolution. For example, aggregating by day, month, and year on daily input dataset is not a reasonable aggregation as the data selected for aggregation will have a sample size of one (i.e. one day per aggregation group).</p>
 <ol class="arabic simple" start="2">
+<li><strong>Summarize Over All</strong>: The string <tt class="docutils literal"><span class="pre">'all'</span></tt> indicates the entire time domain should be summarized.</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="s">&#39;all&#39;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
 <li><strong>Seasonal Groups</strong>: A sequence of integer sequences. Element sequences must be mutually exclusive (i.e. no repeated integers). Representatative times for the climatology are chosen as the center month in a sequence (i.e. January in the sequence [12,1,2]).</li>
 </ol>
 <p>Month integers map as expected (1=January, 2=February, etc.). The example below constructs a single season composed of March, April, and May. Note the nested lists.</p>
@@ -1146,7 +1152,7 @@ accessible location.</p>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-04 documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.07b-snapshot-05 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
