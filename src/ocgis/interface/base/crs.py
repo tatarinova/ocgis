@@ -37,7 +37,8 @@ class CoordinateReferenceSystem(object):
 #            
         sr = SpatialReference()
 #        sr.ImportFromProj4(to_string(crs))
-        self.value = from_string(sr.ImportFromEPSG(4326).ExportToProj4())
+        sr.ImportFromEPSG(4326)
+        self.value = from_string(sr.ExportToProj4())
     
         try:
             assert(self.value != {})
