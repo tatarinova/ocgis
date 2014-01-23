@@ -15,29 +15,29 @@ from shapely.geometry.multipoint import MultiPoint
 class CoordinateReferenceSystem(object):
     
     def __init__(self,crs=None,prjs=None,epsg=None):
-        if crs is None:
-            if prjs is not None:
-                crs = from_string(prjs)
-            elif epsg is not None:
-                sr = SpatialReference()
-                sr.ImportFromEPSG(epsg)
-                crs = from_string(sr.ExportToProj4())
-            else:
-                raise(NotImplementedError)
-        else:
-            ## remove unicode and change to python types
-            for k,v in crs.iteritems():
-                if type(v) == unicode:
-                    crs[k] = str(v)
-                else:
-                    try:
-                        crs[k] = v.tolist()
-                    except AttributeError:
-                        continue
-            
+#        if crs is None:
+#            if prjs is not None:
+#                crs = from_string(prjs)
+#            elif epsg is not None:
+#                sr = SpatialReference()
+#                sr.ImportFromEPSG(epsg)
+#                crs = from_string(sr.ExportToProj4())
+#            else:
+#                raise(NotImplementedError)
+#        else:
+#            ## remove unicode and change to python types
+#            for k,v in crs.iteritems():
+#                if type(v) == unicode:
+#                    crs[k] = str(v)
+#                else:
+#                    try:
+#                        crs[k] = v.tolist()
+#                    except AttributeError:
+#                        continue
+#            
         sr = SpatialReference()
-        sr.ImportFromProj4(to_string(crs))
-        self.value = from_string(sr.ExportToProj4())
+#        sr.ImportFromProj4(to_string(crs))
+        self.value = from_string(sr.ImportFromEPSG(4326))
     
         try:
             assert(self.value != {})
