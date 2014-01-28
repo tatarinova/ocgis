@@ -35,10 +35,11 @@ class CoordinateReferenceSystem(object):
 #                    except AttributeError:
 #                        continue
 #            
-        sr = SpatialReference()
+#        sr = SpatialReference()
 #        sr.ImportFromProj4(to_string(crs))
-        sr.ImportFromEPSG(4326)
-        self.value = from_string(sr.ExportToProj4())
+#        sr.ImportFromEPSG(4326)
+#        self.value = from_string(sr.ExportToProj4())
+        self.value = {'no_defs': True, 'datum': 'WGS84', 'proj': 'longlat'}
     
         try:
             assert(self.value != {})
