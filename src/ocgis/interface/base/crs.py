@@ -41,10 +41,10 @@ class CoordinateReferenceSystem(object):
 #        self.value = from_string(sr.ExportToProj4())
         self.value = {'no_defs': True, 'datum': 'WGS84', 'proj': 'longlat'}
     
-        try:
-            assert(self.value != {})
-        except AssertionError:
-            ocgis_lh(logger='crs',exc=ValueError('Empty CRS: The conversion to PROJ4 may have failed. The CRS value is: {0}'.format(crs)))
+#        try:
+#            assert(self.value != {})
+#        except AssertionError:
+#            ocgis_lh(logger='crs',exc=ValueError('Empty CRS: The conversion to PROJ4 may have failed. The CRS value is: {0}'.format(crs)))
     
     def __eq__(self,other):
         if self.sr.IsSame(other.sr) == 1:
