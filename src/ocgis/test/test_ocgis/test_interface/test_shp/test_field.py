@@ -29,4 +29,4 @@ class TestShpField(AbstractTestShpDimension):
 
     def test_load_all_state_boundaries_in_field(self):
         field = self.get_shpfield(select_ugid=None)
-        import ipdb;ipdb.set_trace()
+        self.assertEqual(field.shape,(1,1,1,1,51))

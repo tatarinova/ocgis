@@ -28,7 +28,13 @@ class AbstractTestShpDimension(TestBase):
     
     def get_shpvector_dimension(self,data=None):
         data = data or self.get_data()
-        src_idx = np.array(data.select_ugid).reshape(1,2)
+        if data.select_ugid is None:
+            data.load_geoms = False
+            select_ugid = [d['properties']['UGID'] for d in data]
+            data.load_geoms = True
+        else:
+            select_ugid = data.select_ugid
+        src_idx = np.array(select_ugid).reshape(1,-1)
         uid = src_idx.copy()
         svd = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx,uid=uid)
         return(svd)
