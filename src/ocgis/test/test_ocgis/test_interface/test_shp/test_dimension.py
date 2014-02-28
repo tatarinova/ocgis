@@ -12,11 +12,11 @@ class AbstractTestShpDimension(TestBase):
     __metaclass__ = abc.ABCMeta
     _select_ugid = [18,23]
     
-    def get_data(self,select_ugid='default'):
+    def get_data(self,select_ugid='default',key='state_boundaries'):
         if select_ugid == 'default':
             select_ugid = self._select_ugid
         sc = ShpCabinet()
-        uri = sc.get_shp_path('state_boundaries')
+        uri = sc.get_shp_path(key)
         data = ShpCabinetIterator(path=uri,select_ugid=select_ugid)
         return(data)
     
