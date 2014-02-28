@@ -33,12 +33,16 @@ class ShpCabinetIterator(object):
     :type path: str
     
     >>> path = '/path/to/shapefile.shp'
+    
+    :param bool load_geoms: If ``False``, do not load geometries, excluding
+     the ``'geom'`` key from the output dictionary.
     '''
     
-    def __init__(self,key=None,select_ugid=None,path=None):
+    def __init__(self,key=None,select_ugid=None,path=None,load_geoms=True):
         self.key = key
         self.path = path
         self.select_ugid = select_ugid
+        self.load_geoms = load_geoms
         self.sc = ShpCabinet()
         
     def __iter__(self):
@@ -46,7 +50,7 @@ class ShpCabinetIterator(object):
         Return an iterator as from :meth:`ocgis.ShpCabinet.iter_geoms`
         '''
         for row in self.sc.iter_geoms(key=self.key,select_ugid=self.select_ugid,
-                                      path=self.path):
+                                      path=self.path,load_geoms=self.load_geoms):
             yield(row)
 
 
@@ -113,7 +117,7 @@ class ShpCabinet(object):
         if ret is None:
             raise(ValueError('a shapefile with key "{0}" was not found under the directory: {1}'.format(key,self.path)))
     
-    def iter_geoms(self,key=None,select_ugid=None,path=None):
+    def iter_geoms(self,key=None,select_ugid=None,path=None,load_geoms=True):
         """Iterate over geometries from a shapefile specified by ``key`` or ``path``.
         
         >>> sc = ShpCabinet()
@@ -138,6 +142,9 @@ class ShpCabinet(object):
         :type path: str
         
         >>> path = '/path/to/shapefile.shp'
+        
+        :param bool load_geoms: If ``False``, do not load geometries, excluding
+         the ``'geom'`` key from the output dictionary.
     
         :yields: dict
         """
@@ -178,8 +185,12 @@ class ShpCabinet(object):
             
             for feature in features:
                 ## TODO: lowercase all properties, add crs definition to each geometry
-                yld = {'geom':wkb.loads(feature.geometry().ExportToWkb()),'properties':feature.items(),'crs':crs,
-                       'meta':meta}
+                if load_geoms:
+                    yld = {'geom':wkb.loads(feature.geometry().ExportToWkb())}
+                else:
+                    yld = {}
+                yld.update({'properties':feature.items(),'crs':crs,
+                            'meta':meta})
                 assert('UGID' in yld['properties'])
                 yield(yld)
         finally:
