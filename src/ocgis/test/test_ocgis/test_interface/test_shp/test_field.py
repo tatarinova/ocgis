@@ -10,4 +10,6 @@ class TestShpField(AbstractTestShpDimension):
         var = Variable(name='UGID',data=data)
         sd = self.get_spatial_dimension()
         field = ShpField(spatial=sd,variables=var)
+        self.assertEqual(sd.shape,(1,2))
+        self.assertEqual(field.shape,(1,1,1,1,2))
         raise

@@ -19,7 +19,8 @@ class AbstractTestShpDimension(TestBase):
     
     def get_spatial_dimension(self):
         data = self.get_data()
-        svd = ShpVectorDimension(data=data,name='POLYGON')
+        src_idx = np.array(data.select_ugid).reshape(1,2)
+        svd = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx)
         geom = SpatialGeometryDimension(polygon=svd)
         sd = SpatialDimension(geom=geom)
         return(sd)
@@ -34,13 +35,22 @@ class TestShpDimension(AbstractTestShpDimension):
     
     def test_constructor(self):
         data = self.get_data()
-        sd = ShpVectorDimension(data=data,name='POLYGON')
+        src_idx = np.array(data.select_ugid)
+        sd = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx)
         self.run_value_tsts(sd)
         
         ## the internal iterator should be able to be used again
-        sd2 = ShpVectorDimension(data=data,name='POLYGON')
+        sd2 = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx)
         self.run_value_tsts(sd2)
         self.assertFalse(np.may_share_memory(sd.value,sd2.value))
+        
+    def test_uid(self):
+        sd = self.get_spatial_dimension()
+        self.assertEqual(sd._uid,None)
+        self.assertEqual(sd.geom._uid,None)
+        self.assertEqual(sd.geom.polygon._uid,None)
+        print sd.uid
+        self.assertNumpyAll(sd.uid,np.array([[23,18]]))
         
     def test_SpatialDimension(self):
         sd = self.get_spatial_dimension()

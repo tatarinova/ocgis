@@ -249,6 +249,13 @@ class Field(object):
                 
         return(ret)
     
+    def _get_spatial_dimension_shape_(self):
+        '''
+        Intended for overloading by dimensions to allow different interpretations
+        of how this shape is determined.
+        '''
+        
+    
     def _get_value_from_source_(self,*args,**kwds):
         raise(NotImplementedError)
         ## TODO: remember to apply the geometry mask to fresh values!!
