@@ -18,12 +18,17 @@ class AbstractTestShpDimension(TestBase):
         return(data)
     
     def get_spatial_dimension(self):
-        data = self.get_data()
-        src_idx = np.array(data.select_ugid).reshape(1,2)
-        svd = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx)
+        svd = self.get_shpvector_dimension()
         geom = SpatialGeometryDimension(polygon=svd)
         sd = SpatialDimension(geom=geom)
         return(sd)
+    
+    def get_shpvector_dimension(self,data=None):
+        data = data or self.get_data()
+        src_idx = np.array(data.select_ugid).reshape(1,2)
+        uid = src_idx.copy()
+        svd = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx,uid=uid)
+        return(svd)
     
     def run_value_tsts(self,value_object):
         self.assertEqual(value_object._value,None)
@@ -35,12 +40,11 @@ class TestShpDimension(AbstractTestShpDimension):
     
     def test_constructor(self):
         data = self.get_data()
-        src_idx = np.array(data.select_ugid)
-        sd = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx)
+        sd = self.get_shpvector_dimension(data=data)
         self.run_value_tsts(sd)
         
         ## the internal iterator should be able to be used again
-        sd2 = ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx)
+        sd2 = self.get_shpvector_dimension(data=data)
         self.run_value_tsts(sd2)
         self.assertFalse(np.may_share_memory(sd.value,sd2.value))
         
@@ -48,9 +52,15 @@ class TestShpDimension(AbstractTestShpDimension):
         sd = self.get_spatial_dimension()
         self.assertEqual(sd._uid,None)
         self.assertEqual(sd.geom._uid,None)
-        self.assertEqual(sd.geom.polygon._uid,None)
-        print sd.uid
-        self.assertNumpyAll(sd.uid,np.array([[23,18]]))
+        uid = np.ma.array([[23,18]])
+        self.assertNumpyAll(sd.geom.polygon._uid,uid)
+        self.assertNumpyAll(sd.uid,uid)
+        
+    def test_uid_is_required(self):
+        data = self.get_data()
+        src_idx = np.array(data.select_ugid).reshape(1,2)
+        with self.assertRaises(ValueError):
+            ShpVectorDimension(data=data,name='POLYGON',src_idx=src_idx)
         
     def test_SpatialDimension(self):
         sd = self.get_spatial_dimension()

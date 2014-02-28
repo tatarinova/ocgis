@@ -12,4 +12,5 @@ class TestShpField(AbstractTestShpDimension):
         field = ShpField(spatial=sd,variables=var)
         self.assertEqual(sd.shape,(1,2))
         self.assertEqual(field.shape,(1,1,1,1,2))
-        raise
+        field.variables['UGID'].value
+        import ipdb;ipdb.set_trace()
