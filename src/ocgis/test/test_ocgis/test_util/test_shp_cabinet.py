@@ -44,7 +44,8 @@ class TestShpCabinet(TestBase):
     
     def test_iter_geoms_select_ugid_is_sorted(self):
         sc = ShpCabinet()
-        sc.iter_geoms('state_boundaries',load_geoms=False,select_ugid=[23,18])
+        with self.assertRaises(ValueError):
+            list(sc.iter_geoms('state_boundaries',load_geoms=False,select_ugid=[23,18]))
     
     def test_iter_geoms_no_load_geoms(self):
         sc = ShpCabinet()

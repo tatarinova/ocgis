@@ -10,6 +10,7 @@ from shapely import wkb
 import fiona
 from ocgis.interface.base.crs import CoordinateReferenceSystem
 from ocgis.util.helpers import assert_raise
+from copy import deepcopy
 
 
 class ShpCabinetIterator(object):
@@ -132,7 +133,7 @@ class ShpCabinet(object):
         >>> key = 'state_boundaries'
         
         :param select_ugid: Sequence of unique identifiers matching values from the 
-         shapefile's UGID attribute.
+         shapefile's UGID attribute. Ascending order only.
         :type select_ugid: sequence
         
         >>> select_ugid = [23,24]
@@ -145,9 +146,16 @@ class ShpCabinet(object):
         
         :param bool load_geoms: If ``False``, do not load geometries, excluding
          the ``'geom'`` key from the output dictionary.
-    
+        
+        :raises: ValueError, RuntimeError
         :yields: dict
         """
+        ## ensure select ugid is in ascending order
+        if select_ugid is not None:
+            test_select_ugid = list(deepcopy(select_ugid))
+            test_select_ugid.sort()
+            if test_select_ugid != list(select_ugid):
+                raise(ValueError('"select_ugid" must be sorted in ascending order.'))
         
         ## path to the target shapefile
         if key is None:
