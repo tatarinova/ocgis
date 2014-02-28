@@ -12,14 +12,16 @@ class AbstractTestShpDimension(TestBase):
     __metaclass__ = abc.ABCMeta
     _select_ugid = [18,23]
     
-    def get_data(self):
+    def get_data(self,select_ugid='default'):
+        if select_ugid == 'default':
+            select_ugid = self._select_ugid
         sc = ShpCabinet()
         uri = sc.get_shp_path('state_boundaries')
-        data = ShpCabinetIterator(path=uri,select_ugid=self._select_ugid)
+        data = ShpCabinetIterator(path=uri,select_ugid=select_ugid)
         return(data)
     
-    def get_spatial_dimension(self):
-        svd = self.get_shpvector_dimension()
+    def get_spatial_dimension(self,data=None):
+        svd = self.get_shpvector_dimension(data=data)
         geom = SpatialGeometryDimension(polygon=svd)
         sd = SpatialDimension(geom=geom)
         return(sd)
