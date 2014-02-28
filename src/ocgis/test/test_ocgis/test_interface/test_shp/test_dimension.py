@@ -10,11 +10,12 @@ import abc
 
 class AbstractTestShpDimension(TestBase):
     __metaclass__ = abc.ABCMeta
+    _select_ugid = [18,23]
     
     def get_data(self):
         sc = ShpCabinet()
         uri = sc.get_shp_path('state_boundaries')
-        data = ShpCabinetIterator(path=uri,select_ugid=[23,18])
+        data = ShpCabinetIterator(path=uri,select_ugid=self._select_ugid)
         return(data)
     
     def get_spatial_dimension(self):
@@ -52,7 +53,7 @@ class TestShpDimension(AbstractTestShpDimension):
         sd = self.get_spatial_dimension()
         self.assertEqual(sd._uid,None)
         self.assertEqual(sd.geom._uid,None)
-        uid = np.ma.array([[23,18]])
+        uid = np.ma.array([self._select_ugid])
         self.assertNumpyAll(sd.geom.polygon._uid,uid)
         self.assertNumpyAll(sd.uid,uid)
         

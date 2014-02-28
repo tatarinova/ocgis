@@ -8,7 +8,7 @@ class ShpField(Field):
         data.load_geoms = False
         try:
             ret = np.array([row['properties'][attribute_name] for row in data])
-            ret.reshape(1,1,1,1,len(ret))
+            ret = ret.reshape(1,1,1,1,len(ret))
         finally:
             data.load_geoms = True
         return(ret)
