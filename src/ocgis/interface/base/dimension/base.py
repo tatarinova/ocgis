@@ -15,7 +15,7 @@ class AbstractDimension(object):
     __metaclass__ = abc.ABCMeta
     
     @abc.abstractproperty
-    def _axis(self): ['R','T','Z','X','Y','GEOM','GRID','POINT','POLYGON',None]
+    def _axis(self): ['R','T','Z','X','Y','SPATIAL','GRID','POINT','POLYGON',None]
     @abc.abstractproperty
     def _ndims(self): int
     @abc.abstractproperty
