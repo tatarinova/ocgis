@@ -5,11 +5,11 @@ from shapely.geometry.polygon import Polygon
 import numpy as np
 from ocgis.interface.base.dimension.spatial import SpatialDimension,\
     SpatialGeometryDimension
-from ocgis.interface.base.variable import Variable
-from ocgis.interface.base.field import Field
+import abc
 
 
-class TestShpDimension(TestBase):
+class AbstractTestShpDimension(TestBase):
+    __metaclass__ = abc.ABCMeta
     
     def get_data(self):
         sc = ShpCabinet()
@@ -28,6 +28,9 @@ class TestShpDimension(TestBase):
         self.assertEqual(value_object._value,None)
         self.assertEqual(value_object.value.shape,(1,2))
         self.assertEqual(map(type,value_object.value.flat),[Polygon,Polygon])
+
+
+class TestShpDimension(AbstractTestShpDimension):
     
     def test_constructor(self):
         data = self.get_data()
@@ -42,11 +45,4 @@ class TestShpDimension(TestBase):
     def test_SpatialDimension(self):
         sd = self.get_spatial_dimension()
         self.run_value_tsts(sd.geom.polygon)
-        
-    def test_Variable(self):
-        data = self.get_data()
-        var = Variable(name='UGID',data=data)
-        sd = self.get_spatial_dimension()
-        field = Field(spatial=sd,variables=var)
-        var.value
-        import ipdb;ipdb.set_trace()
+        self.assertEqual(sd.geom.shape,sd.geom.polygon.shape)
