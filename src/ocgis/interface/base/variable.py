@@ -209,7 +209,10 @@ class Variable(AbstractSourcedVariable):
         return(self._value)
     
     def _set_value_from_source_(self):
-        ## load the value from source using the referenced field
+        ## load the value from source using the referenced field. variables must
+        ## be associated with a field as when the value is loaded it must conform
+        ## to the dimension standards.
+        ## TODO: maybe allow variables to load values without a field?
         self._value = self._field._get_value_from_source_(self._data,self.name)
         ## ensure the new value has the geometry masked applied
         self._field._set_new_value_mask_(self._field,self._field.spatial.get_mask())

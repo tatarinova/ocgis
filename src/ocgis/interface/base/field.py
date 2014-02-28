@@ -248,7 +248,7 @@ class Field(object):
         ret._raw = copy(self)
                 
         return(ret)
-
+    
     def _get_value_from_source_(self,*args,**kwds):
         raise(NotImplementedError)
         ## TODO: remember to apply the geometry mask to fresh values!!
