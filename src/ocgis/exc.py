@@ -20,6 +20,16 @@ class CalculationException(OcgException):
         return(msg)
         
 
+class VariableInCollectionError(OcgException):
+    
+    def __init__(self,variable):
+        self.variable = variable
+        
+    def __str__(self):
+        msg = 'Variable alias already in collection: {0}'.format(self.variable.alias)
+        return(msg)
+
+
 class SampleSizeNotImplemented(CalculationException):
     pass
 
@@ -191,9 +201,9 @@ class UnitsValidationError(OcgException):
         
     def __str__(self):
         msg = ('There was an error in units validation for calculation'
-                       ' with key "{3}". The units on variable "{0}" (units="{2}")'
-                       ' do not match the required units "{1}". The units should'
-                       ' be conformed or overloaded if incorrectly attributed.').\
+               ' with key "{3}". The units on variable "{0}" (units="{2}")'
+               ' do not match the required units "{1}". The units should'
+               ' be conformed or overloaded if incorrectly attributed.').\
                        format(self.variable.alias,self.required_units,
                               self.variable.units,self.calculation_key)
         return(msg)

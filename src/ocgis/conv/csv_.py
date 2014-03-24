@@ -1,5 +1,5 @@
 import csv
-from ocgis.conv.base import OcgConverter
+from ocgis.conv.base import AbstractConverter
 from csv import excel
 import os
 from collections import OrderedDict
@@ -13,7 +13,7 @@ class OcgDialect(excel):
     lineterminator = '\n'
 
 
-class CsvConverter(OcgConverter):
+class CsvConverter(AbstractConverter):
     _ext = 'csv'
                     
     def _build_(self,coll):
@@ -39,6 +39,11 @@ class CsvConverter(OcgConverter):
 
 class CsvPlusConverter(CsvConverter):
     _add_ugeom = True
+    
+    def __init__(self,*args,**kwargs):
+        CsvConverter.__init__(self,*args,**kwargs)
+        if self.ops is None:
+            raise(ValueError('The argument "ops" may not be "None".'))
 
     def _build_(self,coll):
         ret = CsvConverter._build_(self,coll)
@@ -91,6 +96,15 @@ class CsvPlusConverter(CsvConverter):
                         converted_did = int(did)
                     except TypeError:
                         converted_did = None
+                        
                     feature = {'properties':{'GID':int(gid),'UGID':int(ugid),'DID':converted_did},
                                'geometry':mapping(geom)}
-                    file_fiona.write(feature)
+                    try:
+                        file_fiona.write(feature)
+                    except ValueError as e:
+                        if feature['geometry']['type'] != file_fiona.meta['schema']['geometry']:
+                            msg = 'Spatial abstractions do not match. You may need to override "abstraction" and/or "s_abstraction"'
+                            msg = '{0}. Original error message from Fiona is "ValueError({1})".'.format(msg,e.message)
+                            raise(ValueError(msg))
+                        else:
+                            raise

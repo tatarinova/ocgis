@@ -26,13 +26,22 @@ class TestBase(unittest.TestCase):
         self.test_data = self.get_tdata()
         super(TestBase,self).__init__(*args,**kwds)
         
+    @property
+    def _test_bin_dir(self):
+        base_dir = os.path.split(__file__)[0]
+        ret = os.path.join(base_dir,'bin')
+        return(ret)
+        
     def assertNumpyAll(self,arr1,arr2):
+        self.assertEqual(type(arr1),type(arr2))
         return(self.assertTrue(np.all(arr1 == arr2)))
     
     def assertNumpyAllClose(self,arr1,arr2):
+        self.assertEqual(type(arr1),type(arr2))
         return(self.assertTrue(np.allclose(arr1,arr2)))
     
     def assertNumpyNotAll(self,arr1,arr2):
+        self.assertEqual(type(arr1),type(arr2))
         return(self.assertFalse(np.all(arr1 == arr2)))
     
     def assertDictEqual(self,d1,d2,msg=None):
@@ -98,6 +107,7 @@ class TestBase(unittest.TestCase):
         test_data.update(['narccap'],'pr',['pr_WRFG_ncep_1981010103.nc','pr_WRFG_ncep_1986010103.nc'],key='narccap_pr_wrfg_ncep')
         test_data.update(['narccap'],'tas','tas_HRM3_gfdl_1981010103.nc',key='narccap_rotated_pole')
         test_data.update(['narccap'],'pr','pr_WRFG_ccsm_1986010103.nc',key='narccap_lambert_conformal')
+        test_data.update(['narccap'],'tas','tas_RCM3_gfdl_1981010103.nc',key='narccap_tas_rcm3_gfdl')
         test_data.update(['snippets'],'dtr','snippet_Maurer02new_OBS_dtr_daily.1971-2000.nc',key='snippet_maurer_dtr')
         test_data.update(['CMIP3'],'Tavg','Extraction_Tavg.nc',key='cmip3_extraction') 
                

@@ -1,12 +1,14 @@
-from ocgis.conv.base import OcgConverter
+from ocgis.conv.base import AbstractConverter
 import netCDF4 as nc
 from ocgis import constants
 from ocgis.util.logging_ocgis import ocgis_lh
 from ocgis.interface.base.crs import CFWGS84
 from ocgis.interface.nc.temporal import NcTemporalGroupDimension
+import logging
+import numpy as np
 
     
-class NcConverter(OcgConverter):
+class NcConverter(AbstractConverter):
     _ext = 'nc'
     
     def _finalize_(self,ds):
@@ -18,18 +20,23 @@ class NcConverter(OcgConverter):
         
     def _get_file_format_(self):
         file_format = set()
-        for rd in self.ops.dataset:
-            rr = rd._source_metadata['file_format']
-            if isinstance(rr,basestring):
-                tu = [rr]
-            else:
-                tu = rr
-            file_format.update(tu)
-        if len(file_format) > 1:
-            exc = ValueError('Multiple file formats found: {0}'.format(file_format))
-            ocgis_lh(exc=exc,logger='conv.nc')
+        ## if no operations are present, use the default data model
+        if self.ops is None:
+            ret = constants.netCDF_default_data_model
         else:
-            return(list(file_format)[0])
+            for rd in self.ops.dataset:
+                rr = rd._source_metadata['file_format']
+                if isinstance(rr,basestring):
+                    tu = [rr]
+                else:
+                    tu = rr
+                file_format.update(tu)
+            if len(file_format) > 1:
+                exc = ValueError('Multiple file formats found: {0}'.format(file_format))
+                ocgis_lh(exc=exc,logger='conv.nc')
+            else:
+                ret = list(file_format)[0]
+        return(ret)
     
     def _write_coll_(self,ds,coll):
         
@@ -84,12 +91,14 @@ class NcConverter(OcgConverter):
             ## update flag to indicate climatology bounds are present on the
             ## output dataset
             has_climatology_bounds = True
-            
             if dim_bnds is None:
                 dim_bnds = ds.createDimension(bounds_name,2)
             times_bounds = ds.createVariable('climatology_'+bounds_name,time_nc_value.dtype,
                                              (dim_temporal._name,bounds_name))
             times_bounds[:] = temporal.bounds
+            ## place units and calendar on time dimensions
+            times_bounds.units = temporal.units
+            times_bounds.calendar = temporal.calendar
         elif temporal.bounds is not None:
             if dim_bnds is None:
                 dim_bnds = ds.createDimension(bounds_name,2)
@@ -98,8 +107,15 @@ class NcConverter(OcgConverter):
             times_bounds[:] = time_bounds_nc_value
             for key,value in meta['variables'][name_bounds_temporal]['attrs'].iteritems():
                 setattr(times_bounds,key,value)
+            ## place units and calendar on time dimensions
+            times_bounds.units = temporal.units
+            times_bounds.calendar = temporal.calendar
         times = ds.createVariable(name_variable_temporal,time_nc_value.dtype,(dim_temporal._name,))
         times[:] = time_nc_value
+        
+        ## always place calendar and units on time dimension
+        times.units = temporal.units
+        times.calendar = temporal.calendar
 
         ## add time attributes
         for key,value in meta['variables'][name_variable_temporal]['attrs'].iteritems():
@@ -168,7 +184,7 @@ class NcConverter(OcgConverter):
                                       fill_value=variable.fill_value)
             ## if this is a file only operation, set the value, otherwise leave
             ## it empty for now.
-            if not self.ops.file_only:
+            if self.ops is not None and not self.ops.file_only:
                 value[:] = variable.value.reshape(*value.shape)
             value.setncatts(variable.meta['attrs'])
             ## and the units, converting to string as passing a NoneType will raise

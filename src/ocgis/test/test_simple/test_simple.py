@@ -32,6 +32,7 @@ from ocgis.test.test_simple.make_test_data import SimpleNcNoLevel, SimpleNc,\
 from csv import DictReader
 from ocgis.test.test_base import longrunning
 import webbrowser
+import tempfile
 
 
 @contextmanager
@@ -129,6 +130,107 @@ class TestSimple(TestSimpleBase):
     nc_factory = SimpleNc
     fn = 'test_simple_spatial_01.nc'
     
+    def test_optimizations_in_calculations(self):
+        ## pass optimizations to the calculation engine using operations and
+        ## ensure the output values are equivalent
+        rd = RequestDataset(**self.get_dataset())
+        field = rd.get()
+        tgd = field.temporal.get_grouping(['month'])
+        optimizations = {'tgds':{rd.alias:tgd}}
+        calc = [{'func':'mean','name':'mean'}]
+        calc_grouping = ['month']
+        ops = OcgOperations(dataset=rd,calc=calc,calc_grouping=calc_grouping,
+                            optimizations=optimizations)
+        ret_with_optimizations = ops.execute()
+        ops = OcgOperations(dataset=rd,calc=calc,calc_grouping=calc_grouping,
+                            optimizations=None)
+        ret_without_optimizations = ops.execute()
+        t1 = ret_with_optimizations[1]['foo'].variables['mean']
+        t2 = ret_without_optimizations[1]['foo'].variables['mean']
+        self.assertNumpyAll(t1.value,t2.value)
+        
+    def test_optimizations_in_calculations_bad_calc_grouping(self):
+        ## bad calculations groupings in the optimizations should be caught
+        ## and raise a value error
+        rd = RequestDataset(**self.get_dataset())
+        field = rd.get()
+        tgd1 = field.temporal.get_grouping('all')
+        tgd2 = field.temporal.get_grouping(['year','month'])
+        tgd3 = field.temporal.get_grouping([[3]])
+        for t in [tgd1,tgd2,tgd3]:
+            optimizations = {'tgds':{rd.alias:t}}
+            calc = [{'func':'mean','name':'mean'}]
+            calc_grouping = ['month']
+            ops = OcgOperations(dataset=rd,calc=calc,calc_grouping=calc_grouping,
+                                optimizations=optimizations)
+            with self.assertRaises(ValueError):
+                ops.execute()
+    
+    def test_operations_abstraction_used_for_subsetting(self):
+        ret = self.get_ret(kwds={'abstraction':'point'})
+        ref = ret[1]['foo']
+        self.assertEqual(ref.spatial.abstraction,'point')
+        self.assertIsInstance(ref.spatial.abstraction_geometry.value[0,0],Point)
+        with self.assertRaises(ValueError):
+            ref.get_intersects(Point(-103.,38.))
+        sub = ref.get_intersects(Point(-103.,38.).buffer(0.75))
+        self.assertEqual(sub.shape,(1,61,2,1,1))
+    
+    def test_to_csv_shp_and_shape_with_point_subset(self):
+        rd = RequestDataset(**self.get_dataset())
+        geom = [-103.5,38.5]
+        for of in ['csv+','shp']:
+            ops = ocgis.OcgOperations(dataset=rd,geom=geom,output_format=of,prefix=of)
+            ops.execute()
+    
+    def test_overwrite_add_auxiliary_files(self):
+        ## if overwrite is true, we should be able to write the nc output
+        ## multiple times
+        env.OVERWRITE = True
+        kwds = {'output_format':'nc','add_auxiliary_files':False}
+        self.get_ret(kwds=kwds)
+        self.get_ret(kwds=kwds)
+        ## switching the argment to false will result in an IOError
+        env.OVERWRITE = False
+        with self.assertRaises(IOError):
+            self.get_ret(kwds=kwds)
+    
+    def test_units_calendar_on_time_bounds(self):
+        rd = self.get_dataset()
+        ops = ocgis.OcgOperations(dataset=rd,output_format='nc')
+        ret = ops.execute()
+        with nc_scope(ret) as ds:
+            self.assertEqual(dict(ds.variables['time'].__dict__),
+                             dict(ds.variables['time_bnds'].__dict__))
+            
+    def test_units_calendar_on_time_bounds_calculation(self):
+        rd = self.get_dataset()
+        ops = ocgis.OcgOperations(dataset=rd,output_format='nc',calc=[{'func':'mean','name':'my_mean'}],
+                                  calc_grouping=['month'])
+        ret = ops.execute()
+        with nc_scope(ret) as ds:
+            time = ds.variables['time']
+            bound = ds.variables['climatology_bound']
+            self.assertEqual(time.units,bound.units)
+            self.assertEqual(bound.calendar,bound.calendar)
+    
+    def test_add_auxiliary_files_false_csv_nc(self):
+        rd = self.get_dataset()
+        for output_format in ['csv','nc']:
+            dir_output = tempfile.mkdtemp(dir=self._test_dir)
+            ops = ocgis.OcgOperations(dataset=rd,output_format=output_format,add_auxiliary_files=False,
+                                      dir_output=dir_output)
+            ret = ops.execute()
+            filename = 'ocgis_output.{0}'.format(output_format)
+            self.assertEqual(os.listdir(ops.dir_output),[filename])
+            self.assertEqual(ret,os.path.join(dir_output,filename))
+            
+            ## attempting the operation again will work if overwrite is True
+            ocgis.env.OVERWRITE = True
+            ops = ocgis.OcgOperations(dataset=rd,output_format=output_format,add_auxiliary_files=False,
+                                      dir_output=dir_output)
+            ops.execute()
+    
     def test_multiple_request_datasets(self):
         aliases = ['foo1','foo2','foo3','foo4']
         rds = []
@@ -179,6 +281,11 @@ class TestSimple(TestSimpleBase):
         self.assertIsInstance(rd.inspect_as_dct(),OrderedDict)
         self.assertEqual(rd.inspect_as_dct()['derived']['Calendar'],
                          'None (will assume "standard")')
+        ## write the data to a netCDF and ensure the calendar is written.
+        ret = ocgis.OcgOperations(dataset=rd,output_format='nc').execute()
+        with nc_scope(ret) as ds:
+            self.assertEqual(ds.variables['time'].calendar,'standard')
+            self.assertEqual(ds.variables['time_bnds'].calendar,'standard')
         field = rd.get()
         ## the standard calendar name should be available at the dataset level
         self.assertEqual(field.temporal.calendar,'standard')
@@ -268,9 +375,9 @@ class TestSimple(TestSimpleBase):
                                  'calc_grouping':['month']})
         try:
             ds = nc.Dataset(ret,'r')
-            self.assertTrue(isinstance(ds.variables['my_mean_foo'][:].sum(),
+            self.assertTrue(isinstance(ds.variables['my_mean'][:].sum(),
                             np.ma.core.MaskedConstant))
-            self.assertEqual(set(ds.variables['my_mean_foo'].ncattrs()),set([u'_FillValue', u'units', u'long_name', u'standard_name']))
+            self.assertEqual(set(ds.variables['my_mean'].ncattrs()),set([u'_FillValue', u'units', u'long_name', u'standard_name']))
         finally:
             ds.close()
             
@@ -428,10 +535,12 @@ class TestSimple(TestSimpleBase):
         self.assertEqual(ret[1]['foo'],None)
         
     def test_snippet(self):
-        
         ret = self.get_ret(kwds={'snippet':True})
         ref = ret.gvu(1,self.var)
         self.assertEqual(ref.shape,(1,1,1,4,4))
+        with nc_scope(os.path.join(self._test_dir,self.fn)) as ds:
+            to_test = ds.variables['foo'][0,0,:,:]
+            self.assertNumpyAll(to_test,ref.data)
         
         calc = [{'func':'mean','name':'my_mean'}]
         group = ['month','year']
@@ -449,7 +558,7 @@ class TestSimple(TestSimpleBase):
         
         ## raw
         ret = self.get_ret(kwds={'calc':calc,'calc_grouping':group})
-        ref = ret.gvu(1,'my_mean_foo')
+        ref = ret.gvu(1,'my_mean')
         self.assertEqual(ref.shape,(1,2,2,4,4))
         with self.assertRaises(KeyError):
             ret.gvu(1,'n')
@@ -458,7 +567,7 @@ class TestSimple(TestSimpleBase):
         for calc_raw in [True,False]:
             ret = self.get_ret(kwds={'calc':calc,'calc_grouping':group,
                                      'aggregate':True,'calc_raw':calc_raw})
-            ref = ret.gvu(1,'my_mean_foo')
+            ref = ret.gvu(1,'my_mean')
             self.assertEqual(ref.shape,(1,2,2,1,1))
             self.assertEqual(ref.flatten().mean(),2.5)
             
@@ -487,26 +596,26 @@ class TestSimple(TestSimpleBase):
         rd2['alias'] = 'var2'
         
         dataset = [
-                   RequestDatasetCollection([rd1]),
+#                   RequestDatasetCollection([rd1]),
                    RequestDatasetCollection([rd1,rd2])
                    ]
         calc_sample_size = [
                             True,
-                            False
+#                            False
                             ]
         calc = [
                 [{'func':'mean','name':'mean'},{'func':'max','name':'max'}],
-                [{'func':'ln','name':'ln'}],
-                None,
-                [{'func':'divide','name':'divide','kwds':{'arr1':'var1','arr2':'var2'}}]
+#                [{'func':'ln','name':'ln'}],
+#                None,
+#                [{'func':'divide','name':'divide','kwds':{'arr1':'var1','arr2':'var2'}}]
                 ]
         calc_grouping = [
-                         None,
+#                         None,
                          ['month'],
-                         ['month','year']
+#                         ['month','year']
                          ]
-        output_format = constants.output_formats
-#        output_format = ['numpy']
+#        output_format = constants.output_formats
+        output_format = ['numpy']
         
         for ii,tup in enumerate(itertools.product(dataset,calc_sample_size,calc,calc_grouping,output_format)):
             kwds = dict(zip(['dataset','calc_sample_size','calc','calc_grouping','output_format'],tup))
@@ -547,7 +656,7 @@ class TestSimple(TestSimpleBase):
                     if kwds['calc'] is not None and kwds['calc'][0]['func'] == 'mean':
                         with nc_scope(ret) as ds:
                             self.assertEqual(sum([v.startswith('n_') for v in ds.variables.keys()]),2)
-                            self.assertEqual(ds.variables['n_max_var1'][:].mean(),30.5)
+                            self.assertEqual(ds.variables['n_max'][:].mean(),30.5)
                         
             if kwds['output_format'] == 'csv':
                 if kwds['calc'] is not None and kwds['calc'][0]['func'] == 'mean':
@@ -556,9 +665,9 @@ class TestSimple(TestSimpleBase):
                         alias_set = set([row['CALC_ALIAS'] for row in reader])
                         if len(kwds['dataset']) == 1:
                             if kwds['calc_sample_size']:
-                                self.assertEqual(alias_set,set(['max_var1','n_max_var1','n_mean_var1','mean_var1']))
+                                self.assertEqual(alias_set,set(['max','n_max','n_mean','mean']))
                             else:
-                                self.assertEqual(alias_set,set(['max_var1','mean_var1']))
+                                self.assertEqual(alias_set,set(['max','mean']))
                         else:
                             if kwds['calc_sample_size']:
                                 self.assertEqual(alias_set,set(['max_var1','n_max_var1','n_mean_var1','mean_var1',
@@ -590,7 +699,7 @@ class TestSimple(TestSimpleBase):
         
         ds = nc.Dataset(ret)
         try:
-            for alias in ['my_mean_foo','my_stdev_foo']:
+            for alias in ['my_mean','my_stdev']:
                 self.assertEqual(ds.variables[alias].shape,(2,2,4,4))
             
             ## output variable should not have climatology bounds and no time
@@ -956,7 +1065,24 @@ class TestSimple(TestSimpleBase):
         with open(ret,'r') as f:
             reader = csv.DictReader(f)
             row = reader.next()
-            self.assertDictEqual(row,{'LID': '1', 'UGID': '1', 'VID': '1', 'CID': '1', 'DID': '1', 'YEAR': '2000', 'TIME': '2000-03-16 00:00:00', 'CALC_ALIAS': 'my_mean_foo', 'VALUE': '1.0', 'MONTH': '3', 'VARIABLE': 'foo', 'ALIAS': 'foo', 'GID': '1', 'CALC_KEY': 'mean', 'TID': '1', 'LEVEL': '50', 'DAY': '16'})
+            self.assertDictEqual(row,{'LID': '1', 'UGID': '1', 'VID': '1', 'CID': '1', 'DID': '1', 'YEAR': '2000', 'TIME': '2000-03-16 00:00:00', 'CALC_ALIAS': 'my_mean', 'VALUE': '1.0', 'MONTH': '3', 'VARIABLE': 'foo', 'ALIAS': 'foo', 'GID': '1', 'CALC_KEY': 'mean', 'TID': '1', 'LEVEL': '50', 'DAY': '16'})
+    
+    def test_csv_calc_conversion_two_calculations(self):
+        calc = [{'func':'mean','name':'my_mean'},{'func':'min','name':'my_min'}]
+        calc_grouping = ['month','year']
+        d1 = self.get_dataset()
+        d1['alias'] = 'var1'
+        d2 = self.get_dataset()
+        d2['alias'] = 'var2'
+        ops = OcgOperations(dataset=[d1,d2],output_format='csv',calc=calc,calc_grouping=calc_grouping)
+        ret = ops.execute()
+
+        with open(ret,'r') as f:
+            with open(os.path.join(self._test_bin_dir,'test_csv_calc_conversion_two_calculations.csv')) as f2:
+                reader = csv.DictReader(f)
+                reader2 = csv.DictReader(f2)
+                for row,row2 in zip(reader,reader2):
+                    self.assertDictEqual(row,row2)
     
     def test_calc_multivariate_conversion(self):
         rd1 = self.get_dataset()
@@ -1093,16 +1219,34 @@ class TestSimple360(TestSimpleBase):
         
         self.assertTrue(np.all(longs_unwrap-360 == longs_wrap))
         
+    def test_spatial_touch_only(self):
+        geom = [make_poly((38.2,39.3),(-93,-92))]
+        geom.append(make_poly((38,39),(-93.1,-92.1)))
+        
+        for abstraction,g in itertools.product(['polygon','point'],geom):
+            try:
+                ret = self.get_ret(kwds={'geom':g,'abstraction':abstraction})
+                self.assertEqual(len(ret[1][self.var].spatial.uid.compressed()),4)
+                self.get_ret(kwds={'vector_wrap':False})
+                ret = self.get_ret(kwds={'geom':g,'vector_wrap':False,'abstraction':abstraction})
+                self.assertEqual(len(ret[1][self.var].spatial.uid.compressed()),4)
+            except ExtentError:
+                if abstraction == 'point':
+                    pass
+                else:
+                    raise
+                
     def test_spatial(self):
-        geom = make_poly((38,39),(-93,-92))
+        geom = make_poly((38.1,39.1),(-93.1,-92.1))
         
         for abstraction in ['polygon','point']:
-            ret = self.get_ret(kwds={'geom':geom,'abstraction':abstraction})
-            self.assertEqual(len(ret[1][self.var].spatial.uid.compressed()),4)
-            
+            n = 1 if abstraction == 'point' else 4
+            ops = self.get_ops(kwds={'geom':geom,'abstraction':abstraction})
+            ret = ops.execute()
+            self.assertEqual(len(ret[1][self.var].spatial.uid.compressed()),n)
             self.get_ret(kwds={'vector_wrap':False})
             ret = self.get_ret(kwds={'geom':geom,'vector_wrap':False,'abstraction':abstraction})
-            self.assertEqual(len(ret[1][self.var].spatial.uid.compressed()),4)
+            self.assertEqual(len(ret[1][self.var].spatial.uid.compressed()),n)
 
 
 class TestSimpleProjected(TestSimpleBase):

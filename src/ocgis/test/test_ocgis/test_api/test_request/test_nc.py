@@ -14,7 +14,7 @@ from ocgis.exc import EmptySubsetError, ImproperPolygonBoundsError,\
 import datetime
 from unittest.case import SkipTest
 import ocgis
-from ocgis.test.test_simple.test_simple import nc_scope
+from ocgis.test.test_simple.test_simple import nc_scope, ToTest
 
 
 class TestNcRequestDataset(TestBase):
@@ -47,6 +47,16 @@ class TestNcRequestDataset(TestBase):
         geom = SpatialGeometryDimension(polygon=poly)
         sdim = SpatialDimension(geom=geom,properties=attrs,crs=WGS84())
         return(sdim)
+    
+    def test_load_dtype_on_dimensions(self):
+        rd = self.test_data.get_rd('cancm4_tas')
+        field = rd.get()
+        with nc_scope(rd.uri) as ds:
+            test_dtype_temporal = ds.variables['time'].dtype
+            test_dtype_value = ds.variables['tas'].dtype
+        self.assertEqual(field.temporal.dtype,test_dtype_temporal)
+        self.assertEqual(field.variables['tas'].dtype,test_dtype_value)
+        self.assertEqual(field.temporal.dtype,np.float64)
 
     def test_load(self):
         ref_test = self.test_data['cancm4_tas']
@@ -65,7 +75,7 @@ class TestNcRequestDataset(TestBase):
         
         tdt = field.temporal.value_datetime
         self.assertEqual(tdt[4],dt(2001,1,5,12))
-        self.assertNumpyAll(field.temporal.bounds_datetime[1001],[dt(2003,9,29),dt(2003,9,30)])
+        self.assertNumpyAll(field.temporal.bounds_datetime[1001],np.array([dt(2003,9,29),dt(2003,9,30)]))
         
         rv = field.temporal.value_datetime[100]
         rb = field.temporal.bounds_datetime[100]
@@ -294,7 +304,7 @@ class TestNcRequestDataset(TestBase):
         
         ds = nc.Dataset(uri,'r')
         to_test = ds.variables['Tavg']
-        self.assertNumpyAll(to_test[:],field.variables['Tavg'].value.squeeze().data)
+        self.assertNumpyAll(to_test[:],field.variables['Tavg'].value.squeeze())
         ds.close()
         
     def test_load_projection_axes_slicing(self):
@@ -307,7 +317,7 @@ class TestNcRequestDataset(TestBase):
         
         ds = nc.Dataset(uri,'r')
         to_test = ds.variables['Tavg']
-        self.assertNumpyAll(to_test[15,:,:,:],sub.variables[variable].value.squeeze().data)
+        self.assertNumpyAll(to_test[15,:,:,:],sub.variables[variable].value.squeeze())
         ds.close()
         
     def test_load_climatology_bounds(self):
@@ -316,7 +326,7 @@ class TestNcRequestDataset(TestBase):
                                   select_ugid=[27],calc=[{'func':'mean','name':'mean'}],
                                   calc_grouping=['month'])
         ret = ops.execute()
-        rd = NcRequestDataset(uri=ret,variable='mean_tas')
+        rd = NcRequestDataset(uri=ret,variable='mean')
         field = rd.get()
         self.assertNotEqual(field.temporal.bounds,None)
 

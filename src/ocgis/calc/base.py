@@ -8,6 +8,7 @@ from ocgis import constants
 import logging
 from ocgis.exc import SampleSizeNotImplemented, DefinitionValidationError,\
     UnitsValidationError
+from ocgis.util.units import get_are_units_equal_by_string_or_cfunits
 
 
 class AbstractFunction(object):
@@ -49,8 +50,16 @@ class AbstractFunction(object):
     Group = None
     @abc.abstractproperty
     def key(self): str
+    #: The calculation's long name. Default is the empty string.
     long_name = ''
+    #: The calculation's standard name. Default is the empty string.
     standard_name = ''
+    #: The calculation's output units. Modify :meth:`get_output_units` for more
+    #: complex units calculations. If the units are left as the default '_input'
+    #: then the input variable units are maintained. Otherwise, they will be set
+    #: to units attribute value. The string flag is used to allow ``None`` units
+    #: to be applied.
+    units = '_input_'
     
     ## standard empty dictionary to use for calculation outputs when the operation
     ## is file only
@@ -61,7 +70,7 @@ class AbstractFunction(object):
                  fill_value=None):
         self.alias = alias or self.key
         self.dtype = dtype or self.dtype
-        self.fill_value = fill_value or constants.fill_value
+        self.fill_value = fill_value
         self.vc = vc or VariableCollection()
         self.field = field
         self.file_only = file_only
@@ -94,12 +103,16 @@ class AbstractFunction(object):
         :param kwds: Any keyword parameters for the function.
         :rtype: `numpy.ma.MaskedArray`
         '''
+        pass
     
     def execute(self):
         '''
         Execute the computation over the input field.
         '''
+        ## call the subclass execute method
         self._execute_()
+        ## allow the field metadata to be modified
+        self.set_field_metadata()
         return(self.vc)
     
     def get_function_definition(self):
@@ -108,9 +121,13 @@ class AbstractFunction(object):
     
     def get_output_units(self,variable):
         '''
-        Return the output units of the function.
+        Get the output units.
         '''
-        return(variable.units)
+        if self.units == '_input_':
+            ret = variable.units
+        else:
+            ret = self.units
+        return(ret)
     
     def get_sample_size(self,values):
         to_sum = np.invert(values.mask)
@@ -129,6 +146,20 @@ class AbstractFunction(object):
             ret = variable.value
         return(ret)
     
+    def set_field_metadata(self):
+        '''
+        Modify the :class:~`ocgis.interface.base.field.Field` metadata dictionary.
+        '''
+        pass
+    
+    def set_variable_metadata(self,variable):
+        '''
+        Set variable level metadata. If units are to be updated, this must be
+        done on the "units" attribute of the variable as this value is read 
+        directly from the variable object during conversion.
+        '''
+        pass
+    
     @classmethod
     def validate(self,ops):
         '''
@@ -145,9 +176,11 @@ class AbstractFunction(object):
     def _add_to_collection_(self,units=None,value=None,parent_variables=None,alias=None,
                             dtype=None,fill_value=None):
         
-        ## dtype and fill_value should come in with each new variable
+        ## dtype should come in with each new variable
         assert(dtype is not None)
-        assert(fill_value is not None)
+        ## if there is no fill value, use the default for the data type
+        if fill_value is None:
+            fill_value = np.ma.array([],dtype=dtype).fill_value
         
         ## the value parameters should come in as a dictionary with two keys
         try:
@@ -159,8 +192,7 @@ class AbstractFunction(object):
             fill = value
             sample_size = None
         
-        units = units or self.get_output_units(parent_variables[0])
-        alias = alias or '{0}_{1}'.format(self.alias,parent_variables[0].alias)
+        alias = alias or self.alias
         fdef = self.get_function_definition()
         meta = {'attrs':{'standard_name':self.standard_name,
                          'long_name':self.long_name}}
@@ -176,6 +208,11 @@ class AbstractFunction(object):
         dv = DerivedVariable(name=self.key,alias=alias,units=units,value=fill,
                              fdef=fdef,parents=parents,meta=meta,data=data,
                              dtype=dtype,fill_value=fill_value)
+        
+        ## allow more complex manipulations of metadata
+        self.set_variable_metadata(dv)
+        ## add the variable to the variable collection
+        self._set_derived_variable_alias_(dv,parent_variables)
         self.vc.add_variable(dv)
         
         ## add the sample size if it is present in the fill dictionary
@@ -196,7 +233,16 @@ class AbstractFunction(object):
     def _get_parms_(self):
         return(self.parms)
     
-    def _get_temporal_agg_fill_(self,value,f=None,parms=None,shp_fill=None):
+    def _get_slice_and_calculation_(self,f,ir,il,parms,value=None):
+        ## subset the values by the current temporal group
+        values = value[ir,self._curr_group,il,:,:]
+        ## only 3-d data should be sent to the temporal aggregation method
+        assert(len(values.shape) == 3)
+        ## execute the temporal aggregation or calculation
+        cc = f(values,**parms)
+        return(cc,values)
+    
+    def _get_temporal_agg_fill_(self,value=None,f=None,parms=None,shp_fill=None):
         ## if a default data type was provided at initialization, use this value
         ## otherwise use the data type from the input value.
         dtype = self.dtype or value.dtype
@@ -230,12 +276,7 @@ class AbstractFunction(object):
             ## reference for the current iteration group used by some computations
             self._curr_group = self.tgd.dgroups[it]
             
-            ## subset the values by the current temporal group
-            values = value[ir,self._curr_group,il,:,:]
-            ## only 3-d data should be sent to the temporal aggregation method
-            assert(len(values.shape) == 3)
-            ## execute the temporal aggregation or calculation
-            cc = f(values,**parms)
+            cc,values = self._get_slice_and_calculation_(f,ir,il,parms,value=value)
             
             ## compute the sample size of the computation if requested
             if self.calc_sample_size:
@@ -268,7 +309,7 @@ class AbstractFunction(object):
         ## we need to transfer the data mask from the fill to the sample size
         if self.calc_sample_size:
             fill_sample_size.mask = fill.mask.copy()
-            
+
         return({'fill':fill,'sample_size':fill_sample_size})
     
     def _get_or_pass_spatial_agg_fill_(self,values):
@@ -282,12 +323,33 @@ class AbstractFunction(object):
         else:
             ret = values
         return(ret)
+    
+    def _set_derived_variable_alias_(self,dv,parent_variables):
+        '''
+        Set the alias of the derived variable.
+        '''
+        if len(self.field.variables) > 1:
+            original_alias = dv.alias
+            dv.alias = '{0}_{1}'.format(dv.alias,parent_variables[0].alias)
+            msg = 'Alias updated to maintain uniquencess Changing "{0}" to "{1}".'.format(original_alias,dv.alias)
+            ocgis_lh(logger='calc.base',level=logging.WARNING,msg=msg)
+
         
 class AbstractUnivariateFunction(AbstractFunction):
     '''
     Base class for functions accepting a single univariate input.
     '''
     __metaclass__ = abc.ABCMeta
+    #: Optional sequence of acceptable string units defintions for input variables.
+    #: If this is set to ``None``, no unit validation will occur.
+    required_units = None
+    
+    def validate_units(self,variable):
+        if self.required_units is not None:
+            matches = [get_are_units_equal_by_string_or_cfunits(variable.units,target,try_cfunits=True) \
+                       for target in self.required_units]
+            if not any(matches):
+                raise(UnitsValidationError(variable,self.required_units,self.key))
         
     def _execute_(self):
         for variable in self.field.variables.itervalues():
@@ -315,7 +377,7 @@ class AbstractUnivariateFunction(AbstractFunction):
                     fill = self._get_or_pass_spatial_agg_fill_(fill)
                     
             units = self.get_output_units(variable)
-                    
+                                        
             self._add_to_collection_(value=fill,parent_variables=[variable],
                                      dtype=self.dtype,fill_value=self.fill_value,
                                      units=units)
@@ -366,7 +428,7 @@ class AbstractUnivariateSetFunction(AbstractUnivariateFunction):
     '''
     __metaclass__ = abc.ABCMeta
     
-    def aggregate_temporal(self):
+    def aggregate_temporal(self,*args,**kwargs):
         '''
         This operations is always implicit to :meth:`~ocgis.calc.base.AbstractFunction.calculate`.
         '''
@@ -388,7 +450,7 @@ class AbstractUnivariateSetFunction(AbstractUnivariateFunction):
                 value = self.get_variable_value(variable)
                 ## execute the calculations
                 fill = self._get_temporal_agg_fill_(value,shp_fill=shp_fill)
-            ## get the ouput units
+            ## get the variable's output units
             units = self.get_output_units(variable)
             ## add the output to the variable collection
             self._add_to_collection_(value=fill,parent_variables=[variable],
@@ -411,6 +473,9 @@ class AbstractMultivariateFunction(AbstractFunction):
     #: Optional dictionary mapping unit definitions for required variables.
     #: For example: required_units = {'tas':'fahrenheit','rhs':'percent'}
     required_units = None
+    #: If True, time aggregation is external to the calculation and will require
+    #: running the standard time aggregation methods.
+    time_aggregation_external = True
     
     def __init__(self,*args,**kwds):
         if kwds.get('calc_sample_size') is True:
@@ -428,12 +493,34 @@ class AbstractMultivariateFunction(AbstractFunction):
         >>> ['tas','rhs']
         '''
         [str]
+        
+    def get_output_units(self,*args,**kwds):
+        return(None)
+    
+    def _get_slice_and_calculation_(self,f,ir,il,parms,value=None):
+        if self.time_aggregation_external:
+            ret = AbstractFunction._get_slice_and_calculation_(self,f,ir,il,parms,value=value)
+        else:
+            new_parms = {}
+            for k,v in parms.iteritems():
+                if k in self.required_variables:
+                    new_parms[k] = v[ir,self._curr_group,il,:,:]
+                else:
+                    new_parms[k] = v
+            cc = f(**new_parms)
+            ret = (cc,None)
+        return(ret)
     
     def _execute_(self):
         
         self.validate_units()
         
-        parms = {k:self.get_variable_value(self.field.variables[self.parms[k]]) for k in self.required_variables}
+        try:
+            parms = {k:self.get_variable_value(self.field.variables[self.parms[k]]) for k in self.required_variables}
+        ## try again without the parms dictionary
+        except KeyError:
+            parms = {k:self.get_variable_value(self.field.variables[k]) for k in self.required_variables}
+            
         for k,v in self.parms.iteritems():
             if k not in self.required_variables:
                 parms.update({k:v})
@@ -441,25 +528,27 @@ class AbstractMultivariateFunction(AbstractFunction):
         if self.file_only:
             fill = self._empty_fill
         else:
-            fill = self.calculate(**parms)
-            if self.dtype is not None:
-                fill = fill.astype(self.dtype)
-            if not self.use_raw_values:
-                assert(fill.shape == self.field.shape)
+            if self.time_aggregation_external:
+                fill = self.calculate(**parms)
+                
+                if self.dtype is not None:
+                    fill = fill.astype(self.dtype)
+                if not self.use_raw_values:
+                    assert(fill.shape == self.field.shape)
+                else:
+                    assert(fill.shape[0:3] == self.field.shape[0:3])
+                if self.tgd is not None:
+                    fill = self._get_temporal_agg_fill_(fill,f=self.aggregate_temporal,parms={})
+                else:
+                    fill = self._get_or_pass_spatial_agg_fill_(fill)
             else:
-                assert(fill.shape[0:3] == self.field.shape[0:3])
-            if self.tgd is not None:
-                fill = self._get_temporal_agg_fill_(fill,f=self.aggregate_temporal,parms={})
-            else:
-                fill = self._get_or_pass_spatial_agg_fill_(fill)
+                fill = self._get_temporal_agg_fill_(parms=parms)
                 
         units = self.get_output_units()
-        
-        self._add_to_collection_(units=units,value=fill,parent_variables=self.field.variables.values(),
-                                 alias=self.alias,dtype=self.dtype,fill_value=self.fill_value)
-        
-    def get_output_units(self):
-        return('undefined')
+                        
+        self._add_to_collection_(value=fill,parent_variables=self.field.variables.values(),
+                                 alias=self.alias,dtype=self.dtype,fill_value=self.fill_value,
+                                 units=units)
     
     @classmethod
     def validate(cls,ops):
@@ -488,14 +577,15 @@ class AbstractMultivariateFunction(AbstractFunction):
             for required_variable in self.required_variables:
                 alias_variable = self.parms[required_variable]
                 variable = self.field.variables[alias_variable]
-                try:
-                    from cfunits import Units
-                    match = variable.cfunits.equals(Units(self.required_units[required_variable]))
-                except ImportError:
-                    match = variable.units.lower() == self.required_units[required_variable].lower()
+                source = variable.units
+                target = self.required_units[required_variable]
+                match = get_are_units_equal_by_string_or_cfunits(source,target,try_cfunits=True)
                 if match == False:
-                    raise(UnitsValidationError(variable,self.required_units[required_variable],
-                                               self.key))
+                    raise(UnitsValidationError(variable,target,self.key))
+                
+    def _set_derived_variable_alias_(self,dv,parent_variables):
+        pass
+
     
 class AbstractKeyedOutputFunction(object):
     __metaclass__ = abc.ABCMeta

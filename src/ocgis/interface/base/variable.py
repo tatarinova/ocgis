@@ -4,17 +4,27 @@ from collections import OrderedDict
 from ocgis.util.helpers import get_iter
 import numpy as np
 from ocgis import constants
-from ocgis.exc import NoUnitsError
+from ocgis.exc import NoUnitsError, VariableInCollectionError
 from copy import copy
 
 
 class AbstractValueVariable(object):
+    '''
+    :param array-like value:
+    :param units:
+    :type units: str or :class:`cfunits.Units`
+    :param :class:`numpy.dtype` dtype:
+    :param fill_value:
+    :type fill_value: int or float matching type of ``dtype``
+    :param str name:
+    '''
     __metaclass__ = abc.ABCMeta
     
-    def __init__(self,value=None,units=None,dtype=None,fill_value=None):
+    def __init__(self,value=None,units=None,dtype=None,fill_value=None,name=None):
         self._value = value
         self._dtype = dtype
         self._fill_value = fill_value
+        self.name = name
         ## if the units value is not None, then convert to string. cfunits.Units
         ## may be easily handled this way without checking for the module presence.
         self.units = str(units) if units is not None else None
@@ -47,6 +57,10 @@ class AbstractValueVariable(object):
         else:
             ret = self._fill_value
         return(ret)
+    
+    @property
+    def shape(self):
+        return(self.value.shape)
     
     @property
     def value(self):
@@ -103,7 +117,7 @@ class AbstractSourcedVariable(AbstractValueVariable):
     __metaclass__ = abc.ABCMeta
     
     def __init__(self,data,src_idx=None,value=None,debug=False,did=None,units=None,
-                 dtype=None,fill_value=None):
+                 dtype=None,fill_value=None,name=None):
         if not debug and value is None and data is None:
             ocgis_lh(exc=ValueError('Sourced variables require a data source if no value is passed.'))
         self._data = data
@@ -111,8 +125,8 @@ class AbstractSourcedVariable(AbstractValueVariable):
         self._debug = debug
         self.did = did
         
-        super(AbstractSourcedVariable,self).__init__(value=value,units=units,
-                                                     dtype=dtype,fill_value=fill_value)
+        AbstractValueVariable.__init__(self,value=value,units=units,dtype=dtype,fill_value=fill_value,
+                                       name=name)
         
     @property
     def _src_idx(self):
@@ -171,14 +185,14 @@ class Variable(AbstractSourcedVariable):
     def __init__(self,name=None,alias=None,units=None,meta=None,uid=None,
                  value=None,did=None,data=None,debug=False,conform_units_to=None,
                  dtype=None,fill_value=None):
-        self.name = name
         self.alias = alias or name
         self.meta = meta or {}
         self.uid = uid
         self._conform_units_to = conform_units_to
         
         super(Variable,self).__init__(value=value,data=data,debug=debug,did=did,
-                                      units=units,dtype=dtype,fill_value=fill_value)
+                                      units=units,dtype=dtype,fill_value=fill_value,
+                                      name=name)
         
     def __getitem__(self,slc):
         ret = copy(self)
@@ -196,7 +210,7 @@ class Variable(AbstractSourcedVariable):
         else:
             assert(isinstance(value,np.ndarray))
             if not isinstance(value,np.ma.MaskedArray):
-                ret = np.ma.array(value,mask=False,fill_value=constants.fill_value)
+                ret = np.ma.array(value,mask=False)
             else:
                 ret = value
         return(ret)
@@ -231,15 +245,21 @@ class VariableCollection(object):
             for variable in get_iter(variables,dtype=Variable):
                 self.add_variable(variable)
                 
-    def __getitem__(self,*args,**kwds):
-        return(self._storage.__getitem__(*args,**kwds))
+    def __contains__(self,key):
+        return(self._storage.__contains__(key))
+                
+    def __getitem__(self,*args,**kwargs):
+        return(self._storage.__getitem__(*args,**kwargs))
     
     def __len__(self):
         return(len(self._storage))
                 
     def add_variable(self,variable):
         assert(isinstance(variable,Variable))
-        assert(variable.alias not in self._storage)
+        try:
+            assert(variable.alias not in self._storage)
+        except AssertionError:
+            raise(VariableInCollectionError(variable))
         if variable.uid is None:
             variable.uid = self._uid_ctr
             self._uid_ctr += 1

@@ -6,6 +6,8 @@ from ocgis.conv.meta import MetaConverter
 from ocgis.calc.base import AbstractMultivariateFunction,\
     AbstractKeyedOutputFunction
 from ocgis.interface.base.crs import CFRotatedPole, WGS84
+from ocgis.api.subset import SubsetOperation
+import numpy as np
 
 
 class OcgOperations(object):
@@ -70,6 +72,9 @@ class OcgOperations(object):
     :type search_radius_mult: float
     :param interpolate_spatial_bounds: If True and no bounds are available, attempt to interpolate bounds from centroids.
     :type interpolate_spatial_bounds: bool
+    :param bool add_auxiliary_files: If True, create a new directory and add metadata 
+     and other informational files in addition to the converted file. If False, write
+     the target file only to :attribute:`dir_output` and do not create a new directory.
     """
     
     def __init__(self, dataset=None, spatial_operation='intersects', geom=None, aggregate=False,
@@ -79,7 +84,8 @@ class OcgOperations(object):
                  vector_wrap=True, allow_empty=False, dir_output=None, 
                  slice=None, file_only=False, headers=None, format_time=True,
                  calc_sample_size=False, search_radius_mult=0.75, output_crs=None,
-                 interpolate_spatial_bounds=False):
+                 interpolate_spatial_bounds=False, add_auxiliary_files=True,
+                 optimizations=None):
         
         # # Tells "__setattr__" to not perform global validation until all
         # # values are set initially.
@@ -110,6 +116,8 @@ class OcgOperations(object):
         self.search_radius_mult = SearchRadiusMultiplier(search_radius_mult)
         self.format_time = FormatTime(format_time)
         self.interpolate_spatial_bounds = InterpolateSpatialBounds(interpolate_spatial_bounds)
+        self.add_auxiliary_files = AddAuxiliaryFiles(add_auxiliary_files)
+        self.optimizations = Optimizations(optimizations)
         
         ## these values are left in to perhaps be added back in at a later date.
         self.output_grouping = None
@@ -148,6 +156,66 @@ class OcgOperations(object):
                 object.__setattr__(self, name, value)
         if self._is_init is False:
             self._validate_()
+            
+    def get_base_request_size(self):
+        '''
+        Return the estimated request size in kilobytes. This is the estimated size
+        of the requested data not the returned data product.
+        
+        :returns: Dictionary with keys ``'total'`` and ``'variables'``. The ``'variables'``
+         key maps a variable's alias to its estimated value and dimension sizes.
+        :return type: dict
+        
+        >>> ret = ops.get_base_request_size()
+        {'total':555.,
+         'variables':{'tas':{'value':500.,
+                             'temporal':50.,
+                             'level':0.,
+                             'realization':0.,
+                             'row':2.5.
+                             'col':2.5.}}}
+        '''
+        
+        def _get_kb_(dtype,elements):
+            nbytes = np.array([1],dtype=dtype).nbytes
+            return(float((elements*nbytes)/1024.0))
+        
+        def _get_zero_or_kb_(dimension):
+            if dimension is None:
+                ret = 0.0
+            else:
+                try:
+                    ret = _get_kb_(dimension.dtype,dimension.shape[0])
+                ## dtype may not be available, check if it is the realization dimension.
+                ## this is often not associated with a variable.
+                except ValueError:
+                    if dimension._axis == 'R':
+                        ret = 0.0
+                    else:
+                        raise
+            return(ret)
+        
+        ops_size = deepcopy(self)
+        subset = SubsetOperation(ops_size,request_base_size_only=True)
+        ret = dict(variables={})
+        for coll in subset:
+            for row in coll.get_iter_melted():
+                elements = reduce(lambda x,y: x*y,row['field'].shape)
+                kb = _get_kb_(row['variable'].dtype,elements)
+                ret['variables'][row['variable_alias']] = {}
+                ret['variables'][row['variable_alias']]['value'] = kb
+                ret['variables'][row['variable_alias']]['realization'] = _get_zero_or_kb_(row['field'].realization)
+                ret['variables'][row['variable_alias']]['temporal'] = _get_zero_or_kb_(row['field'].temporal)
+                ret['variables'][row['variable_alias']]['level'] = _get_zero_or_kb_(row['field'].level)
+                ret['variables'][row['variable_alias']]['row'] = _get_zero_or_kb_(row['field'].spatial.grid.row)
+                ret['variables'][row['variable_alias']]['col'] = _get_zero_or_kb_(row['field'].spatial.grid.col)
+
+        total = 0.0
+        for v in ret.itervalues():
+            for v2 in v.itervalues():
+                total += float(sum(v2.values()))
+        ret['total'] = total
+        return(ret)
     
     def get_meta(self):
         meta_converter = MetaConverter(self)
@@ -287,3 +355,4 @@ class OcgOperations(object):
         if self.calc is not None:
             for c in self.calc:
                 c['ref'].validate(self)
+        

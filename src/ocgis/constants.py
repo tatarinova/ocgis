@@ -6,8 +6,8 @@ name_bounds.extend(['d_'+b for b in name_bounds])
 #: Standard bounds name used when none is available from the input data.
 ocgis_bounds = 'bounds'
 
-#: Default fill value for masked data.
-fill_value = 1e20
+#: Default netCDF4 output file type
+netCDF_default_data_model = 'NETCDF4_CLASSIC'
 
 #: Standard headers for subset operations.
 raw_headers = ['did','vid','ugid','tid','lid','gid','variable','alias','time','year','month','day','level','value']
@@ -41,6 +41,9 @@ resolution_limit = 100
 np_int = np.int32
 #: The data type to use for NumPy floats.
 np_float = np.float32
+
+#: Function key prefix for the `icclim` indices library.
+prefix_icclim_function_key = 'icclim'
 
 
 test_run_long_tests = False

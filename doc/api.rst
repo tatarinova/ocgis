@@ -44,7 +44,7 @@ These are global parameters used by OpenClimateGIS. For those familiar with :mod
 ============================
 
 .. autoclass:: ocgis.OcgOperations
-   :members: execute
+   :members: execute, get_base_request_size
 
 Detailed Argument Information
 -----------------------------
@@ -179,9 +179,22 @@ The next example consumes all the months in a year.
 
 >>> calc_grouping = [[12,1,2],[3,4,5],[6,7,8],[9,10,11]]
 
+Unique, time sequential seasons are possible with the `'unique'` flag:
+
+>>> calc_grouping = [[12,1,2],'unique']
+
+For example, this returns a calculation based on values with date coordinates in:
+ * Dec 1900, Jan 1901, Feb 1901
+ * Dec 1901, Jan 1902, Feb 1902
+
 It is also possible to group the seasons by year.
 
 >>> calc_grouping = [[12,1,2],[3,4,5],[6,7,8],[9,10,11],'year']
+
+For example, this returns a calculation based on values with date coordinates in:
+ * 1900: Dec, Jan, Feb
+ * 1901: Dec, Jan, Feb
+ * 1902: Dec, Jan, Feb
 
 .. _calc_raw_headline:
 

@@ -124,6 +124,10 @@ class NcRequestDataset(object):
         return(self.__source_metadata)
         
     def get(self,format_time=True,interpolate_spatial_bounds=False):
+        '''
+        :param bool format_time:
+        :param bool interpolate_spatial_bounds:
+        '''
         
         def _get_temporal_adds_(ref_attrs):
             ## calendar should default to standard if it is not present and the
@@ -172,10 +176,22 @@ class NcRequestDataset(object):
                 length = self._source_metadata['dimensions'][ref_axis['dimension']]['len']
                 src_idx = np.arange(0,length,dtype=constants.np_int)
                 
+                ## get the target data type for the dimension
+                try:
+                    dtype = np.dtype(ref_variable['dtype'])
+                ## the realization dimension may not be a associated with a variable
+                except KeyError:
+                    if k == 'realization' and ref_variable['axis']['variable'] == None:
+                        dtype = None
+                    else:
+                        raise
+                
                 ## assemble parameters for creating the dimension class then initialize
                 ## the class.
                 kwds = dict(name_uid=v['name_uid'],name_value=v['name_value'],src_idx=src_idx,
-                            data=self,meta=ref_variable,axis=axis_value,name=ref_variable.get('name'))
+                        data=self,meta=ref_variable,axis=axis_value,name=ref_variable.get('name'),
+                        dtype=dtype)
+
                 ## there may be additional parameters for each dimension.
                 if v['adds'] is not None:
                     try:
@@ -213,7 +229,7 @@ class NcRequestDataset(object):
             
         spatial = SpatialDimension(name_uid='gid',grid=grid,crs=crs,abstraction=self.s_abstraction)
         
-        variable_meta = self._source_metadata['variables'][self.variable]
+        variable_meta = deepcopy(self._source_metadata['variables'][self.variable])
         variable_units = self.units or variable_meta['attrs'].get('units')
         dtype = np.dtype(variable_meta['dtype'])
         fill_value = variable_meta['fill_value']
@@ -223,7 +239,7 @@ class NcRequestDataset(object):
         vc = VariableCollection(variables=[variable])
         
         ret = NcField(variables=vc,spatial=spatial,temporal=loaded['temporal'],level=loaded['level'],
-                      realization=loaded['realization'],meta=self._source_metadata,uid=self.did)
+                      realization=loaded['realization'],meta=deepcopy(self._source_metadata),uid=self.did)
         
         ## apply any subset parameters after the field is loaded
         if self.time_range is not None:

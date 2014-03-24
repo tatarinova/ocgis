@@ -14,6 +14,8 @@ from ocgis.test.test_simple.test_simple import nc_scope
 from copy import deepcopy
 from ocgis.test.test_base import longrunning
 from shapely.geometry.point import Point
+from ocgis.util.shp_cabinet import ShpCabinetIterator
+import os
 
 
 class TestCMIP3Masking(TestBase):
@@ -50,6 +52,69 @@ class TestCMIP3Masking(TestBase):
 
 class Test(TestBase):
     
+    def test_narccap_cancm4_point_subset_no_abstraction(self):
+        rd = self.test_data.get_rd('cancm4_tas')
+        rd2 = self.test_data.get_rd('narccap_tas_rcm3_gfdl')
+        rd.alias = 'tas_narccap'
+        rds = [rd,rd2]
+        geom = [-105.2751,39.9782]
+        ops = ocgis.OcgOperations(dataset=rds,geom=geom,output_format='csv+',
+                                  prefix='ncar_point',add_auxiliary_files=True,output_crs=ocgis.crs.CFWGS84(),
+                                  snippet=True)
+        with self.assertRaises(ValueError):
+            ops.execute()
+            
+    def test_narccap_cancm4_point_subset_with_abstraction(self):
+        rd = self.test_data.get_rd('cancm4_tas')
+        rd2 = self.test_data.get_rd('narccap_tas_rcm3_gfdl')
+        rd2.alias = 'tas_narccap'
+        rds = [
+               rd,
+               rd2
+               ]
+        geom = [-105.2751,39.9782]
+        ops = ocgis.OcgOperations(dataset=rds,geom=geom,output_format='numpy',
+                                  prefix='ncar_point',add_auxiliary_files=True,output_crs=ocgis.crs.CFWGS84(),
+                                  snippet=True,abstraction='point')
+        ret = ops.execute()
+        
+        ## only two geometries returned
+        self.assertEqual(ret[1]['tas'].spatial.shape,(1,2))
+        ## different buffer radii should have unique identifiers
+        self.assertEqual(ret.keys(),[1,2])
+        ## the first buffer radius is larger
+        self.assertTrue(ret.geoms[1].area > ret.geoms[2].area)
+        
+    def test_narccap_cancm4_point_subset_with_abstraction_to_csv_shp(self):
+        rd = self.test_data.get_rd('cancm4_tas')
+        rd2 = self.test_data.get_rd('narccap_tas_rcm3_gfdl')
+        rd.alias = 'tas_narccap'
+        rds = [
+               rd,
+               rd2
+               ]
+        geom = [-105.2751,39.9782]
+        ops = ocgis.OcgOperations(dataset=rds,geom=geom,output_format='csv+',
+                                  prefix='ncar_point',add_auxiliary_files=True,output_crs=ocgis.crs.CFWGS84(),
+                                  snippet=True,abstraction='point')
+        ret = ops.execute()
+        ugid_shp_path = os.path.join(os.path.split(ret)[0],'shp',ops.prefix+'_ugid.shp')
+        with fiona.open(ugid_shp_path) as ds:
+            rows = list(ds)
+        self.assertEqual(set([row['properties']['UGID'] for row in rows]),set([1,2]))
+    
+    def test_collection_field_geometries_equivalent(self):
+        rd = self.test_data.get_rd('cancm4_tas',kwds=dict(time_region={'month':[6,7,8]}))
+        geom = ['state_boundaries',[{'properties':{'UGID':16},'geom':Point([-99.80780059778753,41.52315831343389])}]]
+        for vw,g in itertools.product([True,False],geom):
+            ops = ocgis.OcgOperations(dataset=rd,select_ugid=[16,32],geom=g,
+                                      aggregate=True,vector_wrap=vw,spatial_operation='clip')
+            coll = ops.execute()
+            coll_geom = coll.geoms[16]
+            field_geom = coll[16]['tas'].spatial.geom.polygon.value[0,0]
+            self.assertTrue(coll_geom.bounds,field_geom.bounds)
+            self.assertTrue(coll_geom.area,field_geom.area)
+    
     def test_empty_subset_multi_geometry_wrapping(self):
         ## adjacent state boundaries were causing an error with wrapping where
         ## a reference to the source field was being updated.
@@ -66,8 +131,8 @@ class Test(TestBase):
                                   calc_sample_size=True,geom='state_boundaries',
                                   select_ugid=[23])
         ret = ops.execute()
-        self.assertEqual(ret[23]['tas'].variables['n_my_std_tas'].value.mean(),920.0)
-        self.assertEqual(ret[23]['tas'].variables['my_std_tas'].value.shape,(1,1,1,4,3))
+        self.assertEqual(ret[23]['tas'].variables['n_my_std'].value.mean(),920.0)
+        self.assertEqual(ret[23]['tas'].variables['my_std'].value.shape,(1,1,1,4,3))
         
         calc = [{'func':'mean','name':'my_mean'},{'func':'std','name':'my_std'}]
         calc_grouping = [[12,1,2],[3,4,5],[6,7,8],[9,10,11]]
@@ -76,7 +141,7 @@ class Test(TestBase):
                                   calc_sample_size=True,geom='state_boundaries',
                                   select_ugid=[23])
         ret = ops.execute()
-        self.assertEqual(ret[23]['tas'].variables['my_std_tas'].value.shape,(1,4,1,4,3))
+        self.assertEqual(ret[23]['tas'].variables['my_std'].value.shape,(1,4,1,4,3))
         self.assertNumpyAll(ret[23]['tas'].temporal.value,np.array([ 56955.,  56680.,  56771.,  56863.]))
         
         calc = [{'func':'mean','name':'my_mean'},{'func':'std','name':'my_std'}]
@@ -86,7 +151,7 @@ class Test(TestBase):
                                   calc_sample_size=True,geom='state_boundaries',
                                   select_ugid=[23])
         ret = ops.execute()
-        self.assertEqual(ret[23]['tas'].variables['my_std_tas'].value.shape,(1,2,1,4,3))
+        self.assertEqual(ret[23]['tas'].variables['my_std'].value.shape,(1,2,1,4,3))
         self.assertNumpyAll(ret[23]['tas'].temporal.bounds,np.array([[ 55115.,  58765.],[ 55146.,  58490.]]))
 
     def test_seasonal_calc_dkp(self):        
@@ -98,7 +163,7 @@ class Test(TestBase):
                                   calc_sample_size=False,geom='state_boundaries',
                                   select_ugid=[23])
         ret = ops.execute()
-        to_test = ret[23]['tas'].variables['dkp_tas'].value
+        to_test = ret[23]['tas'].variables['dkp'].value
         reference = np.ma.array(data=[[[[[0,0,838],[831,829,834],[831,830,834],[831,835,830]]]]],
                                 mask=[[[[[True,True,False],[False,False,False],[False,False,False],[False,False,False]]]]])
         self.assertNumpyAll(to_test,reference)
@@ -115,25 +180,29 @@ class Test(TestBase):
         ops = ocgis.OcgOperations(dataset=rd,geom=[lon_value,lat_value],search_radius_mult=0.1)
         ret = ops.execute()
         values = np.squeeze(ret[1]['tas'].variables['tas'].value)
-        self.assertNumpyAll(data_values,values)
+        self.assertNumpyAll(data_values,values.data)
+        self.assertFalse(np.any(values.mask))
         
         geom = Point(lon_value,lat_value).buffer(0.001)
         ops = ocgis.OcgOperations(dataset=rd,geom=geom)
         ret = ops.execute()
         values = np.squeeze(ret[1]['tas'].variables['tas'].value)
-        self.assertNumpyAll(data_values,values)
+        self.assertNumpyAll(data_values,values.data)
+        self.assertFalse(np.any(values.mask))
         
         geom = Point(lon_value-360.,lat_value).buffer(0.001)
         ops = ocgis.OcgOperations(dataset=rd,geom=geom)
         ret = ops.execute()
         values = np.squeeze(ret[1]['tas'].variables['tas'].value)
-        self.assertNumpyAll(data_values,values)
+        self.assertNumpyAll(data_values,values.data)
+        self.assertFalse(np.any(values.mask))
         
         geom = Point(lon_value-360.,lat_value).buffer(0.001)
         ops = ocgis.OcgOperations(dataset=rd,geom=geom,aggregate=True,spatial_operation='clip')
         ret = ops.execute()
         values = np.squeeze(ret[1]['tas'].variables['tas'].value)
-        self.assertNumpyAll(data_values,values)
+        self.assertNumpyAll(data_values,values.data)
+        self.assertFalse(np.any(values.mask))
         
         ops = ocgis.OcgOperations(dataset=rd,geom=[lon_value,lat_value],
                                   search_radius_mult=0.1,output_format='nc')
@@ -304,7 +373,6 @@ class Test(TestBase):
                    calc_grouping=calc_grouping)
             ret = ops.execute()
             for calc_name in ['mean','median']:
-                calc_name = calc_name+'_'+rd.alias
                 self.assertEqual(ret[10][rd.alias].variables[calc_name].value.shape[1],12)
                 
             ops = ocgis.OcgOperations(dataset=rd,snippet=False,select_ugid=[10,15],
@@ -336,7 +404,7 @@ class Test(TestBase):
                                   snippet=False,allow_empty=False,output_crs=CFWGS84())
         ret = ops.execute()
         ref = ret[1]['pr']
-        self.assertEqual(set(ref.variables.keys()),set(['mean_pr', 'median_pr', 'max_pr', 'min_pr']))
+        self.assertEqual(set(ref.variables.keys()),set(['mean', 'median', 'max', 'min']))
         
     def test_bad_time_dimension(self):
         ocgis.env.DIR_DATA = '/usr/local/climate_data'
@@ -412,7 +480,7 @@ class Test(TestBase):
         ops = OcgOperations(dataset=rd,output_format='nc',calc=[{'func':'mean','name':'my_mean'}],
                             calc_grouping=['year'],geom='state_boundaries',select_ugid=[23])
         ret = ops.execute()
-        field = RequestDataset(ret,'my_mean_pr').get()
+        field = RequestDataset(ret,'my_mean').get()
         self.assertNumpyAll(field.temporal.value,np.array([ 18444.,  18809.]))
 
         

@@ -53,7 +53,7 @@ class TestDuration(AbstractCalcBase):
         values = values.reshape(5,2,2)
         values = np.ma.array(values,mask=False)
         ret = duration.calculate(values,4,operation='gte',summary='mean')
-        self.assertNumpyAll(np.array([ 4. ,  2. ,  1.5,  1.5]),ret.flatten())
+        self.assertNumpyAll(np.ma.array([ 4. ,  2. ,  1.5,  1.5]),ret.flatten())
     
     def test_standard_operations(self):
         ret = self.run_standard_operations(
@@ -80,8 +80,8 @@ class TestFrequencyDuration(AbstractCalcBase):
         values = self.get_reshaped(values)
         ret = fduration.calculate(values,threshold=2,operation='gt')
         self.assertEqual(ret.flatten()[0].dtype.names,('duration','count'))
-        self.assertNumpyAll(np.array([2,3,5],dtype=np.int32),ret.flatten()[0]['duration'])
-        self.assertNumpyAll(np.array([2,1,1],dtype=np.int32),ret.flatten()[0]['count'])
+        self.assertNumpyAll(np.ma.array([2,3,5],dtype=np.int32),ret.flatten()[0]['duration'])
+        self.assertNumpyAll(np.ma.array([2,1,1],dtype=np.int32),ret.flatten()[0]['count'])
         
         calc = [{'func':'freq_duration','name':'freq_duration','kwds':{'operation':'gt','threshold':280}}]
         ret = self.run_standard_operations(calc,capture=True,output_format=None)
@@ -138,7 +138,7 @@ class TestFrequencyDuration(AbstractCalcBase):
             ret = ops.execute()
             
             if output_format == 'numpy':
-                ref = ret[2778]['tasmax'].variables['Frequency Duration_tasmax'].value
+                ref = ret[2778]['tasmax'].variables['Frequency Duration'].value
                 self.assertEqual(ref.compressed()[0].shape,(2,))
             
             if output_format == 'csv+':

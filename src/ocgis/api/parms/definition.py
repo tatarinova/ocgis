@@ -10,7 +10,7 @@ from types import NoneType
 from shapely.geometry.point import Point
 from ocgis import constants
 from ocgis.util.shp_cabinet import ShpCabinetIterator
-from ocgis.calc.library.register import FunctionRegistry
+from ocgis.calc.library import register
 from ocgis.interface.base.crs import CoordinateReferenceSystem, CFWGS84
 from ocgis.util.logging_ocgis import ocgis_lh
 import logging
@@ -30,6 +30,13 @@ class Abstraction(base.StringOptionParameter):
         else:
             msg = 'Spatial dimension abstracted to {0}.'.format(self.value)
         return(msg)
+    
+    
+class AddAuxiliaryFiles(base.BooleanParameter):
+    name = 'add_auxiliary_files'
+    default = True
+    meta_true = 'Auxiliary metadata files added. A new directory was created.'
+    meta_false = 'Auxiliary metadata files not added. Output file created in the output directory.'
 
 
 class AllowEmpty(base.BooleanParameter):
@@ -110,10 +117,37 @@ class Calc(base.IterableParameter,base.OcgParameter):
         return(ret)
     
     def _parse_(self,value):
-        fr = FunctionRegistry()
-        value['ref'] = fr[value['func']]
+        fr = register.FunctionRegistry()
+        
+        ## get the function key string form the calculation definition dictionary
+        function_key = value['func']
+        ## this is the message for the DefinitionValidationError if this key
+        ## may not be found.
+        dve_msg = 'The function key "{0}" is not available in the function registry.'.format(function_key)
+        
+        ## retrieve the calculation class reference from the function registry
+        try:
+            value['ref'] = fr[function_key]
+        ## if the function cannot be found, it may be part of a contributed
+        ## library of calculations not registered by default as the external
+        ## library is an optional dependency.
+        except KeyError:
+            ## this will register the icclim indices.
+            if function_key.startswith('{0}_'.format(constants.prefix_icclim_function_key)):
+                register.register_icclim(fr)
+            else:
+                raise(DefinitionValidationError(self,dve_msg))
+        ## make another attempt to register the function
+        try:
+            value['ref'] = fr[function_key]
+        except KeyError:
+            raise(DefinitionValidationError(self,dve_msg))
+        
+        ## parameters will be set to empty if none are present in the calculation
+        ## dictionary.
         if 'kwds' not in value:
             value['kwds'] = OrderedDict()
+        ## make the keyword parameter definitions lowercase.
         else:
             value['kwds'] = OrderedDict(value['kwds'])
             for k,v in value['kwds'].iteritems():
@@ -316,6 +350,7 @@ class Geom(base.OcgParameter):
     return_type = [list,ShpCabinetIterator]
     _shp_key = None
     _bounds = None
+    _ugid_key = 'UGID'
     
     def __init__(self,*args,**kwds):
         self.select_ugid = kwds.pop('select_ugid',None)
@@ -337,14 +372,14 @@ class Geom(base.OcgParameter):
     
     def parse(self,value):
         if type(value) in [Polygon,MultiPolygon,Point]:
-            ret = [{'geom':value,'properties':{'ugid':1},'crs':CFWGS84()}]
+            ret = [{'geom':value,'properties':{self._ugid_key:1},'crs':CFWGS84()}]
         elif type(value) in [list,tuple]:
             if all([isinstance(element,dict) for element in value]):
                 for ii,element in enumerate(value,start=1):
                     if 'geom' not in element:
                         ocgis_lh(exc=DefinitionValidationError(self,'Geometry dictionaries must have a "geom" key.'))
                     if 'properties' not in element:
-                        element['properties'] = {'UGID':ii}
+                        element['properties'] = {self._ugid_key:ii}
                     if 'crs' not in element:
                         element['crs'] = CFWGS84()
                         ocgis_lh(msg='No CRS in geometry dictionary - assuming WGS84.',level=logging.WARN,check_duplicate=True)
@@ -360,7 +395,7 @@ class Geom(base.OcgParameter):
                                     (maxx,miny)))
                 if not geom.is_valid:
                     raise(DefinitionValidationError(self,'Parsed geometry is not valid.'))
-                ret = [{'geom':geom,'properties':{'ugid':1},'crs':CFWGS84()}]
+                ret = [{'geom':geom,'properties':{self._ugid_key:1},'crs':CFWGS84()}]
                 self._bounds = geom.bounds
         elif isinstance(value,ShpCabinetIterator):
             self._shp_key = value.key or value.path
@@ -469,6 +504,32 @@ class InterpolateSpatialBounds(base.BooleanParameter):
     default = False
     meta_true = 'If no bounds are present on the coordinate variables, an attempt will be made to interpolate boundary polygons.'
     meta_false = 'If no bounds are present on the coordinate variables, no attempt will be made to interpolate boundary polygons.'
+
+
+class Optimizations(base.OcgParameter):
+    name = 'optimizations'
+    default = None
+    input_types = [dict]
+    nullable = True
+    return_type = [dict]
+    #: 'tgds' - dictionary mapping field aliases to TemporalGroupDimension objects
+    _allowed_keys = ['tgds','fields']
+    _perform_deepcopy = False
+    
+    def _get_meta_(self):
+        if self.value is None:
+            ret = 'No optimizations were used.'
+        else:
+            ret = 'The following optimizations were used: {0}.'.format(self.value.keys())
+        return(ret)
+    
+    def _validate_(self,value):
+        if len(value) == 0:
+            msg = 'Empty dictionaries are not allowed for optimizations. Use None instead.'
+            raise(DefinitionValidationError(self,msg))
+        if set(value.keys()).issubset(set(self._allowed_keys)) == False:
+            msg = 'Allowed optimization keys are "{0}".'.format(self._allowed_keys)
+            raise(DefinitionValidationError(self,msg))
 
 
 class OutputCRS(base.OcgParameter):
