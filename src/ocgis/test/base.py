@@ -52,7 +52,8 @@ class TestBase(unittest.TestCase):
                 self.assertEqual(v,d2[k])
             self.assertEqual(set(d1.keys()),set(d2.keys()))
     
-    def assertNcEqual(self,uri_src,uri_dest,check_types=True):
+    def assertNcEqual(self,uri_src,uri_dest,check_types=True,close=False,
+                      metadata_only=False):
         src = nc.Dataset(uri_src)
         dest = nc.Dataset(uri_dest)
         
@@ -64,7 +65,11 @@ class TestBase(unittest.TestCase):
             for varname,var in src.variables.iteritems():
                 dvar = dest.variables[varname]
                 try:
-                    self.assertNumpyAll(var[:],dvar[:])
+                    if not metadata_only:
+                        if close:
+                            self.assertNumpyAllClose(var[:],dvar[:])
+                        else:
+                            self.assertNumpyAll(var[:],dvar[:])
                 except AssertionError:
                     cmp = var[:] == dvar[:]
                     if cmp.shape == (1,) and cmp.data[0] == True:
@@ -114,6 +119,9 @@ class TestBase(unittest.TestCase):
         test_data.update(['misc','subset_test'],'Tavg','Tavg_bccr_bcm2_0.1.sresa2.nc',key='subset_test_Tavg')
         test_data.update(['misc','subset_test'],'Tavg','sresa2.bccr_bcm2_0.1.monthly.Tavg.RAW.1950-2099.nc',key='subset_test_Tavg_sresa2')
         test_data.update(['misc','subset_test'],'Prcp','sresa2.ncar_pcm1.3.monthly.Prcp.RAW.1950-2099.nc',key='subset_test_Prcp')
+        
+        test_data.update(['misc','month_in_time_units'],'clt','clt.nc',key='clt_month_units')
+        test_data.update(['misc','rotated_pole'],'tas','tas_EUR-44_ICHEC-EC-EARTH_historical_r12i1p1_SMHI-RCA4_v1_day_19710101-19751231.nc',key='rotated_pole_ichec')
         return(test_data)
     
     def setUp(self):

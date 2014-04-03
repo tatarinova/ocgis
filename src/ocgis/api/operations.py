@@ -155,6 +155,7 @@ class OcgOperations(object):
             except AttributeError:
                 object.__setattr__(self, name, value)
         if self._is_init is False:
+            self._update_dependents_()
             self._validate_()
             
     def get_base_request_size(self):
@@ -163,17 +164,23 @@ class OcgOperations(object):
         of the requested data not the returned data product.
         
         :returns: Dictionary with keys ``'total'`` and ``'variables'``. The ``'variables'``
-         key maps a variable's alias to its estimated value and dimension sizes.
+         key maps a variable's alias to its estimated value and dimension sizes, shapes, and
+         data types.
         :return type: dict
         
         >>> ret = ops.get_base_request_size()
         {'total':555.,
-         'variables':{'tas':{'value':500.,
-                             'temporal':50.,
-                             'level':0.,
-                             'realization':0.,
-                             'row':2.5.
-                             'col':2.5.}}}
+         'variables':{
+                      'tas':{
+                             'value':{'kb':500.,'shape':(1,300,1,10,10),'dtype':dtype('float64')},
+                             'temporal':{'kb':50.,'shape':(300,),'dtype':dtype('float64')},
+                             'level':{'kb':o.,'shape':None,'dtype':None},
+                             'realization':{'kb':0.,'shape':None,'dtype':None},
+                             'row':{'kb':2.5,'shape':(10,),'dtype':dtype('float64')},
+                             'col':{'kb':2.5,'shape':(10,),'dtype':dtype('float64')}
+                             }
+                      }
+        }
         '''
         
         def _get_kb_(dtype,elements):
@@ -181,17 +188,16 @@ class OcgOperations(object):
             return(float((elements*nbytes)/1024.0))
         
         def _get_zero_or_kb_(dimension):
-            if dimension is None:
-                ret = 0.0
-            else:
+            ret = {'shape':None,'kb':0.0,'dtype':None}
+            if dimension is not None:
                 try:
-                    ret = _get_kb_(dimension.dtype,dimension.shape[0])
+                    ret['dtype'] = dimension.dtype
+                    ret['shape'] = dimension.shape
+                    ret['kb'] = _get_kb_(dimension.dtype,dimension.shape[0])
                 ## dtype may not be available, check if it is the realization dimension.
                 ## this is often not associated with a variable.
                 except ValueError:
-                    if dimension._axis == 'R':
-                        ret = 0.0
-                    else:
+                    if dimension._axis != 'R':
                         raise
             return(ret)
         
@@ -203,7 +209,7 @@ class OcgOperations(object):
                 elements = reduce(lambda x,y: x*y,row['field'].shape)
                 kb = _get_kb_(row['variable'].dtype,elements)
                 ret['variables'][row['variable_alias']] = {}
-                ret['variables'][row['variable_alias']]['value'] = kb
+                ret['variables'][row['variable_alias']]['value'] = {'shape':row['field'].shape,'kb':kb,'dtype':row['variable'].dtype}
                 ret['variables'][row['variable_alias']]['realization'] = _get_zero_or_kb_(row['field'].realization)
                 ret['variables'][row['variable_alias']]['temporal'] = _get_zero_or_kb_(row['field'].temporal)
                 ret['variables'][row['variable_alias']]['level'] = _get_zero_or_kb_(row['field'].level)
@@ -213,7 +219,8 @@ class OcgOperations(object):
         total = 0.0
         for v in ret.itervalues():
             for v2 in v.itervalues():
-                total += float(sum(v2.values()))
+                for v3 in v2.itervalues():
+                    total += float(v3['kb'])
         ret['total'] = total
         return(ret)
     
@@ -262,6 +269,12 @@ class OcgOperations(object):
     def _get_object_(self, name):
         return(object.__getattribute__(self, name))
     
+    def _update_dependents_(self):
+        ## the select_ugid parameter must always connect to the geometry selection
+        geom = self._get_object_('geom')
+        svalue = self._get_object_('select_ugid')._value
+        geom.select_ugid = svalue
+    
     def _validate_(self):
         ocgis_lh(logger='operations',msg='validating operations')
         
@@ -282,11 +295,20 @@ class OcgOperations(object):
         if len(set(projections)) > 1 and self.output_format != 'numpy': #@UndefinedVariable
             if self.output_crs is None:
                 _raise_('Dataset coordinate reference systems must be equivalent if no output CRS is chosen.',obj=OutputCRS)
-        ## this projection may not be written to CF at this time due to the projection
-        ## utilty's mangling of rows and columns.
+        ## clip and/or aggregation operations may not be written back to CFRotatedPole
+        ## at this time. hence, the output crs must be set to CFWGS84.
         if CFRotatedPole in map(type,projections):
-            if self.output_format == 'nc':
-                _raise_('CFRotatedPole data may not be written to netCDF. Row and columns may not be reconstructed.',obj=OutputFormat)
+            if self.output_crs is not None and not isinstance(self.output_crs,WGS84):
+                msg = ('{0} data may only be written to the same coordinate system (i.e. "output_crs=None") '
+                       'or {1}.').format(CFRotatedPole.__name__,CFWGS84.__name__)
+                _raise_(msg,obj=OutputCRS)
+            if self.aggregate or self.spatial_operation == 'clip':
+                msg = ('{0} data if clipped or spatially averaged must be written to '
+                       '{1}. The "output_crs" is being updated to {2}.').format(
+                       CFRotatedPole.__name__,CFWGS84.__name__,
+                       CFWGS84.__name__)
+                ocgis_lh(level=logging.WARN,msg=msg,logger='operations')
+                self._get_object_('output_crs')._value = CFWGS84()
         ## only WGS84 may be written to to GeoJSON
         if self.output_format == 'geojson':
             if any([element != WGS84() for element in projections if element is not None]):

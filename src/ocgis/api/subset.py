@@ -6,11 +6,12 @@ from ocgis.util.spatial.wrap import Wrapper
 from ocgis.util.logging_ocgis import ocgis_lh
 import logging
 from ocgis.api.collection import SpatialCollection
-from ocgis.interface.base.crs import CFWGS84
+from ocgis.interface.base.crs import CFWGS84, CFRotatedPole, WGS84
 from shapely.geometry.point import Point
 from ocgis.calc.base import AbstractMultivariateFunction,\
     AbstractKeyedOutputFunction
-from ocgis.util.helpers import project_shapely_geometry
+from ocgis.util.helpers import project_shapely_geometry,\
+    get_rotated_pole_spatial_grid_dimension
 from shapely.geometry.multipoint import MultiPoint
 from copy import deepcopy
 
@@ -74,8 +75,47 @@ class SubsetOperation(object):
         ## for the parallel case
         else:
             raise(ocgis_lh(exc=NotImplementedError('multiprocessing is not available')))
+        
+    def _iter_collections_(self):
+        '''
+        :yields: :class:~`ocgis.SpatialCollection`
+        '''
+        ocgis_lh('{0} request dataset(s) to process'.format(len(self.ops.dataset)),'conv._iter_collections_')
+        
+        ## multivariate calculations require datasets come in as a list with all
+        ## variable inputs part of the same sequence.
+        if self.cengine is not None and self.cengine._check_calculation_members_(self.cengine.funcs,AbstractMultivariateFunction):
+            itr_rd = [[r for r in self.ops.dataset]]
+        ## otherwise, process geometries expects a single element sequence
+        else:
+            itr_rd = ([rd] for rd in self.ops.dataset)
+        
+        for rds in itr_rd:
+            for coll in self._process_subsettables_(rds):
+                ## if there are calculations, do those now and return a new type of collection
+                if self.cengine is not None:
+                    ocgis_lh('performing computations',
+                             self._subset_log,
+                             alias=coll.items()[0][1].keys()[0],
+                             ugid=coll.keys()[0])
+                    
+                    ## look for any optimizations for temporal grouping.
+                    if self.ops.optimizations is None:
+                        tgds = None
+                    else:
+                        tgds = self.ops.optimizations.get('tgds')
+                    ## execute the calculations
+                    coll = self.cengine.execute(coll,file_only=self.ops.file_only,
+                                                tgds=tgds)
+                
+                ## conversion of groups.
+                if self.ops.output_grouping is not None:
+                    raise(NotImplementedError)
+                else:
+                    ocgis_lh('subset yielding',self._subset_log,level=logging.DEBUG)
+                    yield(coll)
 
-    def _process_geometries_(self,rds):
+    def _process_subsettables_(self,rds):
         '''
         :param rds: Sequence of :class:~`ocgis.RequestDataset` objects.
         :type rds: sequence
@@ -140,6 +180,8 @@ class SubsetOperation(object):
                     else:
                         raise
             field = field[0]
+        ## this error is related to subsetting by time or level. spatial subsetting
+        ## occurs below.
         except EmptySubsetError as e:
             if self.ops.allow_empty:
                 ocgis_lh(msg='time or level subset empty but empty returns allowed',
@@ -158,14 +200,54 @@ class SubsetOperation(object):
             itr = [{}]
         else:
             itr = [{}] if self.ops.geom is None else self.ops.geom
-                
+        
+        for coll in self._process_geometries_(itr,field,headers,value_keys,alias):
+            yield(coll)
+    
+    def _process_geometries_(self,itr,field,headers,value_keys,alias):
+        '''
+        :param sequence itr: Contains geometry dictionaries to process. If there
+         are no geometries to process, this will be a sequence of one element with
+         an empty dictionary.
+        :param :class:`ocgis.interface.Field` field: The field object to use for
+         operations.
+        :param sequence headers: Sequence of strings to use as headers for the
+         creation of the collection.
+        :param sequence value_keys: Sequence of strings to use as headers for the
+         keyed output functions.
+        :param str alias: The request data alias currently being processed.
+        :yields: :class:~`ocgis.SpatialCollection`
+        '''
         ## loop over the iterator
         for gd in itr:
             ## always work with a new geometry dictionary
             gd = deepcopy(gd)
+            ## CFRotatedPole takes special treatment. only do this if a subset
+            ## geometry is available. this variable is needed to determine if 
+            ## backtransforms are necessary.
+            original_rotated_pole_crs = None
+            if isinstance(field.spatial.crs,CFRotatedPole):
+                ## only transform if there is a subset geometry
+                if len(gd) > 0:
+                    ## store row and column dimension metadata and names before
+                    ## transforming as this information is lost w/out row and 
+                    ## column dimensions on the transformations.
+                    original_row_column_metadata = {'row':{'name':field.spatial.grid.row.name,
+                                                           'meta':field.spatial.grid.row.meta},
+                                                    'col':{'name':field.spatial.grid.col.name,
+                                                           'meta':field.spatial.grid.col.meta}}
+                    ## reset the geometries
+                    field.spatial._geom = None
+                    ## get the new grid dimension
+                    field.spatial.grid = get_rotated_pole_spatial_grid_dimension(field.spatial.crs,field.spatial.grid)
+                    ## update the CRS. copy the original CRS for possible later
+                    ## transformation back to rotated pole.
+                    original_rotated_pole_crs = deepcopy(field.spatial.crs)
+                    field.spatial.crs = CFWGS84()
+            
             ## initialize the collection object to store the subsetted data. if
             ## the output CRS differs from the field's CRS, adjust accordingly 
-            ## when initilizing.
+            ## when initializing.
             if self.ops.output_crs is not None and field.spatial.crs != self.ops.output_crs:
                 collection_crs = self.ops.output_crs
             else:
@@ -258,13 +340,14 @@ class SubsetOperation(object):
                         ocgis_lh(alias=alias,ugid=ugid,msg='empty geometric operation but empty returns allowed',level=logging.WARN)
                         sfield = None
                     else:
-                        ocgis_lh(exc=ExtentError(message=str(e)),alias=alias,logger=self._subset_log)
+                        msg = str(e) + ' This typically means the selection geometry falls outside the spatial domain of the target dataset.'
+                        ocgis_lh(exc=ExtentError(message=msg),alias=alias,logger=self._subset_log)
             else:
                 sfield = field
             
             ## if the base size is being requested, bypass the rest of the
             ## operations.
-            if self._request_base_size_only == False:            
+            if self._request_base_size_only == False:
                 ## if empty returns are allowed, there be an empty field
                 if sfield is not None:
                     ## aggregate if requested
@@ -307,58 +390,45 @@ class SubsetOperation(object):
                                     ## if none of the other conditions are met, raise the masked data error
                                     else:
                                         ocgis_lh(logger=self._subset_log,exc=MaskedDataError(),alias=alias,ugid=ugid)
+                    
+                    ## transform back to rotated pole if necessary
+                    if original_rotated_pole_crs is not None:
+                        if self.ops.output_crs is None and not isinstance(self.ops.output_crs,CFWGS84):
+                            ## we need to load the values before proceeding. source
+                            ## indices will disappear.
+                            for variable in sfield.variables.itervalues():
+                                variable.value
+                            ## reset the geometries
+                            sfield.spatial._geom = None
+                            sfield.spatial.grid = get_rotated_pole_spatial_grid_dimension(
+                             original_rotated_pole_crs,sfield.spatial.grid,inverse=True,
+                             rc_original=original_row_column_metadata)
+                            sfield.spatial.crs = original_rotated_pole_crs
+                    
+                    ## update the coordinate system of the data output
+                    if self.ops.output_crs is not None:
+                        ## if the geometry is not None, it may need to be projected to match
+                        ## the output crs.
+                        if geom is not None and crs != self.ops.output_crs:
+                            geom = project_shapely_geometry(geom,crs.sr,self.ops.output_crs.sr)
+                            coll_geom = deepcopy(geom)
+                        ## update the coordinate reference system of the spatial
+                        ## dimension.
+                        try:
+                            sfield.spatial.update_crs(self.ops.output_crs)
+                        ## this is likely a rotated pole origin
+                        except RuntimeError as e:
+                            if isinstance(sfield.spatial.crs,CFRotatedPole):
+                                assert(isinstance(self.ops.output_crs,WGS84))
+                                sfield.spatial._geom = None
+                                sfield.spatial.grid = get_rotated_pole_spatial_grid_dimension(
+                                 sfield.spatial.crs,sfield.spatial.grid)
+                                sfield.spatial.crs = self.ops.output_crs
+                            else:
+                                ocgis_lh(exc=e,logger=self._subset_log)
                 
-                ## update the coordinate system of the data output
-                if self.ops.output_crs is not None:
-                    ## if the geometry is not None, it may need to be projected to match
-                    ## the output crs.
-                    if geom is not None and crs != self.ops.output_crs:
-                        geom = project_shapely_geometry(geom,crs.sr,self.ops.output_crs.sr)
-                        coll_geom = deepcopy(geom)
-                        
-                    sfield.spatial.update_crs(self.ops.output_crs)
-            
             ## the geometry may need to be wrapped or unwrapped depending on
             ## the vector wrap situation
             coll.add_field(ugid,coll_geom,alias,sfield,properties=gd.get('properties'))
             
             yield(coll)
-    
-    def _iter_collections_(self):
-        '''
-        :yields: :class:~`ocgis.SpatialCollection`
-        '''
-        ocgis_lh('{0} request dataset(s) to process'.format(len(self.ops.dataset)),'conv._iter_collections_')
-        
-        ## multivariate calculations require datasets come in as a list with all
-        ## variable inputs part of the same sequence.
-        if self.cengine is not None and self.cengine._check_calculation_members_(self.cengine.funcs,AbstractMultivariateFunction):
-            itr_rd = [[r for r in self.ops.dataset]]
-        ## otherwise, process geometries expects a single element sequence
-        else:
-            itr_rd = ([rd] for rd in self.ops.dataset)
-        
-        for rds in itr_rd:
-            for coll in self._process_geometries_(rds):
-                ## if there are calculations, do those now and return a new type of collection
-                if self.cengine is not None:
-                    ocgis_lh('performing computations',
-                             self._subset_log,
-                             alias=coll.items()[0][1].keys()[0],
-                             ugid=coll.keys()[0])
-                    
-                    ## look for any optimizations for temporal grouping.
-                    if self.ops.optimizations is None:
-                        tgds = None
-                    else:
-                        tgds = self.ops.optimizations.get('tgds')
-                    ## execute the calculations
-                    coll = self.cengine.execute(coll,file_only=self.ops.file_only,
-                                                tgds=tgds)
-                
-                ## conversion of groups.
-                if self.ops.output_grouping is not None:
-                    raise(NotImplementedError)
-                else:
-                    ocgis_lh('subset yielding',self._subset_log,level=logging.DEBUG)
-                    yield(coll)
