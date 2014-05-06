@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.calc.library.index.duration &mdash; OpenClimateGIS 0.07.1b documentation</title>
+    <title>ocgis.calc.library.index.duration &mdash; OpenClimateGIS 0.07.1b-trunk documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.07.1b',
+        VERSION:     '0.07.1b-trunk',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.07.1b documentation" href="../../../../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.07.1b-trunk documentation" href="../../../../../index.html" />
     <link rel="up" title="ocgis" href="../../../../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../../../index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -56,7 +56,9 @@
 <div class="viewcode-block" id="Duration"><a class="viewcode-back" href="../../../../../computation.html#ocgis.calc.library.index.duration.Duration">[docs]</a><span class="k">class</span> <span class="nc">Duration</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AbstractUnivariateSetFunction</span><span class="p">,</span><span class="n">base</span><span class="o">.</span><span class="n">AbstractParameterizedFunction</span><span class="p">):</span>
     <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;duration&#39;</span>
     <span class="n">parms_definition</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;threshold&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span><span class="s">&#39;operation&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="s">&#39;summary&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">}</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+    <span class="c">## output data type will vary by the summary operation (e.g. float for mean,</span>
+    <span class="c">## int for max)</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">np_float</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Summarizes consecutive occurrences in a sequence where the logical operation returns TRUE. The summary operation is applied to the sequences within a temporal aggregation.&#39;</span>
     
 <div class="viewcode-block" id="Duration.calculate"><a class="viewcode-back" href="../../../../../computation.html#ocgis.calc.library.index.duration.Duration.calculate">[docs]</a>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">summary</span><span class="o">=</span><span class="s">&#39;mean&#39;</span><span class="p">):</span>
@@ -93,7 +95,7 @@
         <span class="c">## update the output mask. this only applies to geometries so pick the</span>
         <span class="c">## first masked time field</span>
         <span class="n">store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">store</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:])</span>
-        
+                
         <span class="k">return</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
     </div>
     <span class="k">def</span> <span class="nf">_iter_consecutive_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span><span class="n">operation</span><span class="p">):</span>
@@ -213,7 +215,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../../../index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>

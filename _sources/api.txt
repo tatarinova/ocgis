@@ -30,13 +30,6 @@ These are global parameters used by OpenClimateGIS. For those familiar with :mod
 :attr:`env.DIR_DATA` = `None`
  Directory(s) to search through to find data. If specified, this should be a sequence of directories. It may also be a single directory location. Note that the search may take considerable time if a very high level directory is chosen. If this variable is set, it is only necessary to specify the filename(s) when creating a :class:`~ocgis.RequestDataset`.
 
-..
-   :attr:`env.SERIAL` = `True`
-    If `True`, execute in serial. Only set to `False` if you are confident in your grasp of the software and its internal operation.
-
-   :attr:`env.CORES` = 6
-    If operating in parallel (i.e. :attr:`env.SERIAL` = `False`), specify the number of cores to use.
-
 :attr:`env.VERBOSE` = `False`
  Indicate if additional output information should be printed to terminal. (Currently not very useful.)
 
@@ -44,7 +37,7 @@ These are global parameters used by OpenClimateGIS. For those familiar with :mod
 ============================
 
 .. autoclass:: ocgis.OcgOperations
-   :members: execute
+   :members: execute, get_base_request_size
 
 Detailed Argument Information
 -----------------------------
@@ -179,9 +172,22 @@ The next example consumes all the months in a year.
 
 >>> calc_grouping = [[12,1,2],[3,4,5],[6,7,8],[9,10,11]]
 
+Unique, time sequential seasons are possible with the `'unique'` flag:
+
+>>> calc_grouping = [[12,1,2],'unique']
+
+For example, this returns a calculation based on values with date coordinates in:
+ * Dec 1900, Jan 1901, Feb 1901
+ * Dec 1901, Jan 1902, Feb 1902
+
 It is also possible to group the seasons by year.
 
 >>> calc_grouping = [[12,1,2],[3,4,5],[6,7,8],[9,10,11],'year']
+
+For example, this returns a calculation based on values with date coordinates in:
+ * 1900: Dec, Jan, Feb
+ * 1901: Dec, Jan, Feb
+ * 1902: Dec, Jan, Feb
 
 .. _calc_raw_headline:
 
@@ -311,6 +317,14 @@ interpolate_spatial_bounds
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If `True`, attempt to interpolate bounds coordinates if they are absent. This will also extrapolate exterior bounds to avoid losing spatial coverage.
+
+callback
+~~~~~~~~
+
+A callback function that may be used for custom messaging. This function integrates with the log handler and will receive messages at or above the :attr:`logging.INFO` level.
+
+>>> def callback(percent,message):
+>>>     print(percent,message)
 
 :class:`ocgis.ShpCabinet`
 =========================

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Python API &mdash; OpenClimateGIS 0.07.1b documentation</title>
+    <title>Python API &mdash; OpenClimateGIS 0.07.1b-trunk documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.07.1b',
+        VERSION:     '0.07.1b-trunk',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.07.1b documentation" href="index.html" />
+    <link rel="top" title="OpenClimateGIS 0.07.1b-trunk documentation" href="index.html" />
     <link rel="next" title="Computation" href="computation.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -73,8 +73,6 @@
 <dd>Location of the shapefile directory for use by <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a>.</dd>
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_DATA</span></tt> = <cite>None</cite></dt>
 <dd>Directory(s) to search through to find data. If specified, this should be a sequence of directories. It may also be a single directory location. Note that the search may take considerable time if a very high level directory is chosen. If this variable is set, it is only necessary to specify the filename(s) when creating a <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a>.</dd>
-</dl>
-<dl class="docutils">
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.VERBOSE</span></tt> = <cite>False</cite></dt>
 <dd>Indicate if additional output information should be printed to terminal. (Currently not very useful.)</dd>
 </dl>
@@ -83,7 +81,7 @@
 <h2><a class="reference internal" href="#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.OcgOperations</span></tt></a><a class="headerlink" href="#ocgis-ocgoperations" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.OcgOperations">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction=None</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output=None</em>, <em>slice=None</em>, <em>file_only=False</em>, <em>headers=None</em>, <em>format_time=True</em>, <em>calc_sample_size=False</em>, <em>search_radius_mult=0.75</em>, <em>output_crs=None</em>, <em>interpolate_spatial_bounds=False</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">OcgOperations</tt><big>(</big><em>dataset=None</em>, <em>spatial_operation='intersects'</em>, <em>geom=None</em>, <em>aggregate=False</em>, <em>calc=None</em>, <em>calc_grouping=None</em>, <em>calc_raw=False</em>, <em>abstraction=None</em>, <em>snippet=False</em>, <em>backend='ocg'</em>, <em>prefix=None</em>, <em>output_format='numpy'</em>, <em>agg_selection=False</em>, <em>select_ugid=None</em>, <em>vector_wrap=True</em>, <em>allow_empty=False</em>, <em>dir_output=None</em>, <em>slice=None</em>, <em>file_only=False</em>, <em>headers=None</em>, <em>format_time=True</em>, <em>calc_sample_size=False</em>, <em>search_radius_mult=0.75</em>, <em>output_crs=None</em>, <em>interpolate_spatial_bounds=False</em>, <em>add_auxiliary_files=True</em>, <em>optimizations=None</em>, <em>callback=None</em>, <em>time_range=None</em>, <em>time_region=None</em>, <em>level_range=None</em><big>)</big><a class="headerlink" href="#ocgis.OcgOperations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for OCGIS operations.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -108,29 +106,71 @@ validation and input formatting.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataset</strong> (<a class="reference internal" href="#ocgis.RequestDatasetCollection" title="ocgis.RequestDatasetCollection"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDatasetCollection</span></tt></a> or <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a>) &#8211; The target dataset(s) for the request. This is the only required parameter.</li>
 <li><strong>spatial_operation</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The geometric operation to be performed.</li>
-<li><strong>geom</strong> (<em>list of dict, list of float, str</em>) &#8211; The selection geometry(s) used for the spatial subset. If <cite>None</cite>, selection defaults to entire spatial domain.</li>
-<li><strong>aggregate</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, dataset geometries are aggregated to coincident selection geometries.</li>
+<li><strong>geom</strong> (<em>list of dict, list of float, str</em>) &#8211; The selection geometry(s) used for the spatial subset. If <cite>None</cite>, 
+selection defaults to entire spatial domain.</li>
+<li><strong>aggregate</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, dataset geometries are aggregated to coincident 
+selection geometries.</li>
 <li><strong>calc</strong> (<em>list of dictionaries</em>) &#8211; Calculations to be performed on the dataset subset.</li>
 <li><strong>calc_grouping</strong> (<em>list of str or int</em>) &#8211; Temporal grouping to apply for calculations.</li>
-<li><strong>calc_raw</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, perform calculations on the &#8220;raw&#8221; data regardless of <cite>aggregation</cite> flag.</li>
-<li><strong>abstraction</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The geometric abstraction to use for the dataset geometries. If <cite>None</cite> (the default), use the highest order geometry available.</li>
-<li><strong>snippet</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, return a data &#8220;snippet&#8221; composed of the first time point, first level (if applicable), and the entire spatial domain.</li>
+<li><strong>calc_raw</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, perform calculations on the &#8220;raw&#8221; data regardless 
+of <cite>aggregation</cite> flag.</li>
+<li><strong>abstraction</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The geometric abstraction to use for the dataset geometries. 
+If <cite>None</cite> (the default), use the highest order geometry available.</li>
+<li><strong>snippet</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, return a data &#8220;snippet&#8221; composed of the first time 
+point, first level (if applicable), and the entire spatial domain.</li>
 <li><strong>backend</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The processing backend to use.</li>
 <li><strong>prefix</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The output prefix to prepend to any output data filename.</li>
 <li><strong>output_format</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The desired output format.</li>
-<li><strong>agg_selection</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, the selection geometry will be aggregated prior to any spatial operations.</li>
-<li><strong>select_ugid</strong> (<em>list of integers</em>) &#8211; The unique identifiers of specific geometries contained in canned geometry datasets. These unique identifiers will be selected and used for spatial operations.</li>
+<li><strong>agg_selection</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, the selection geometry will be aggregated prior 
+to any spatial operations.</li>
+<li><strong>select_ugid</strong> (<em>list of integers</em>) &#8211; The unique identifiers of specific geometries contained 
+in canned geometry datasets. These unique identifiers will be selected and 
+used for spatial operations.</li>
 <li><strong>vector_wrap</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, keep any vector output on a -180 to 180 longitudinal domain.</li>
-<li><strong>allow_empty</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, do not raise an exception in the case of an empty geometric selection.</li>
-<li><strong>dir_output</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The output directory to which any disk format folders are written. If the directory does not exist, an exception will be raised. This will override <tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_OUTPUT</span></tt>.</li>
-<li><strong>headers</strong> (<em>sequence</em>) &#8211; A sequence of strings specifying the output headers. Default value of (&#8216;did&#8217;, &#8216;ugid&#8217;, &#8216;gid&#8217;) is always applied.</li>
-<li><strong>format_time</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite> (the default), attempt to coerce time values to datetime stamps. If <cite>False</cite>, pass values through without a coercion attempt.</li>
+<li><strong>allow_empty</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, do not raise an exception in the case of an empty 
+geometric selection.</li>
+<li><strong>dir_output</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The output directory to which any disk format folders are 
+written. If the directory does not exist, an exception will be raised. This 
+will override <tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_OUTPUT</span></tt>.</li>
+<li><strong>headers</strong> (<em>sequence</em>) &#8211; A sequence of strings specifying the output headers. Default 
+value of (&#8216;did&#8217;, &#8216;ugid&#8217;, &#8216;gid&#8217;) is always applied.</li>
+<li><strong>format_time</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite> (the default), attempt to coerce time values to 
+datetime stamps. If <cite>False</cite>, pass values through without a coercion attempt.</li>
 <li><strong>calc_sample_size</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, calculate statistical sample sizes for calculations.</li>
-<li><strong>output_crs</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ocgis.crs.CoordinateReferenceSystem</span></tt>) &#8211; If provided, all output geometries will be projected to match the provided CRS.</li>
-<li><strong>search_radius_mult</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; This value is multiplied by the target data&#8217;s spatial resolution to determine the buffer radius for point selection geometries.</li>
-<li><strong>interpolate_spatial_bounds</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True and no bounds are available, attempt to interpolate bounds from centroids.</li>
+<li><strong>output_crs</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ocgis.crs.CoordinateReferenceSystem</span></tt>) &#8211; If provided, all output geometries will be projected to match 
+the provided CRS.</li>
+<li><strong>search_radius_mult</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; This value is multiplied by the target data&#8217;s spatial 
+resolution to determine the buffer radius for point selection geometries.</li>
+<li><strong>interpolate_spatial_bounds</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True and no bounds are available, attempt 
+to interpolate bounds from centroids.</li>
+<li><strong>add_auxiliary_files</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True, create a new directory and add metadata 
+and other informational files in addition to the converted file. If False, write
+the target file only to <tt class="xref py py-attr docutils literal"><span class="pre">dir_output</span></tt> and do not create a new directory.</li>
+<li><strong>callback</strong> (<em>function</em>) &#8211; A function taking two parameters: <tt class="docutils literal"><span class="pre">percent_complete</span></tt>
+and <tt class="docutils literal"><span class="pre">message</span></tt>.</li>
+<li><strong>time_range</strong> ([<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>, <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>]) &#8211; Upper and lower bounds for time dimension subsetting. If 
+<cite>None</cite>, return all time points. Using this argument will overload all
+<a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a> <tt class="docutils literal"><span class="pre">time_range</span></tt> values.</li>
+<li><strong>time_region</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; A dictionary with keys of &#8216;month&#8217; and/or &#8216;year&#8217; and values 
+as sequences corresponding to target month and/or year values. Empty region 
+selection for a key may be set to <cite>None</cite>. Using this argument will overload all
+<a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a> <tt class="docutils literal"><span class="pre">time_region</span></tt> values.</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time_region</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;month&#39;</span><span class="p">:[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="s">&#39;year&#39;</span><span class="p">:[</span><span class="mi">2010</span><span class="p">,</span><span class="mi">2011</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time_region</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;year&#39;</span><span class="p">:[</span><span class="mi">2010</span><span class="p">]}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level_range</strong> (<em>[int/float, int/float]</em>) &#8211; Upper and lower bounds for level dimension subsetting. 
+If <cite>None</cite>, return all levels. Using this argument will overload all
+<a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a> <tt class="docutils literal"><span class="pre">level_range</span></tt> values.</td>
 </tr>
 </tbody>
 </table>
@@ -148,6 +188,40 @@ validation and input formatting.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="ocgis.OcgOperations.get_base_request_size">
+<tt class="descname">get_base_request_size</tt><big>(</big><big>)</big><a class="headerlink" href="#ocgis.OcgOperations.get_base_request_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the estimated request size in kilobytes. This is the estimated size
+of the requested data not the returned data product.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary with keys <tt class="docutils literal"><span class="pre">'total'</span></tt> and <tt class="docutils literal"><span class="pre">'variables'</span></tt>. The <tt class="docutils literal"><span class="pre">'variables'</span></tt>
+key maps a variable&#8217;s alias to its estimated value and dimension sizes, shapes, and
+data types.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ret</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">get_base_request_size</span><span class="p">()</span>
+<span class="go">{&#39;total&#39;:555.,</span>
+<span class="go"> &#39;variables&#39;:{</span>
+<span class="go">              &#39;tas&#39;:{</span>
+<span class="go">                     &#39;value&#39;:{&#39;kb&#39;:500.,&#39;shape&#39;:(1,300,1,10,10),&#39;dtype&#39;:dtype(&#39;float64&#39;)},</span>
+<span class="go">                     &#39;temporal&#39;:{&#39;kb&#39;:50.,&#39;shape&#39;:(300,),&#39;dtype&#39;:dtype(&#39;float64&#39;)},</span>
+<span class="go">                     &#39;level&#39;:{&#39;kb&#39;:o.,&#39;shape&#39;:None,&#39;dtype&#39;:None},</span>
+<span class="go">                     &#39;realization&#39;:{&#39;kb&#39;:0.,&#39;shape&#39;:None,&#39;dtype&#39;:None},</span>
+<span class="go">                     &#39;row&#39;:{&#39;kb&#39;:2.5,&#39;shape&#39;:(10,),&#39;dtype&#39;:dtype(&#39;float64&#39;)},</span>
+<span class="go">                     &#39;col&#39;:{&#39;kb&#39;:2.5,&#39;shape&#39;:(10,),&#39;dtype&#39;:dtype(&#39;float64&#39;)}</span>
+<span class="go">                     }</span>
+<span class="go">              }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <div class="section" id="detailed-argument-information">
@@ -158,7 +232,7 @@ validation and input formatting.</p>
 <p>A <cite>dataset</cite> is the target file(s) where data is stored. A <cite>dataset</cite> may be on the local machine or network location accessible by the software. Unsecured OpenDAP datasets may also be accessed.</p>
 <dl class="class">
 <dt id="ocgis.RequestDataset">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDataset</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>alias=None</em>, <em>time_range=None</em>, <em>time_region=None</em>, <em>level_range=None</em>, <em>s_crs=None</em>, <em>t_units=None</em>, <em>t_calendar=None</em>, <em>did=None</em>, <em>meta=None</em>, <em>s_abstraction=None</em>, <em>dimension_map=None</em><big>)</big><a class="headerlink" href="#ocgis.RequestDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDataset</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>alias=None</em>, <em>units=None</em>, <em>time_range=None</em>, <em>time_region=None</em>, <em>level_range=None</em>, <em>conform_units_to=None</em>, <em>s_crs=None</em>, <em>t_units=None</em>, <em>t_calendar=None</em>, <em>did=None</em>, <em>meta=None</em>, <em>s_abstraction=None</em>, <em>dimension_map=None</em><big>)</big><a class="headerlink" href="#ocgis.RequestDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> contains all the information necessary to find
 and subset a variable (by time and/or level) contained in a local or 
 OpenDAP-hosted CF dataset.</p>
@@ -175,9 +249,14 @@ OpenDAP-hosted CF dataset.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The absolute path (URLs included) to the dataset&#8217;s location.</li>
 <li><strong>variable</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The target variable.</li>
-<li><strong>alias</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; An alternative name to identify the returned variable&#8217;s data. If <cite>None</cite>, this defaults to <cite>variable</cite>. If variables having the same name occur in a request, this value will be required.</li>
-<li><strong>time_range</strong> ([<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>, <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>]) &#8211; Upper and lower bounds for time dimension subsetting. If <cite>None</cite>, return all time points.</li>
-<li><strong>time_region</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; A dictionary with keys of &#8216;month&#8217; and/or &#8216;year&#8217; and values as sequences corresponding to target month and/or year values. Empty region selection for a key may be set to <cite>None</cite>.</li>
+<li><strong>alias</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; An alternative name to identify the returned variable&#8217;s data. 
+If <cite>None</cite>, this defaults to <cite>variable</cite>. If variables having the same name occur 
+in a request, this value will be required.</li>
+<li><strong>time_range</strong> ([<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>, <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>]) &#8211; Upper and lower bounds for time dimension subsetting. If 
+<cite>None</cite>, return all time points.</li>
+<li><strong>time_region</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; A dictionary with keys of &#8216;month&#8217; and/or &#8216;year&#8217; and values 
+as sequences corresponding to target month and/or year values. Empty region 
+selection for a key may be set to <cite>None</cite>.</li>
 </ul>
 </td>
 </tr>
@@ -192,11 +271,14 @@ OpenDAP-hosted CF dataset.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>level_range</strong> (<em>[int, int]</em>) &#8211; Upper and lower bounds for level dimension subsetting. If <cite>None</cite>, return all levels.</li>
-<li><strong>s_crs</strong> &#8211; An ~`ocgis.interface.base.crs.CoordinateReferenceSystem` object to overload the projection autodiscovery.</li>
+<li><strong>level_range</strong> (<em>[int, int]</em>) &#8211; Upper and lower bounds for level dimension subsetting. If 
+<cite>None</cite>, return all levels.</li>
+<li><strong>s_crs</strong> (<cite>ocgis.interface.base.crs.CoordinateReferenceSystem</cite>) &#8211; An ~`ocgis.interface.base.crs.CoordinateReferenceSystem` object to overload the 
+coordinate system autodiscovery.</li>
 <li><strong>t_units</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Overload the autodiscover <a class="reference external" href="http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html#num2date">time units</a>.</li>
 <li><strong>t_calendar</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Overload the autodiscover <a class="reference external" href="http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html#num2date">time calendar</a>.</li>
-<li><strong>s_abstraction</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Abstract the geometry data to either &#8216;point&#8217; or &#8216;polygon&#8217;. If &#8216;polygon&#8217; is not possible due to missing bounds, &#8216;point&#8217; will be used instead.</li>
+<li><strong>s_abstraction</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Abstract the geometry data to either &#8216;point&#8217; or &#8216;polygon&#8217;. 
+If &#8216;polygon&#8217; is not possible due to missing bounds, &#8216;point&#8217; will be used instead.</li>
 </ul>
 </td>
 </tr>
@@ -210,13 +292,28 @@ OpenDAP-hosted CF dataset.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimension_map</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Maps dimensions to axes in the case of a projection/realization axis or an uncommon axis ordering. All axes must be in the dictionary.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimension_map</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Maps dimensions to axes in the case of a projection/realization 
+axis or an uncommon axis ordering. All axes must be in the dictionary.</td>
 </tr>
 </tbody>
 </table>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dimension_map</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;T&#39;</span><span class="p">:</span><span class="s">&#39;time&#39;</span><span class="p">,</span><span class="s">&#39;X&#39;</span><span class="p">:</span><span class="s">&#39;longitude&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">:</span><span class="s">&#39;latitude&#39;</span><span class="p">,</span><span class="s">&#39;R&#39;</span><span class="p">:</span><span class="s">&#39;projection&#39;</span><span class="p">}</span>
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>units</strong> (str or <tt class="xref py py-class docutils literal"><span class="pre">cfunits.Units</span></tt>) &#8211; The units of the source variable. This will be read from metadata
+if this value is <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+<li><strong>conform_units_to</strong> (str or <tt class="xref py py-class docutils literal"><span class="pre">cfunits.Units</span></tt>) &#8211; Destination units for conversion. If this parameter is
+set, then the <tt class="xref py py-mod docutils literal"><span class="pre">cfunits</span></tt> module must be installed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="ocgis.RequestDataset.inspect">
 <tt class="descname">inspect</tt><big>(</big><big>)</big><a class="headerlink" href="#ocgis.RequestDataset.inspect" title="Permalink to this definition">¶</a></dt>
@@ -254,8 +351,7 @@ and/or calendar attributes.</p>
 <dl class="class">
 <dt id="ocgis.RequestDatasetCollection">
 <em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">RequestDatasetCollection</tt><big>(</big><em>request_datasets=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#ocgis.RequestDatasetCollection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Contains business logic ensuring multiple <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> objects are
-compatible.</p>
+<dd><p>A set of <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.RequestDataset</span></tt></a> objects.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">RequestDatasetCollection</span><span class="p">,</span> <span class="n">RequestDataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">uris</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;http://some.opendap.dataset1&#39;</span><span class="p">,</span> <span class="s">&#39;http://some.opendap.dataset2&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tasmax&#39;</span><span class="p">,</span> <span class="s">&#39;tasmin&#39;</span><span class="p">]</span>
@@ -428,10 +524,31 @@ compatible.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">]]</span>
 </pre></div>
 </div>
+<p>Unique, time sequential seasons are possible with the <cite>&#8216;unique&#8217;</cite> flag:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s">&#39;unique&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>For example, this returns a calculation based on values with date coordinates in:</dt>
+<dd><ul class="first last simple">
+<li>Dec 1900, Jan 1901, Feb 1901</li>
+<li>Dec 1901, Jan 1902, Feb 1902</li>
+</ul>
+</dd>
+</dl>
 <p>It is also possible to group the seasons by year.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_grouping</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">],</span><span class="s">&#39;year&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<dl class="docutils">
+<dt>For example, this returns a calculation based on values with date coordinates in:</dt>
+<dd><ul class="first last simple">
+<li>1900: Dec, Jan, Feb</li>
+<li>1901: Dec, Jan, Feb</li>
+<li>1902: Dec, Jan, Feb</li>
+</ul>
+</dd>
+</dl>
 </div>
 <div class="section" id="calc-raw">
 <span id="calc-raw-headline"></span><h4>calc_raw<a class="headerlink" href="#calc-raw" title="Permalink to this headline">¶</a></h4>
@@ -665,6 +782,14 @@ compatible.</p>
 <h4>interpolate_spatial_bounds<a class="headerlink" href="#interpolate-spatial-bounds" title="Permalink to this headline">¶</a></h4>
 <p>If <cite>True</cite>, attempt to interpolate bounds coordinates if they are absent. This will also extrapolate exterior bounds to avoid losing spatial coverage.</p>
 </div>
+<div class="section" id="callback">
+<h4>callback<a class="headerlink" href="#callback" title="Permalink to this headline">¶</a></h4>
+<p>A callback function that may be used for custom messaging. This function integrates with the log handler and will receive messages at or above the <tt class="xref py py-attr docutils literal"><span class="pre">logging.INFO</span></tt> level.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">percent</span><span class="p">,</span><span class="n">message</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">print</span><span class="p">(</span><span class="n">percent</span><span class="p">,</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="ocgis-shpcabinet">
@@ -710,7 +835,7 @@ accessible location.</p>
 
 <dl class="method">
 <dt id="ocgis.ShpCabinet.iter_geoms">
-<tt class="descname">iter_geoms</tt><big>(</big><em>key=None</em>, <em>select_ugid=None</em>, <em>path=None</em><big>)</big><a class="headerlink" href="#ocgis.ShpCabinet.iter_geoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">iter_geoms</tt><big>(</big><em>key=None</em>, <em>select_ugid=None</em>, <em>path=None</em>, <em>load_geoms=True</em><big>)</big><a class="headerlink" href="#ocgis.ShpCabinet.iter_geoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over geometries from a shapefile specified by <tt class="docutils literal"><span class="pre">key</span></tt> or <tt class="docutils literal"><span class="pre">path</span></tt>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sc</span> <span class="o">=</span> <span class="n">ShpCabinet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">geoms</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">iter_geoms</span><span class="p">(</span><span class="s">&#39;state_boundaries&#39;</span><span class="p">,</span><span class="n">select_ugid</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">48</span><span class="p">])</span>
@@ -735,7 +860,7 @@ directory.</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>select_ugid</strong> (<em>sequence</em>) &#8211; Sequence of unique identifiers matching values from the 
-shapefile&#8217;s UGID attribute.</td>
+shapefile&#8217;s UGID attribute. Ascending order only.</td>
 </tr>
 </tbody>
 </table>
@@ -758,6 +883,11 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>load_geoms</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <tt class="docutils literal"><span class="pre">False</span></tt>, do not load geometries, excluding
+the <tt class="docutils literal"><span class="pre">'geom'</span></tt> key from the output dictionary.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">ValueError, RuntimeError</td>
+</tr>
 <tr class="field-odd field"><th class="field-name">Yields :</th><td class="field-body">dict</td>
 </tr>
 </tbody>
@@ -768,7 +898,7 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 
 <dl class="class">
 <dt id="ocgis.ShpCabinetIterator">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">ShpCabinetIterator</tt><big>(</big><em>key=None</em>, <em>select_ugid=None</em>, <em>path=None</em><big>)</big><a class="headerlink" href="#ocgis.ShpCabinetIterator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">ShpCabinetIterator</tt><big>(</big><em>key=None</em>, <em>select_ugid=None</em>, <em>path=None</em>, <em>load_geoms=True</em><big>)</big><a class="headerlink" href="#ocgis.ShpCabinetIterator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over a geometry selected by <tt class="docutils literal"><span class="pre">key</span></tt> or <tt class="docutils literal"><span class="pre">path</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -806,6 +936,15 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="s">&#39;/path/to/shapefile.shp&#39;</span>
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>load_geoms</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <tt class="docutils literal"><span class="pre">False</span></tt>, do not load geometries, excluding
+the <tt class="docutils literal"><span class="pre">'geom'</span></tt> key from the output dictionary.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="ocgis.ShpCabinetIterator.__iter__">
 <tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#ocgis.ShpCabinetIterator.__iter__" title="Permalink to this definition">¶</a></dt>
@@ -828,7 +967,7 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <h2><a class="reference internal" href="#ocgis.Inspect" title="ocgis.Inspect"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.Inspect</span></tt></a><a class="headerlink" href="#ocgis-inspect" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.Inspect">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">Inspect</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>interface_overload={}</em>, <em>request_dataset=None</em><big>)</big><a class="headerlink" href="#ocgis.Inspect" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">Inspect</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>interface_overload={}</em>, <em>request_dataset=None</em>, <em>meta=None</em><big>)</big><a class="headerlink" href="#ocgis.Inspect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inspect a local or remote dataset returning a printout similar to <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/ncdump.html">ncdump</a>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">Inspect</span>
 <span class="gp">...</span>
@@ -849,6 +988,7 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <li><strong>uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Absolute path to data&#8217;s location.</li>
 <li><strong>variable</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Specific variable to inspect.</li>
 <li><strong>interface_overload</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Overloads for autodiscover.</li>
+<li><strong>meta</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ocgis.NcMetadata</span></tt>) &#8211; Optional overload for the <tt class="xref py py-class docutils literal"><span class="pre">ocgis.NcMetadata</span></tt> creation.</li>
 </ul>
 </td>
 </tr>
@@ -907,12 +1047,6 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 </dd></dl>
 
 <dl class="data">
-<dt id="ocgis.constants.fill_value">
-<tt class="descclassname">ocgis.constants.</tt><tt class="descname">fill_value</tt><em class="property"> = 1e+20</em><a class="headerlink" href="#ocgis.constants.fill_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default fill value for masked data.</p>
-</dd></dl>
-
-<dl class="data">
 <dt id="ocgis.constants.multi_headers">
 <tt class="descclassname">ocgis.constants.</tt><tt class="descname">multi_headers</tt><em class="property"> = ['did', 'cid', 'ugid', 'tid', 'lid', 'gid', 'calc_key', 'calc_alias', 'time', 'year', 'month', 'day', 'level', 'value']</em><a class="headerlink" href="#ocgis.constants.multi_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Standard headers for multivariate calculations.</p>
@@ -922,6 +1056,12 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <dt id="ocgis.constants.name_bounds">
 <tt class="descclassname">ocgis.constants.</tt><tt class="descname">name_bounds</tt><em class="property"> = ['bounds', 'bnds', 'bound', 'bnd', 'd_bounds', 'd_bnds', 'd_bound', 'd_bnd']</em><a class="headerlink" href="#ocgis.constants.name_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Potential bounds names used to find the bounds dimension on a netCDF.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.netCDF_default_data_model">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">netCDF_default_data_model</tt><em class="property"> = 'NETCDF4_CLASSIC'</em><a class="headerlink" href="#ocgis.constants.netCDF_default_data_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default netCDF4 output file type</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -941,13 +1081,19 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <dl class="data">
 <dt id="ocgis.constants.ocgis_bounds">
 <tt class="descclassname">ocgis.constants.</tt><tt class="descname">ocgis_bounds</tt><em class="property"> = 'bounds'</em><a class="headerlink" href="#ocgis.constants.ocgis_bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Standard bounds name used bo OCGIS.</p>
+<dd><p>Standard bounds name used when none is available from the input data.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="ocgis.constants.output_formats">
 <tt class="descclassname">ocgis.constants.</tt><tt class="descname">output_formats</tt><em class="property"> = ['numpy', 'nc', 'csv', 'csv+', 'shp', 'geojson', 'meta']</em><a class="headerlink" href="#ocgis.constants.output_formats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Key identifiers for output formats.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.prefix_icclim_function_key">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">prefix_icclim_function_key</tt><em class="property"> = 'icclim'</em><a class="headerlink" href="#ocgis.constants.prefix_icclim_function_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function key prefix for the <cite>icclim</cite> indices library.</p>
 </dd></dl>
 
 <dl class="data">
@@ -1052,6 +1198,12 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 </dd></dl>
 
 <dl class="exception">
+<dt id="ocgis.exc.IncompleteSeasonError">
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">IncompleteSeasonError</tt><big>(</big><em>season</em>, <em>year=None</em>, <em>month=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#IncompleteSeasonError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.IncompleteSeasonError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ocgis.exc.OcgException" title="ocgis.exc.OcgException"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.exc.OcgException</span></tt></a></p>
+</dd></dl>
+
+<dl class="exception">
 <dt id="ocgis.exc.InterpreterException">
 <em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">InterpreterException</tt><big>(</big><em>message=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#InterpreterException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.InterpreterException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.exc.OcgException" title="ocgis.exc.OcgException"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.exc.OcgException</span></tt></a></p>
@@ -1067,6 +1219,14 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <dt id="ocgis.exc.MaskedDataError">
 <em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">MaskedDataError</tt><a class="reference internal" href="_modules/ocgis/exc.html#MaskedDataError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.MaskedDataError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ocgis.exc.SubsetException" title="ocgis.exc.SubsetException"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.exc.SubsetException</span></tt></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ocgis.exc.NoUnitsError">
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">NoUnitsError</tt><big>(</big><em>message=None</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#NoUnitsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.NoUnitsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ocgis.exc.OcgException" title="ocgis.exc.OcgException"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.exc.OcgException</span></tt></a></p>
+<p>Raised when a <tt class="xref py py-class docutils literal"><span class="pre">cfunits.Units</span></tt> object is constructed from a NoneType
+value.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1137,6 +1297,19 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <dd><p>Bases: <a class="reference internal" href="#ocgis.exc.OcgException" title="ocgis.exc.OcgException"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.exc.OcgException</span></tt></a></p>
 </dd></dl>
 
+<dl class="exception">
+<dt id="ocgis.exc.UnitsValidationError">
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">UnitsValidationError</tt><big>(</big><em>variable</em>, <em>required_units</em>, <em>calculation_key</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#UnitsValidationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.UnitsValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ocgis.exc.OcgException" title="ocgis.exc.OcgException"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.exc.OcgException</span></tt></a></p>
+<p>Raised when units validation fails.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ocgis.exc.VariableInCollectionError">
+<em class="property">exception </em><tt class="descclassname">ocgis.exc.</tt><tt class="descname">VariableInCollectionError</tt><big>(</big><em>variable</em><big>)</big><a class="reference internal" href="_modules/ocgis/exc.html#VariableInCollectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ocgis.exc.VariableInCollectionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ocgis.exc.OcgException" title="ocgis.exc.OcgException"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.exc.OcgException</span></tt></a></p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -1171,6 +1344,7 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
 <li><a class="reference internal" href="#allow-empty">allow_empty</a></li>
 <li><a class="reference internal" href="#headers">headers</a></li>
 <li><a class="reference internal" href="#interpolate-spatial-bounds">interpolate_spatial_bounds</a></li>
+<li><a class="reference internal" href="#callback">callback</a></li>
 </ul>
 </li>
 </ul>
@@ -1224,7 +1398,7 @@ provided it will override <tt class="docutils literal"><span class="pre">path</s
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li> 
+        <li><a href="index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

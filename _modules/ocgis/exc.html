@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.exc &mdash; OpenClimateGIS 0.07.1b documentation</title>
+    <title>ocgis.exc &mdash; OpenClimateGIS 0.07.1b-trunk documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.07.1b',
+        VERSION:     '0.07.1b-trunk',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.07.1b documentation" href="../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.07.1b-trunk documentation" href="../../index.html" />
     <link rel="up" title="ocgis" href="../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li>
+        <li><a href="../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -66,6 +66,16 @@
                                                                                         <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         
+</div>
+<div class="viewcode-block" id="VariableInCollectionError"><a class="viewcode-back" href="../../api.html#ocgis.exc.VariableInCollectionError">[docs]</a><span class="k">class</span> <span class="nc">VariableInCollectionError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Variable alias already in collection: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="SampleSizeNotImplemented"><a class="viewcode-back" href="../../api.html#ocgis.exc.SampleSizeNotImplemented">[docs]</a><span class="k">class</span> <span class="nc">SampleSizeNotImplemented</span><span class="p">(</span><span class="n">CalculationException</span><span class="p">):</span>
     <span class="k">pass</span>
@@ -200,7 +210,8 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span> <span class="ow">or</span> <span class="s">&#39;Empty data returned.&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
-        </div>
+
+</div>
 <div class="viewcode-block" id="EmptySubsetError"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptySubsetError">[docs]</a><span class="k">class</span> <span class="nc">EmptySubsetError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -208,6 +219,55 @@
         
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;A subset operation on dimension &quot;{0}&quot; returned empty.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="NoUnitsError"><a class="viewcode-back" href="../../api.html#ocgis.exc.NoUnitsError">[docs]</a><span class="k">class</span> <span class="nc">NoUnitsError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Raised when a :class:`cfunits.Units` object is constructed from a NoneType</span>
+<span class="sd">    value.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Variable has not been assigned units. Set the &quot;units&quot; attribute to continue.&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="UnitsValidationError"><a class="viewcode-back" href="../../api.html#ocgis.exc.UnitsValidationError">[docs]</a><span class="k">class</span> <span class="nc">UnitsValidationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Raised when units validation fails.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable</span><span class="p">,</span><span class="n">required_units</span><span class="p">,</span><span class="n">calculation_key</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">required_units</span> <span class="o">=</span> <span class="n">required_units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculation_key</span> <span class="o">=</span> <span class="n">calculation_key</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;There was an error in units validation for calculation&#39;</span>
+               <span class="s">&#39; with key &quot;{3}&quot;. The units on variable &quot;{0}&quot; (units=&quot;{2}&quot;)&#39;</span>
+               <span class="s">&#39; do not match the required units &quot;{1}&quot;. The units should&#39;</span>
+               <span class="s">&#39; be conformed or overloaded if incorrectly attributed.&#39;</span><span class="p">)</span><span class="o">.</span>\
+                       <span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">required_units</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">units</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">calculation_key</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="IncompleteSeasonError"><a class="viewcode-back" href="../../api.html#ocgis.exc.IncompleteSeasonError">[docs]</a><span class="k">class</span> <span class="nc">IncompleteSeasonError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+            
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">season</span><span class="p">,</span><span class="n">year</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">month</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">=</span> <span class="n">season</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="n">year</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">month</span> <span class="o">=</span> <span class="n">month</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The season specification &quot;{0}&quot; is missing the year &quot;{1}&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The season specification &quot;{0}&quot; is missing the month &quot;{1}&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
         <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 </pre></div>
 
@@ -236,7 +296,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li>
+        <li><a href="../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>

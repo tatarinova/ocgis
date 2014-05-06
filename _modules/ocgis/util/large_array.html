@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ocgis.util.large_array &mdash; OpenClimateGIS 0.07.1b-trunk documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.07.1b-trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.07.1b-trunk documentation" href="../../../index.html" />
+    <link rel="up" title="ocgis" href="../../ocgis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ocgis.util.large_array</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">ocgis</span>
+<span class="kn">from</span> <span class="nn">ocgis.calc</span> <span class="kn">import</span> <span class="n">tile</span>
+<span class="kn">import</span> <span class="nn">netCDF4</span> <span class="kn">as</span> <span class="nn">nc</span>
+<span class="kn">from</span> <span class="nn">ocgis.util.helpers</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ocgis.api.operations</span> <span class="kn">import</span> <span class="n">OcgOperations</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">ocgis.calc.engine</span> <span class="kn">import</span> <span class="n">OcgCalculationEngine</span>
+<span class="kn">from</span> <span class="nn">ocgis.calc.base</span> <span class="kn">import</span> <span class="n">AbstractMultivariateFunction</span>
+
+
+<div class="viewcode-block" id="compute"><a class="viewcode-back" href="../../../utility.html#ocgis.util.large_array.compute">[docs]</a><span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span> <span class="n">tile_dimension</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">use_optimizations</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used for computations on large arrays where memory limitations are a consideration. It is is also useful for</span>
+<span class="sd">    extracting data from a server that has limitations on the size of requested data arrays. This function creates an</span>
+<span class="sd">    empty destination NetCDF file that is then filled by executing the operations on chunks of the requested</span>
+<span class="sd">    target dataset(s) and filling the destination NetCDF file.</span>
+
+<span class="sd">    :param ops: The target operations to tile. There must be a calculation associated with</span>
+<span class="sd">     the operations.</span>
+<span class="sd">    :type ops: :class:`ocgis.OcgOperations`</span>
+<span class="sd">    :param int tile_dimension: The target tile/chunk dimension. This integer value must be greater than zero.</span>
+<span class="sd">    :param bool verbose: If ``True``, print more verbose information to terminal.</span>
+<span class="sd">    :param bool use_optimizations: If ``True``, cache :class:`Field` and :class:`TemporalGroupDimension` objects for</span>
+<span class="sd">     reuse during tile iteration.</span>
+<span class="sd">    :raises: AssertionError</span>
+<span class="sd">    :returns: Path to the output NetCDF file.</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    &gt;&gt;&gt; rd = RequestDataset(uri=&#39;/path/to/file&#39;,variable=&#39;tas&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ops = OcgOperations(dataset=rd,calc=[{&#39;func&#39;:&#39;mean&#39;,&#39;name&#39;:&#39;mean&#39;}],output_format=&#39;nc&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ret = compute(ops, 25)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c">## validate arguments</span>
+    <span class="k">assert</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span> <span class="n">OcgOperations</span><span class="p">))</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">calc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">output_format</span> <span class="o">==</span> <span class="s">&#39;nc&#39;</span><span class="p">)</span>
+    <span class="n">tile_dimension</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tile_dimension</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tile_dimension</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;&quot;tile_dimension&quot; must be greater than 0&#39;</span><span class="p">))</span>
+
+    <span class="c">## determine if we are working with a multivariate function</span>
+    <span class="k">if</span> <span class="n">OcgCalculationEngine</span><span class="o">.</span><span class="n">_check_calculation_members_</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">calc</span><span class="p">,</span> <span class="n">AbstractMultivariateFunction</span><span class="p">):</span>
+        <span class="c">## only one multivariate calculation allowed</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">calc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">has_multivariate</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c">## only one calculation allowed</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">has_multivariate</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c">## work on a copy of the operations to create the template file</span>
+    <span class="n">ops_file_only</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="c">## we need the output to be file only for the first request</span>
+    <span class="n">ops_file_only</span><span class="o">.</span><span class="n">file_only</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="c">## save the environment flag for calculation optimizations.</span>
+    <span class="n">orig_oc</span> <span class="o">=</span> <span class="n">ocgis</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">OPTIMIZE_FOR_CALC</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c">## tell the software we are optimizing for calculations   </span>
+        <span class="n">ocgis</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">OPTIMIZE_FOR_CALC</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="c">## first, write the template file</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;getting fill file...&#39;</span><span class="p">)</span>
+        <span class="n">fill_file</span> <span class="o">=</span> <span class="n">ops_file_only</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="c">## if there is a geometry, we have to find the offset for the slice. we</span>
+        <span class="c">## also need to account for the subset mask.</span>
+        <span class="k">if</span> <span class="n">ops</span><span class="o">.</span><span class="n">geom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;geometry subset is present. calculating slice offsets...&#39;</span><span class="p">)</span>
+            <span class="n">ops_offset</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+            <span class="n">ops_offset</span><span class="o">.</span><span class="n">output_format</span> <span class="o">=</span> <span class="s">&#39;numpy&#39;</span>
+            <span class="n">ops_offset</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">ops_offset</span><span class="o">.</span><span class="n">agg_selection</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">ops_offset</span><span class="o">.</span><span class="n">snippet</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">coll</span> <span class="o">=</span> <span class="n">ops_offset</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">coll</span><span class="o">.</span><span class="n">get_iter_melted</span><span class="p">():</span>
+                <span class="c">## assert the values are not loaded...</span>
+                <span class="k">assert</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;variable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="c">## assert only 3 or 4 dimensional data is being used</span>
+                <span class="k">assert</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;field&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape_as_dict</span><span class="p">[</span><span class="s">&#39;R&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">ref_spatial</span> <span class="o">=</span> <span class="n">coll</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">ops_offset</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">alias</span><span class="p">]</span><span class="o">.</span><span class="n">spatial</span>
+            <span class="n">row_offset</span> <span class="o">=</span> <span class="n">ref_spatial</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">_src_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">col_offset</span> <span class="o">=</span> <span class="n">ref_spatial</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">_src_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">mask_spatial</span> <span class="o">=</span> <span class="n">ref_spatial</span><span class="o">.</span><span class="n">get_mask</span><span class="p">()</span>
+        <span class="c">## otherwise the offset is zero...</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">row_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">col_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">mask_spatial</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c">## get the shape for the tile schema</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;getting tile schema shape inputs...&#39;</span><span class="p">)</span>
+        <span class="c">#        if has_multivariate == False:</span>
+        <span class="c">#            shp_variable = &#39;{0}_{1}&#39;.format(ops.calc[0][&#39;name&#39;],ops.dataset[0].alias)</span>
+        <span class="c">#        else:</span>
+        <span class="c">#            shp_variable = ops.calc[0][&#39;name&#39;]</span>
+        <span class="n">shp_variable</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">calc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">template_rd</span> <span class="o">=</span> <span class="n">ocgis</span><span class="o">.</span><span class="n">RequestDataset</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">fill_file</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">shp_variable</span><span class="p">)</span>
+        <span class="n">template_field</span> <span class="o">=</span> <span class="n">template_rd</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">shp</span> <span class="o">=</span> <span class="n">template_field</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+
+        <span class="k">if</span> <span class="n">use_optimizations</span><span class="p">:</span>
+            <span class="c">## if there is a calculation grouping, optimize for it. otherwise, pass</span>
+            <span class="c">## this value as None.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tgd_field</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">template_tgd</span> <span class="o">=</span> <span class="n">tgd_field</span><span class="o">.</span><span class="n">temporal</span><span class="o">.</span><span class="n">get_grouping</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ops</span><span class="o">.</span><span class="n">calc_grouping</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">has_multivariate</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">alias</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">__</span><span class="o">.</span><span class="n">alias</span> <span class="k">for</span> <span class="n">__</span> <span class="ow">in</span> <span class="n">ops</span><span class="o">.</span><span class="n">dataset</span><span class="p">])</span>
+                <span class="n">optimizations</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tgds&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">template_tgd</span><span class="p">}}</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">optimizations</span> <span class="o">=</span> <span class="bp">None</span>
+
+            <span class="c">## load the fields and pass those for optimization</span>
+            <span class="n">field_optimizations</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">rd</span> <span class="ow">in</span> <span class="n">ops</span><span class="o">.</span><span class="n">dataset</span><span class="p">:</span>
+                <span class="n">gotten_field</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">format_time</span><span class="o">=</span><span class="n">ops</span><span class="o">.</span><span class="n">format_time</span><span class="p">)</span>
+                <span class="n">field_optimizations</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">rd</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> <span class="n">gotten_field</span><span class="p">})</span>
+            <span class="n">optimizations</span> <span class="o">=</span> <span class="n">optimizations</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">optimizations</span><span class="p">[</span><span class="s">&#39;fields&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">field_optimizations</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">optimizations</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="s">&#39;getting tile schema...&#39;</span><span class="p">)</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="n">tile</span><span class="o">.</span><span class="n">get_tile_schema</span><span class="p">(</span><span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tile_dimension</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;output file is: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fill_file</span><span class="p">))</span>
+            <span class="n">lschema</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;tile count: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lschema</span><span class="p">))</span>
+
+        <span class="n">fds</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">fill_file</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="s">&#39;tiles progress&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ctr</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">schema</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c">## appropriate adjust the slices to account for the spatial subset</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="n">row_offset</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="s">&#39;row&#39;</span><span class="p">]]</span>
+                <span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="n">col_offset</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="s">&#39;col&#39;</span><span class="p">]]</span>
+                <span class="c">## copy the operations and modify arguments</span>
+                <span class="n">ops_slice</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+                <span class="n">ops_slice</span><span class="o">.</span><span class="n">geom</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">ops_slice</span><span class="o">.</span><span class="n">slice</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span>
+                <span class="n">ops_slice</span><span class="o">.</span><span class="n">output_format</span> <span class="o">=</span> <span class="s">&#39;numpy&#39;</span>
+                <span class="n">ops_slice</span><span class="o">.</span><span class="n">optimizations</span> <span class="o">=</span> <span class="n">optimizations</span>
+                <span class="c">## return the object slice</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ops_slice</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">field_map</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">field_map</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                        <span class="n">field_shape</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">shape_as_dict</span>
+                        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                            <span class="n">vref</span> <span class="o">=</span> <span class="n">fds</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span>
+                            <span class="k">assert</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">))</span>
+                            <span class="c">## we need to remove the offsets to adjust for the zero-based</span>
+                            <span class="c">## fill file.</span>
+                            <span class="n">slice_row</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">row_offset</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">row_offset</span><span class="p">)</span>
+                            <span class="n">slice_col</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">col_offset</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">col_offset</span><span class="p">)</span>
+                            <span class="c">## if there is a spatial mask, update accordingly</span>
+                            <span class="k">if</span> <span class="n">mask_spatial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                                <span class="n">fill_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+                                <span class="n">fill_mask</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">mask_spatial</span><span class="p">[</span><span class="n">slice_row</span><span class="p">,</span> <span class="n">slice_col</span><span class="p">]</span>
+                                <span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">fill_mask</span>
+                            <span class="c">## squeeze out extra dimensions from ocgis</span>
+                            <span class="n">fill_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                            <span class="c">## fill the netCDF container variable adjusting for shape</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vref</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                                <span class="n">reshape</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_shape</span><span class="p">[</span><span class="s">&#39;T&#39;</span><span class="p">],</span> <span class="n">field_shape</span><span class="p">[</span><span class="s">&#39;Y&#39;</span><span class="p">],</span> <span class="n">field_shape</span><span class="p">[</span><span class="s">&#39;X&#39;</span><span class="p">])</span>
+                                <span class="n">vref</span><span class="p">[:,</span> <span class="n">slice_row</span><span class="p">,</span> <span class="n">slice_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill_value</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">reshape</span><span class="p">)</span>
+                            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">vref</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                                <span class="n">reshape</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_shape</span><span class="p">[</span><span class="s">&#39;T&#39;</span><span class="p">],</span> <span class="n">field_shape</span><span class="p">[</span><span class="s">&#39;Z&#39;</span><span class="p">],</span> <span class="n">field_shape</span><span class="p">[</span><span class="s">&#39;Y&#39;</span><span class="p">],</span> <span class="n">field_shape</span><span class="p">[</span><span class="s">&#39;X&#39;</span><span class="p">])</span>
+                                <span class="n">vref</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slice_row</span><span class="p">,</span> <span class="n">slice_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill_value</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">reshape</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">vref</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+                            <span class="c">## write the data to disk</span>
+                            <span class="n">fds</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">ctr</span><span class="p">)</span> <span class="o">/</span> <span class="n">lschema</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">fds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">ocgis</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">OPTIMIZE_FOR_CALC</span> <span class="o">=</span> <span class="n">orig_oc</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">progress</span><span class="o">.</span><span class="n">endProgress</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;complete.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="n">fill_file</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../ocgis.html" >ocgis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, University of Michigan-Ann Arbor, Michigan Technological University, University of Colorado-Boulder.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

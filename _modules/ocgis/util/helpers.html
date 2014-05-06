@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.util.helpers &mdash; OpenClimateGIS 0.07.1b documentation</title>
+    <title>ocgis.util.helpers &mdash; OpenClimateGIS 0.07.1b-trunk documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.07.1b',
+        VERSION:     '0.07.1b-trunk',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.07.1b documentation" href="../../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.07.1b-trunk documentation" href="../../../index.html" />
     <link rel="up" title="ocgis" href="../../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -54,13 +54,196 @@
 <span class="kn">from</span> <span class="nn">shapely</span> <span class="kn">import</span> <span class="n">wkt</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span><span class="p">,</span> <span class="n">copy</span>
 <span class="kn">from</span> <span class="nn">ocgis.util.logging_ocgis</span> <span class="kn">import</span> <span class="n">ocgis_lh</span>
 <span class="kn">from</span> <span class="nn">osgeo.ogr</span> <span class="kn">import</span> <span class="n">CreateGeometryFromWkb</span>
 <span class="kn">from</span> <span class="nn">shapely.wkb</span> <span class="kn">import</span> <span class="n">loads</span> <span class="k">as</span> <span class="n">wkb_loads</span>
 <span class="kn">import</span> <span class="nn">fiona</span>
 <span class="kn">from</span> <span class="nn">shapely.geometry.geo</span> <span class="kn">import</span> <span class="n">mapping</span>
 
+
+<span class="k">def</span> <span class="nf">get_added_slice</span><span class="p">(</span><span class="n">slice1</span><span class="p">,</span><span class="n">slice2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    :param slice slice1:</span>
+<span class="sd">    :param slice slice2:</span>
+<span class="sd">    :raises AssertionError:</span>
+<span class="sd">    :returns slice:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">slice1</span><span class="o">.</span><span class="n">step</span> <span class="o">==</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">slice2</span><span class="o">.</span><span class="n">step</span> <span class="o">==</span> <span class="bp">None</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_add_</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="ow">or</span> <span class="mi">0</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="ow">or</span> <span class="mi">0</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
+    
+    <span class="n">start</span> <span class="o">=</span> <span class="n">_add_</span><span class="p">(</span><span class="n">slice1</span><span class="o">.</span><span class="n">start</span><span class="p">,</span><span class="n">slice2</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="n">_add_</span><span class="p">(</span><span class="n">slice1</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span><span class="n">slice2</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+    
+    <span class="k">return</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">))</span>
+                
+<span class="k">def</span> <span class="nf">get_trimmed_array_by_mask</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">return_adjustments</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns a slice of the masked array ``arr`` with masked rows and columns</span>
+<span class="sd">    removed.</span>
+<span class="sd">    </span>
+<span class="sd">    :param arr: Two-dimensional array object.</span>
+<span class="sd">    :type arr: :class:`numpy.ma.MaskedArray` or bool :class:`numpy.ndarray`</span>
+<span class="sd">    :param bool return_adjustments: If ``True``, return a dictionary with</span>
+<span class="sd">     values of index adjustments that may be added to a slice object.</span>
+<span class="sd">    :raises NotImplementedError:</span>
+<span class="sd">    :returns: :class:`numpy.ma.MaskedArray` or (:class:`numpy.ma.MaskedArray&#39;, {&#39;row&#39;:slice(...),&#39;col&#39;:slice(...)})</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_mask</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">mask</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c">## likely a boolean array</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">bool</span><span class="p">):</span>
+            <span class="n">_mask</span> <span class="o">=</span> <span class="n">arr</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;Array type is not implemented.&#39;</span><span class="p">))</span>
+    <span class="c">## row 0 to end</span>
+    <span class="n">start_row</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">idx_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">_mask</span><span class="p">[</span><span class="n">idx_row</span><span class="p">,:]</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">start_row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+        
+    <span class="c">## row end to 0</span>
+    <span class="n">stop_row</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">idx_row_adjust</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">__</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">_mask</span><span class="p">[</span><span class="n">stop_row</span><span class="o">-</span><span class="n">idx_row_adjust</span><span class="p">,:]</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">idx_row_adjust</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx_row_adjust</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="n">idx_row_adjust</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stop_row</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stop_row</span> <span class="o">=</span> <span class="n">stop_row</span> <span class="o">-</span> <span class="n">idx_row_adjust</span>
+        
+    <span class="c">## col 0 to end</span>
+    <span class="n">start_col</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">idx_col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">_mask</span><span class="p">[:,</span><span class="n">idx_col</span><span class="p">]</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">start_col</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+        
+    <span class="c">## col end to 0</span>
+    <span class="n">stop_col</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">idx_col_adjust</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">__</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">_mask</span><span class="p">[:,</span><span class="n">stop_col</span><span class="o">-</span><span class="n">idx_col_adjust</span><span class="p">,]</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">idx_col_adjust</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx_col_adjust</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="n">idx_col_adjust</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stop_col</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stop_col</span> <span class="o">=</span> <span class="n">stop_col</span> <span class="o">-</span> <span class="n">idx_col_adjust</span>
+    
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">start_row</span><span class="p">:</span><span class="n">stop_row</span><span class="p">,</span><span class="n">start_col</span><span class="p">:</span><span class="n">stop_col</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">return_adjustments</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">ret</span><span class="p">,{</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="nb">slice</span><span class="p">(</span><span class="n">start_row</span><span class="p">,</span><span class="n">stop_row</span><span class="p">),</span><span class="s">&#39;col&#39;</span><span class="p">:</span><span class="nb">slice</span><span class="p">(</span><span class="n">start_col</span><span class="p">,</span><span class="n">stop_col</span><span class="p">)})</span>
+        
+    <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        
+<span class="k">def</span> <span class="nf">get_rotated_pole_spatial_grid_dimension</span><span class="p">(</span><span class="n">crs</span><span class="p">,</span><span class="n">grid</span><span class="p">,</span><span class="n">inverse</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">rc_original</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    http://osgeo-org.1560.x6.nabble.com/Rotated-pole-coordinate-system-a-howto-td3885700.html</span>
+<span class="sd">    </span>
+<span class="sd">    :param :class:`ocgis.interface.base.crs.CFRotatedPole` crs:</span>
+<span class="sd">    :param :class:`ocgis.interface.base.dimension.spatial.SpatialGridDimension` grid:</span>
+<span class="sd">    :param bool inverse: If True, this is an inverse transformation.</span>
+<span class="sd">    :param dict rc_original: Contains original metadata information for the row and</span>
+<span class="sd">     column dimensions.</span>
+<span class="sd">    :returns :class:`ocgis.interface.base.dimension.spatial.SpatialGridDimension`:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">csv</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="k">class</span> <span class="nc">ProjDialect</span><span class="p">(</span><span class="n">csv</span><span class="o">.</span><span class="n">excel</span><span class="p">):</span>
+        <span class="n">lineterminator</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">delimiter</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">dialect</span><span class="o">=</span><span class="n">ProjDialect</span><span class="p">)</span>
+    <span class="n">new_mask</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+        <span class="n">_row</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">_col</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">,:,:]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">shp</span> <span class="o">=</span> <span class="p">(</span><span class="n">_row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">_col</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        
+        <span class="k">def</span> <span class="nf">_itr_writer_</span><span class="p">(</span><span class="n">_row</span><span class="p">,</span><span class="n">_col</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span><span class="n">col_idx</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">_row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="nb">range</span><span class="p">(</span><span class="n">_row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+                <span class="k">yield</span><span class="p">(</span><span class="n">_col</span><span class="p">[</span><span class="n">row_idx</span><span class="p">,</span><span class="n">col_idx</span><span class="p">],</span><span class="n">_row</span><span class="p">[</span><span class="n">row_idx</span><span class="p">,</span><span class="n">col_idx</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_row</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">_col</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">shp</span> <span class="o">=</span> <span class="p">(</span><span class="n">_row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">_col</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="k">def</span> <span class="nf">_itr_writer_</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span><span class="n">col_idx</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">_row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="nb">range</span><span class="p">(</span><span class="n">_col</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="k">yield</span><span class="p">(</span><span class="n">_col</span><span class="p">[</span><span class="n">col_idx</span><span class="p">],</span><span class="n">_row</span><span class="p">[</span><span class="n">row_idx</span><span class="p">])</span>
+<span class="c">#    uid = np.arange(1,(shp[0]*shp[1])+1,dtype=int).reshape(*shp)</span>
+<span class="c">#    uid = np.ma.array(data=uid,mask=False)</span>
+<span class="c">#    for row_idx,col_idx in itertools.product(range(_row.shape[0]),range(_col.shape[0])):</span>
+    <span class="k">for</span> <span class="n">xy</span> <span class="ow">in</span> <span class="n">_itr_writer_</span><span class="p">(</span><span class="n">_row</span><span class="p">,</span><span class="n">_col</span><span class="p">):</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">crs</span><span class="o">.</span><span class="n">_trans_proj</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+        <span class="n">program</span> <span class="o">=</span> <span class="s">&#39;invproj&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">program</span> <span class="o">=</span> <span class="s">&#39;proj&#39;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">program</span><span class="p">,</span><span class="s">&#39;-f&#39;</span><span class="p">,</span><span class="s">&#39;&quot;</span><span class="si">%.6f</span><span class="s">&quot;&#39;</span><span class="p">,</span><span class="s">&#39;-m&#39;</span><span class="p">,</span><span class="s">&#39;57.2957795130823&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">cmd</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">new_coords</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">coord</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&quot;&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span><span class="n">coord</span><span class="p">)</span>
+        <span class="c">## likely empty string</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="n">new_coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+        
+    <span class="n">new_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_coords</span><span class="p">)</span>
+    <span class="n">new_row</span> <span class="o">=</span> <span class="n">new_coords</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">shp</span><span class="p">)</span>
+    <span class="n">new_col</span> <span class="o">=</span> <span class="n">new_coords</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">shp</span><span class="p">)</span>
+    
+    <span class="n">new_grid</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="c">## reset geometries</span>
+    <span class="n">new_grid</span><span class="o">.</span><span class="n">_geom</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">ocgis.interface.base.dimension.base</span> <span class="kn">import</span> <span class="n">VectorDimension</span>
+        <span class="n">new_row</span> <span class="o">=</span> <span class="n">new_row</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">new_col</span> <span class="o">=</span> <span class="n">new_col</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
+        <span class="n">new_grid</span><span class="o">.</span><span class="n">row</span> <span class="o">=</span> <span class="n">VectorDimension</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">new_row</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">rc_original</span><span class="p">[</span><span class="s">&#39;row&#39;</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">meta</span><span class="o">=</span><span class="n">rc_original</span><span class="p">[</span><span class="s">&#39;row&#39;</span><span class="p">][</span><span class="s">&#39;meta&#39;</span><span class="p">])</span>
+        <span class="n">new_grid</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">VectorDimension</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">new_col</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">rc_original</span><span class="p">[</span><span class="s">&#39;col&#39;</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">meta</span><span class="o">=</span><span class="n">rc_original</span><span class="p">[</span><span class="s">&#39;col&#39;</span><span class="p">][</span><span class="s">&#39;meta&#39;</span><span class="p">])</span>
+        <span class="n">new_col</span><span class="p">,</span><span class="n">new_row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">new_col</span><span class="p">,</span><span class="n">new_row</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_grid</span><span class="o">.</span><span class="n">_row_src_idx</span> <span class="o">=</span> <span class="n">new_grid</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">_src_idx</span>
+        <span class="n">new_grid</span><span class="o">.</span><span class="n">_col_src_idx</span> <span class="o">=</span> <span class="n">new_grid</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">_src_idx</span>
+        <span class="n">new_grid</span><span class="o">.</span><span class="n">row</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">new_grid</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">new_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="nb">list</span><span class="p">(</span><span class="n">new_row</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">new_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_value</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="n">new_mask</span><span class="p">)</span>
+    <span class="n">new_value</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">new_row</span>
+    <span class="n">new_value</span><span class="p">[</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">new_col</span>
+    <span class="n">new_grid</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">new_value</span>
+            
+    <span class="k">return</span><span class="p">(</span><span class="n">new_grid</span><span class="p">)</span>
 
 <div class="viewcode-block" id="get_interpolated_bounds"><a class="viewcode-back" href="../../../utility.html#ocgis.util.helpers.get_interpolated_bounds">[docs]</a><span class="k">def</span> <span class="nf">get_interpolated_bounds</span><span class="p">(</span><span class="n">centroids</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -132,41 +315,41 @@
 
 <span class="k">class</span> <span class="nc">FionaMaker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
             
-            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">,</span><span class="n">driver</span><span class="o">=</span><span class="s">&#39;ESRI Shapefile&#39;</span><span class="p">,</span><span class="n">geometry</span><span class="o">=</span><span class="s">&#39;Polygon&#39;</span><span class="p">):</span>
-                <span class="k">assert</span><span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">crs</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">from_epsg</span><span class="p">(</span><span class="n">epsg</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;UGID&#39;</span><span class="p">:</span><span class="s">&#39;int&#39;</span><span class="p">,</span><span class="s">&#39;NAME&#39;</span><span class="p">:</span><span class="s">&#39;str&#39;</span><span class="p">}</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;geometry&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
-                               <span class="s">&#39;properties&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">}</span>
-                                
-            <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ugid</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">,</span><span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span><span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span><span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
-                <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            
-            <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                
-            <span class="k">def</span> <span class="nf">make_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dct</span><span class="p">):</span>
-                <span class="n">properties</span> <span class="o">=</span> <span class="n">dct</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">geom</span> <span class="o">=</span> <span class="n">wkt</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;wkt&#39;</span><span class="p">))</span>
-                <span class="n">properties</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;UGID&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ugid</span><span class="p">})</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ugid</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">record</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;geometry&#39;</span><span class="p">:</span><span class="n">mapping</span><span class="p">(</span><span class="n">geom</span><span class="p">),</span>
-                          <span class="s">&#39;properties&#39;</span><span class="p">:</span><span class="n">properties</span><span class="p">}</span>
-                <span class="k">return</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
-            
-            <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sequence_or_dct</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence_or_dct</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
-                    <span class="n">itr</span> <span class="o">=</span> <span class="p">[</span><span class="n">sequence_or_dct</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">itr</span> <span class="o">=</span> <span class="n">sequence_or_dct</span>
-                <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">itr</span><span class="p">:</span>
-                    <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_record</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">,</span><span class="n">driver</span><span class="o">=</span><span class="s">&#39;ESRI Shapefile&#39;</span><span class="p">,</span><span class="n">geometry</span><span class="o">=</span><span class="s">&#39;Polygon&#39;</span><span class="p">):</span>
+        <span class="k">assert</span><span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crs</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">from_epsg</span><span class="p">(</span><span class="n">epsg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;UGID&#39;</span><span class="p">:</span><span class="s">&#39;int&#39;</span><span class="p">,</span><span class="s">&#39;NAME&#39;</span><span class="p">:</span><span class="s">&#39;str&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;geometry&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+                       <span class="s">&#39;properties&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">}</span>
+                        
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ugid</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">,</span><span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span><span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span><span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">make_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dct</span><span class="p">):</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">dct</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">wkt</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;wkt&#39;</span><span class="p">))</span>
+        <span class="n">properties</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;UGID&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_ugid</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ugid</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;geometry&#39;</span><span class="p">:</span><span class="n">mapping</span><span class="p">(</span><span class="n">geom</span><span class="p">),</span>
+                  <span class="s">&#39;properties&#39;</span><span class="p">:</span><span class="n">properties</span><span class="p">}</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sequence_or_dct</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence_or_dct</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+            <span class="n">itr</span> <span class="o">=</span> <span class="p">[</span><span class="n">sequence_or_dct</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">itr</span> <span class="o">=</span> <span class="n">sequence_or_dct</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">itr</span><span class="p">:</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_record</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
     
 
 <span class="k">def</span> <span class="nf">project_shapely_geometry</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="n">from_sr</span><span class="p">,</span><span class="n">to_sr</span><span class="p">):</span>
@@ -921,7 +1104,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>
