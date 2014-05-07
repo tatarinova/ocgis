@@ -74,6 +74,8 @@
 <span class="sd">    :returns: Path to the output NetCDF file.</span>
 <span class="sd">    :rtype: str</span>
 
+<span class="sd">    &gt;&gt;&gt; from ocgis import RequestDataset, OcgOperations</span>
+<span class="sd">    &gt;&gt;&gt; from ocgis.util.large_array import compute</span>
 <span class="sd">    &gt;&gt;&gt; rd = RequestDataset(uri=&#39;/path/to/file&#39;,variable=&#39;tas&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; ops = OcgOperations(dataset=rd,calc=[{&#39;func&#39;:&#39;mean&#39;,&#39;name&#39;:&#39;mean&#39;}],output_format=&#39;nc&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; ret = compute(ops, 25)</span>
