@@ -55,83 +55,176 @@
 <p class="first admonition-title">Note</p>
 <p class="last">First, make sure <a class="reference external" href="http://www.python.org/download/releases/2.7/">Python 2.7</a> is installed and available on your system path.</p>
 </div>
-<div class="section" id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>Additional information on software dependencies may be found on the project&#8217;s <a class="reference external" href="http://www.earthsystemcog.org/projects/openclimategis/dependencies">CoG dependency page</a>.</p>
-<div class="section" id="linux-debian-ubuntu">
-<h3>Linux (Debian/Ubuntu)<a class="headerlink" href="#linux-debian-ubuntu" title="Permalink to this headline">¶</a></h3>
-<p>A number of dependencies may be installed from the package repository and using Python&#8217;s <cite>easy_install</cite>:</p>
+<div class="section" id="required-dependencies">
+<h2>Required Dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="8%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Package Name</th>
+<th class="head">Version</th>
+<th class="head">URL</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Python</td>
+<td>2.7.2</td>
+<td><a class="reference external" href="http://www.python.org/download/releases/2.7.2/">http://www.python.org/download/releases/2.7.2/</a></td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">osgeo</span></tt></td>
+<td>1.9.1</td>
+<td><a class="reference external" href="http://pypi.python.org/pypi/GDAL/">http://pypi.python.org/pypi/GDAL/</a></td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">shapely</span></tt></td>
+<td>1.2</td>
+<td><a class="reference external" href="http://pypi.python.org/pypi/Shapely">http://pypi.python.org/pypi/Shapely</a></td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">fiona</span></tt></td>
+<td>1.0.2</td>
+<td><a class="reference external" href="https://pypi.python.org/pypi/Fiona">https://pypi.python.org/pypi/Fiona</a></td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">numpy</span></tt></td>
+<td>1.6.2</td>
+<td><a class="reference external" href="http://sourceforge.net/projects/numpy/files/NumPy/1.6.2/">http://sourceforge.net/projects/numpy/files/NumPy/1.6.2/</a></td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">netCDF4</span></tt></td>
+<td>1.2</td>
+<td><a class="reference external" href="http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html">http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="optional-dependencies">
+<h2>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>There are two optional dependencies. OpenClimateGIS will still operate without these libraries installed but functionality and performance may change.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="4%" />
+<col width="21%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Package Name</th>
+<th class="head">Version</th>
+<th class="head">URL</th>
+<th class="head">Usage</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">rtree</span></tt></td>
+<td>2.7.2</td>
+<td><a class="reference external" href="https://pypi.python.org/pypi/Rtree/">https://pypi.python.org/pypi/Rtree/</a></td>
+<td>Constructs spatial indexes at runtime. Useful for complicated GIS operations (i.e. large or complex polygons for subsetting)</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">cfunits</span></tt></td>
+<td>0.9.6</td>
+<td><a class="reference external" href="https://code.google.com/p/cfunits-python/">https://code.google.com/p/cfunits-python/</a></td>
+<td>Allows unit transformations for <tt class="docutils literal"><span class="pre">conform_units_to</span></tt> argument to <a class="reference internal" href="api.html#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a> or <a class="reference internal" href="api.html#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">OcgOperations</span></tt></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ubuntu-linux">
+<h2>Ubuntu Linux<a class="headerlink" href="#ubuntu-linux" title="Permalink to this headline">¶</a></h2>
+<p>The recommended install method uses hosted packages. These steps also install optional packages.</p>
 <div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> apt-get update
-<span class="o">[</span>sudo<span class="o">]</span> apt-get install g++ libz-dev curl wget python-dev python-setuptools python-gdal
-<span class="o">[</span>sudo<span class="o">]</span> easy_install shapely
-<span class="o">[</span>sudo<span class="o">]</span> easy_install fiona
-</pre></div>
-</div>
-<dl class="docutils" id="netcdf4-python-install">
-<dt>Installing <a class="reference external" href="http://code.google.com/p/netcdf4-python/">netcdf4-python</a> is slightly more complex:</dt>
-<dd><ul class="first last simple">
-<li>The <a class="reference external" href="http://code.google.com/p/netcdf4-python/">netcdf4-python</a> tarball may be downloaded here: <a class="reference external" href="http://code.google.com/p/netcdf4-python/downloads/list">http://code.google.com/p/netcdf4-python/downloads/list</a>.</li>
-<li>Good instructions describing what to do after you have it are available here: <a class="reference external" href="http://code.google.com/p/netcdf4-python/wiki/UbuntuInstall">http://code.google.com/p/netcdf4-python/wiki/UbuntuInstall</a>.</li>
-</ul>
-</dd>
-</dl>
-<p>You may attempt to use this set of terminal commands (file names and URLs may need to be updated):</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="nv">SRC</span><span class="o">=</span>&lt;path-to-source-file-storage&gt;
-<span class="nv">PREFIX</span><span class="o">=</span>/usr/local
-<span class="nv">HDF5</span><span class="o">=</span>hdf5-1.8.1.10-patch1
-<span class="nv">NETCDF4</span><span class="o">=</span>netcdf-4.2.1
-<span class="nv">NETCDF4_PYTHON</span><span class="o">=</span>netCDF4-1.0.4
+<span class="o">[</span>sudo<span class="o">]</span> apt-get install wget libnetcdf-dev libgeos-dev libgdal-dev libspatialindex-dev libudunits2-0 python-pip python-dev
+<span class="o">[</span>sudo<span class="o">]</span> pip install numpy
+<span class="o">[</span>sudo<span class="o">]</span> pip install netCDF4
+<span class="o">[</span>sudo<span class="o">]</span> pip install shapely
+<span class="o">[</span>sudo<span class="o">]</span> pip install fiona
+<span class="o">[</span>sudo<span class="o">]</span> pip install rtree
 
-<span class="c">## HDF5 ##</span>
-<span class="nb">cd</span> <span class="nv">$SRC</span>
-wget http://www.hdfgroup.org/ftp/HDF5/current/src/<span class="nv">$HDF5</span>.tar.gz
-tar -xzvf <span class="nv">$HDF5</span>.tar.gz
-<span class="nb">cd</span> <span class="nv">$HDF5</span>
-./configure --prefix<span class="o">=</span><span class="nv">$PREFIX</span> --enable-shared --enable-hl
-make
-<span class="o">[</span>sudo<span class="o">]</span> make install
+<span class="c">###########</span>
+<span class="c">## osgeo ##</span>
+<span class="c">###########</span>
 
-<span class="c">## NetCDF4 ##</span>
-<span class="nb">cd</span> <span class="nv">$SRC</span>
-wget ftp://ftp.unidata.ucar.edu/pub/netcdf/<span class="nv">$NETCDF4</span>.tar.gz
-tar -xzvf <span class="nv">$NETCDF4</span>.tar.gz
-<span class="nb">cd</span> <span class="nv">$NETCDF4</span>
-<span class="nv">LDFLAGS</span><span class="o">=</span>-L<span class="nv">$PREFIX</span>/lib
-<span class="nv">CPPFLAGS</span><span class="o">=</span>-I<span class="nv">$PREFIX</span>/include
-./configure --enable-netcdf-4 --enable-dap --enable-shared --prefix<span class="o">=</span><span class="nv">$PREFIX</span>
-make
-<span class="o">[</span>sudo<span class="o">]</span> make install
-
-<span class="c">## netCDF4-python ##</span>
-<span class="nb">cd</span> <span class="nv">$SRC</span>
-<span class="c"># the &quot;ldconfig&quot; is not necessary for Mac OS X</span>
-<span class="o">[</span>sudo<span class="o">]</span> ldconfig
-wget http://netcdf4-python.googlecode.com/files/<span class="nv">$NETCDF4_PYTHON</span>.tar.gz
-tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
-<span class="nb">cd</span> <span class="nv">$NETCDF4_PYTHON</span>
+<span class="c">## http://stackoverflow.com/questions/11336153/python-gdal-package-missing-header-file-when-installing-via-pip</span>
+pip install --no-install GDAL
+<span class="nb">cd</span> /tmp/pip_build_ubuntu/GDAL
+python setup.py build_ext --include-dirs<span class="o">=</span>/usr/include/gdal
 <span class="o">[</span>sudo<span class="o">]</span> python setup.py install
+
+<span class="c">#############</span>
+<span class="c">## cfunits ##</span>
+<span class="c">#############</span>
+
+<span class="nv">SRCDIR</span><span class="o">=</span>/tmp/build_cfunits
+<span class="nv">CFUNITS_VER</span><span class="o">=</span>0.9.6
+<span class="nv">CFUNITS_SRC</span><span class="o">=</span><span class="nv">$SRCDIR</span>/cfunits-python/v<span class="nv">$CFUNITS_VER</span>
+<span class="nv">CFUNITS_TARBALL</span><span class="o">=</span>cfunits-<span class="nv">$CFUNITS_VER</span>.tar.gz
+<span class="nv">CFUNITS_URL</span><span class="o">=</span>https://cfunits-python.googlecode.com/files/<span class="nv">$CFUNITS_TARBALL</span>
+
+mkdir -p <span class="nv">$CFUNITS_SRC</span>
+<span class="nb">cd</span> <span class="nv">$CFUNITS_SRC</span>
+wget <span class="nv">$CFUNITS_URL</span>
+tar -xzvf <span class="nv">$CFUNITS_TARBALL</span>
+<span class="nb">cd </span>cfunits-<span class="nv">$CFUNITS_VER</span>
+<span class="o">[</span>sudo<span class="o">]</span> python setup.py install
+<span class="c">## installation does not copy UDUNITS database</span>
+<span class="nv">CFUNITS_SETUP_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>
+<span class="nb">cd</span>
+python -c <span class="s1">&#39;import cfunits,os,subprocess;cfunits_path=os.path.split(cfunits.__file__)[0];subprocess.call([&quot;export&quot;,&quot;CFUNITS_INSTALL_DIR={0}&quot;.format(cfunits_path)],shell=True)&#39;</span>
+<span class="o">[</span>sudo<span class="o">]</span> cp -r <span class="nv">$CFUNITS_SETUP_DIR</span>/cfunits/etc <span class="nv">$CFUNITS_INSTALL_DIR</span>
 </pre></div>
 </div>
-<p>Dependencies may also be built entirely from source. A <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/sh/install_geospatial.sh">bash script</a> is available containing a command structure for installing most of the OpenClimateGIS dependencies (no need to install PostGIS).</p>
+<div class="section" id="package-notes">
+<h3>Package Notes<a class="headerlink" href="#package-notes" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Apt-Package</th>
+<th class="head">Why?</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>libgdal-dev</td>
+<td><tt class="docutils literal"><span class="pre">shapely</span></tt>, <tt class="docutils literal"><span class="pre">osgeo</span></tt>, and <tt class="docutils literal"><span class="pre">fiona</span></tt></td>
+</tr>
+<tr class="row-odd"><td>libgeos-dev</td>
+<td><tt class="docutils literal"><span class="pre">shapely</span></tt> speedups</td>
+</tr>
+<tr class="row-even"><td>libnetcdf-dev</td>
+<td><tt class="docutils literal"><span class="pre">netCDF4</span></tt></td>
+</tr>
+<tr class="row-odd"><td>libspatialindex-dev</td>
+<td><tt class="docutils literal"><span class="pre">rtree</span></tt></td>
+</tr>
+<tr class="row-even"><td>libudunits2-0</td>
+<td><tt class="docutils literal"><span class="pre">cfunits</span></tt></td>
+</tr>
+<tr class="row-odd"><td>python-dev</td>
+<td>needed at least for <tt class="docutils literal"><span class="pre">numpy</span></tt></td>
+</tr>
+<tr class="row-even"><td>python-pip</td>
+<td>all <tt class="docutils literal"><span class="pre">pip</span></tt> installed Python packages</td>
+</tr>
+<tr class="row-odd"><td>wget</td>
+<td><tt class="docutils literal"><span class="pre">cfunits</span></tt> installation</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section" id="mac-os-x">
-<h3>Mac OS X<a class="headerlink" href="#mac-os-x" title="Permalink to this headline">¶</a></h3>
-<ol class="arabic">
-<li><p class="first">Download and install GDAL from a pre-packaged DMG installer: <a class="reference external" href="http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg">http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg</a>.</p>
-</li>
-<li><p class="first">Download and extract Shapely from: <a class="reference external" href="https://pypi.python.org/pypi/Shapely">https://pypi.python.org/pypi/Shapely</a>. Navigate into extracted folder. Then run:</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python setup.py install
-</pre></div>
+<div class="section" id="building-from-source">
+<h3>Building from Source<a class="headerlink" href="#building-from-source" title="Permalink to this headline">¶</a></h3>
+<p>Dependencies may also be built entirely from source. A <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/sh/install_geospatial.sh">bash script</a> is available containing a command structure for installing most of the OpenClimateGIS dependencies.</p>
 </div>
-</li>
-<li><p class="first">Follow the instructions on installing <a class="reference internal" href="#netcdf4-python-install"><em>netCDF4 Python</em></a>.</p>
-</li>
-</ol>
 </div>
-<div class="section" id="windows">
-<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="mac-os-x-notes">
+<h2>Mac OS X Notes<a class="headerlink" href="#mac-os-x-notes" title="Permalink to this headline">¶</a></h2>
+<p>Download and install GDAL from a pre-packaged DMG installer: <a class="reference external" href="http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg">http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg</a></p>
+</div>
+<div class="section" id="windows-notes">
+<h2>Windows Notes<a class="headerlink" href="#windows-notes" title="Permalink to this headline">¶</a></h2>
 <p>OpenClimateGIS has not been tested on Windows platforms. All libraries are theoretically supported.</p>
-</div>
+<p>There are a number of unofficial Windows binaries for Python extensions available here: <a class="reference external" href="http://www.lfd.uci.edu/~gohlke/pythonlibs/">http://www.lfd.uci.edu/~gohlke/pythonlibs/</a></p>
 </div>
 <div class="section" id="installing-openclimategis">
 <h2>Installing OpenClimateGIS<a class="headerlink" href="#installing-openclimategis" title="Permalink to this headline">¶</a></h2>
@@ -139,7 +232,7 @@ tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
 <li>Download the current release: <a class="reference external" href="http://www.earthsystemmodeling.org/ocgis_releases/beta_releases/ocgis-0.07.1b/reg/OCGIS_Framework_Reg.html">http://www.earthsystemmodeling.org/ocgis_releases/beta_releases/ocgis-0.07.1b/reg/OCGIS_Framework_Reg.html</a>.</li>
 <li>Extract the file using your favorite extraction utility.</li>
 <li>Navigate into extracted directory.</li>
-<li>Run the system command:</li>
+<li>Run the command:</li>
 </ol>
 <div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> python setup.py install
 </pre></div>
@@ -156,12 +249,12 @@ tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
 </div>
 <div class="section" id="configuring-the-shpcabinet">
 <h3>Configuring the <a class="reference internal" href="api.html#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a><a class="headerlink" href="#configuring-the-shpcabinet" title="Permalink to this headline">¶</a></h3>
-<p>Set the path to the directory containing the shapefile folders in <tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt>.</p>
+<p>Set the path to the directory containing the shapefile folders in <tt class="xref py py-attr docutils literal"><span class="pre">ocgis.env.DIR_SHPCABINET</span></tt>. You may also set the system environment variable <tt class="docutils literal"><span class="pre">OCGIS_DIR_SHPCABINET</span></tt>.</p>
 </div>
 </div>
 <div class="section" id="uninstalling-openclimategis">
 <h2>Uninstalling OpenClimateGIS<a class="headerlink" href="#uninstalling-openclimategis" title="Permalink to this headline">¶</a></h2>
-<p>The <cite>uninstall</cite> command will simply provide you with the directory location of the OpenClimateGIS package. This must be manually removed.</p>
+<p>The <tt class="docutils literal"><span class="pre">uninstall</span></tt> command will simply provide you with the directory location of the OpenClimateGIS package. This must be manually removed.</p>
 <div class="highlight-sh"><div class="highlight"><pre>python setup.py uninstall
 </pre></div>
 </div>
@@ -177,12 +270,15 @@ tar -xzvf <span class="nv">$NETCDF4_PYTHON</span>.tar.gz
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
-<li><a class="reference internal" href="#linux-debian-ubuntu">Linux (Debian/Ubuntu)</a></li>
-<li><a class="reference internal" href="#mac-os-x">Mac OS X</a></li>
-<li><a class="reference internal" href="#windows">Windows</a></li>
+<li><a class="reference internal" href="#required-dependencies">Required Dependencies</a></li>
+<li><a class="reference internal" href="#optional-dependencies">Optional Dependencies</a></li>
+<li><a class="reference internal" href="#ubuntu-linux">Ubuntu Linux</a><ul>
+<li><a class="reference internal" href="#package-notes">Package Notes</a></li>
+<li><a class="reference internal" href="#building-from-source">Building from Source</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#mac-os-x-notes">Mac OS X Notes</a></li>
+<li><a class="reference internal" href="#windows-notes">Windows Notes</a></li>
 <li><a class="reference internal" href="#installing-openclimategis">Installing OpenClimateGIS</a><ul>
 <li><a class="reference internal" href="#configuring-the-shpcabinet">Configuring the <tt class="docutils literal"><span class="pre">ShpCabinet</span></tt></a></li>
 </ul>
