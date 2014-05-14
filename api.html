@@ -56,25 +56,29 @@
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">ocgis.env</span></tt><a class="headerlink" href="#ocgis-env" title="Permalink to this headline">¶</a></h2>
 <p>These are global parameters used by OpenClimateGIS. For those familiar with <tt class="xref py py-mod docutils literal"><span class="pre">arcpy</span></tt> programming, this behaves similarly to the <tt class="xref py py-mod docutils literal"><span class="pre">arcpy.env</span></tt> module. Any <tt class="xref py py-mod docutils literal"><span class="pre">ocgis.env</span></tt> variable be overloaded with system environment variables by setting <cite>OCGIS_&lt;variable-name&gt;</cite>.</p>
 <dl class="docutils">
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_OUTPUT</span></tt> = <cite>None</cite> (defaults to current working directory)</dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_DATA</span></tt> = <tt class="docutils literal"><span class="pre">None</span></tt></dt>
+<dd>Directory(s) to search through to find data. If specified, this should be a sequence of directories. It may also be a single directory location. Note that the search may take considerable time if a very high level directory is chosen. If this variable is set, it is only necessary to specify the filename(s) when creating a <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a>.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_OUTPUT</span></tt> = <tt class="docutils literal"><span class="pre">None</span></tt> (defaults to current working directory)</dt>
 <dd>The directory where output data is written. OpenClimateGIS always creates directories inside which output data is stored. Also, many of the output formats have multiple output files making a single directory location potentially troubling in terms of file quantity. If <cite>None</cite>, it defaults to the current working directory.</dd>
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.OVERWRITE</span></tt> = <cite>False</cite></dt>
-<dd><div class="first admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Use with caution.</p>
-</div>
-<p class="last">Set to <cite>True</cite> to overwrite existing output folders. This will remove the folder if it exists!</p>
-</dd>
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.PREFIX</span></tt> = &#8216;ocgis_output&#8217;</dt>
-<dd>The default prefix to apply to output files. This is also the output folder name.</dd>
 </dl>
 <dl class="docutils" id="env-dir-shpcabinet">
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_SHPCABINET</span></tt> = &lt;path-to-directory&gt;</dt>
 <dd>Location of the shapefile directory for use by <a class="reference internal" href="#ocgis.ShpCabinet" title="ocgis.ShpCabinet"><tt class="xref py py-class docutils literal"><span class="pre">ShpCabinet</span></tt></a>.</dd>
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.DIR_DATA</span></tt> = <cite>None</cite></dt>
-<dd>Directory(s) to search through to find data. If specified, this should be a sequence of directories. It may also be a single directory location. Note that the search may take considerable time if a very high level directory is chosen. If this variable is set, it is only necessary to specify the filename(s) when creating a <a class="reference internal" href="#ocgis.RequestDataset" title="ocgis.RequestDataset"><tt class="xref py py-class docutils literal"><span class="pre">RequestDataset</span></tt></a>.</dd>
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.VERBOSE</span></tt> = <cite>False</cite></dt>
-<dd>Indicate if additional output information should be printed to terminal. (Currently not very useful.)</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.OVERWRITE</span></tt> = <tt class="docutils literal"><span class="pre">False</span></tt></dt>
+<dd><div class="first admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Use with caution.</p>
+</div>
+<p class="last">Set to <tt class="docutils literal"><span class="pre">True</span></tt> to overwrite existing output folders. This will remove the folder if it exists!</p>
+</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.PREFIX</span></tt> = <tt class="docutils literal"><span class="pre">'ocgis_output'</span></tt></dt>
+<dd>The default prefix to apply to output files. This is also the output folder name.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.USE_CFUNITS</span></tt> = <tt class="docutils literal"><span class="pre">True</span></tt></dt>
+<dd>If <tt class="docutils literal"><span class="pre">True</span></tt>, use <tt class="xref py py-mod docutils literal"><span class="pre">cfunits</span></tt> for any unit transformations. This will be automatically set to <tt class="docutils literal"><span class="pre">False</span></tt> if <tt class="xref py py-mod docutils literal"><span class="pre">cfunits</span></tt> is not available for import.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.USE_SPATIAL_INDEX</span></tt> = <tt class="docutils literal"><span class="pre">True</span></tt></dt>
+<dd>If <tt class="docutils literal"><span class="pre">True</span></tt>, use <tt class="xref py py-mod docutils literal"><span class="pre">rtree</span></tt> to create spatial indices for spatial operations. This will be automatically set to <tt class="docutils literal"><span class="pre">False</span></tt> if <tt class="xref py py-mod docutils literal"><span class="pre">rtree</span></tt> is not available for import.</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">env.VERBOSE</span></tt> = <tt class="docutils literal"><span class="pre">False</span></tt></dt>
+<dd>Indicate if additional output information should be printed to terminal.</dd>
 </dl>
 </div>
 <div class="section" id="ocgis-ocgoperations">

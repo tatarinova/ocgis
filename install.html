@@ -130,14 +130,16 @@
 </div>
 <div class="section" id="ubuntu-linux">
 <h2>Ubuntu Linux<a class="headerlink" href="#ubuntu-linux" title="Permalink to this headline">¶</a></h2>
-<p>The recommended install method uses hosted packages. These steps also install optional packages.</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="o">[</span>sudo<span class="o">]</span> apt-get update
-<span class="o">[</span>sudo<span class="o">]</span> apt-get install wget libnetcdf-dev libgeos-dev libgdal-dev libspatialindex-dev libudunits2-0 python-pip python-dev
-<span class="o">[</span>sudo<span class="o">]</span> pip install numpy
-<span class="o">[</span>sudo<span class="o">]</span> pip install netCDF4
-<span class="o">[</span>sudo<span class="o">]</span> pip install shapely
-<span class="o">[</span>sudo<span class="o">]</span> pip install fiona
-<span class="o">[</span>sudo<span class="o">]</span> pip install rtree
+<p>The recommended install method uses hosted packages. These steps also install optional packages. This script is available at: <a class="reference external" href="https://github.com/NCPP/ocgis/blob/master/doc/sphinx_examples/install_dependencies_ubuntu.sh">https://github.com/NCPP/ocgis/blob/master/doc/sphinx_examples/install_dependencies_ubuntu.sh</a>.</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="c">#!/bin/bash</span>
+
+sudo apt-get update
+sudo apt-get install wget libnetcdf-dev libgeos-dev libgdal-dev libspatialindex-dev libudunits2-0 python-pip python-dev
+sudo pip install numpy
+sudo pip install netCDF4
+sudo pip install shapely
+sudo pip install fiona
+sudo pip install rtree
 
 <span class="c">###########</span>
 <span class="c">## osgeo ##</span>
@@ -147,15 +149,15 @@
 pip install --no-install GDAL
 <span class="nb">cd</span> /tmp/pip_build_ubuntu/GDAL
 python setup.py build_ext --include-dirs<span class="o">=</span>/usr/include/gdal
-<span class="o">[</span>sudo<span class="o">]</span> python setup.py install
+sudo python setup.py install
 
 <span class="c">#############</span>
 <span class="c">## cfunits ##</span>
 <span class="c">#############</span>
 
-<span class="nv">SRCDIR</span><span class="o">=</span>/tmp/build_cfunits
+<span class="nv">CFUNITS_SRCDIR</span><span class="o">=</span>/tmp/build_cfunits
 <span class="nv">CFUNITS_VER</span><span class="o">=</span>0.9.6
-<span class="nv">CFUNITS_SRC</span><span class="o">=</span><span class="nv">$SRCDIR</span>/cfunits-python/v<span class="nv">$CFUNITS_VER</span>
+<span class="nv">CFUNITS_SRC</span><span class="o">=</span><span class="nv">$CFUNITS_SRCDIR</span>/cfunits-python/v<span class="nv">$CFUNITS_VER</span>
 <span class="nv">CFUNITS_TARBALL</span><span class="o">=</span>cfunits-<span class="nv">$CFUNITS_VER</span>.tar.gz
 <span class="nv">CFUNITS_URL</span><span class="o">=</span>https://cfunits-python.googlecode.com/files/<span class="nv">$CFUNITS_TARBALL</span>
 
@@ -164,12 +166,12 @@ mkdir -p <span class="nv">$CFUNITS_SRC</span>
 wget <span class="nv">$CFUNITS_URL</span>
 tar -xzvf <span class="nv">$CFUNITS_TARBALL</span>
 <span class="nb">cd </span>cfunits-<span class="nv">$CFUNITS_VER</span>
-<span class="o">[</span>sudo<span class="o">]</span> python setup.py install
+sudo python setup.py install
 <span class="c">## installation does not copy UDUNITS database</span>
 <span class="nv">CFUNITS_SETUP_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>
 <span class="nb">cd</span>
 python -c <span class="s1">&#39;import cfunits,os,subprocess;cfunits_path=os.path.split(cfunits.__file__)[0];subprocess.call([&quot;export&quot;,&quot;CFUNITS_INSTALL_DIR={0}&quot;.format(cfunits_path)],shell=True)&#39;</span>
-<span class="o">[</span>sudo<span class="o">]</span> cp -r <span class="nv">$CFUNITS_SETUP_DIR</span>/cfunits/etc <span class="nv">$CFUNITS_INSTALL_DIR</span>
+sudo cp -r <span class="nv">$CFUNITS_SETUP_DIR</span>/cfunits/etc <span class="nv">$CFUNITS_INSTALL_DIR</span>
 </pre></div>
 </div>
 <div class="section" id="package-notes">
