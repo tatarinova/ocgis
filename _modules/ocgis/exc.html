@@ -45,75 +45,78 @@
           <div class="body">
             
   <h1>Source code for ocgis.exc</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="OcgException"><a class="viewcode-back" href="../../api.html#ocgis.exc.OcgException">[docs]</a><span class="k">class</span> <span class="nc">OcgException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="OcgException"><a class="viewcode-back" href="../../exc.html#ocgis.exc.OcgException">[docs]</a><span class="k">class</span> <span class="nc">OcgException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all OCGIS exceptions.&quot;&quot;&quot;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-        
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-    
-    </div>
-<div class="viewcode-block" id="CalculationException"><a class="viewcode-back" href="../../api.html#ocgis.exc.CalculationException">[docs]</a><span class="k">class</span> <span class="nc">CalculationException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">function_klass</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="CalculationException"><a class="viewcode-back" href="../../exc.html#ocgis.exc.CalculationException">[docs]</a><span class="k">class</span> <span class="nc">CalculationException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_klass</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">function_klass</span> <span class="o">=</span> <span class="n">function_klass</span>
-        <span class="n">OcgException</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
-        
+        <span class="n">OcgException</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The function class &quot;{0}&quot; raised an exception with message: &quot;{1}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_klass</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
                                                                                         <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        
+        <span class="k">return</span> <span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
 </div>
-<div class="viewcode-block" id="VariableInCollectionError"><a class="viewcode-back" href="../../api.html#ocgis.exc.VariableInCollectionError">[docs]</a><span class="k">class</span> <span class="nc">VariableInCollectionError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableInCollectionError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.VariableInCollectionError">[docs]</a><span class="k">class</span> <span class="nc">VariableInCollectionError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span>
-        
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Variable alias already in collection: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="SampleSizeNotImplemented"><a class="viewcode-back" href="../../api.html#ocgis.exc.SampleSizeNotImplemented">[docs]</a><span class="k">class</span> <span class="nc">SampleSizeNotImplemented</span><span class="p">(</span><span class="n">CalculationException</span><span class="p">):</span>
+<div class="viewcode-block" id="SampleSizeNotImplemented"><a class="viewcode-back" href="../../exc.html#ocgis.exc.SampleSizeNotImplemented">[docs]</a><span class="k">class</span> <span class="nc">SampleSizeNotImplemented</span><span class="p">(</span><span class="n">CalculationException</span><span class="p">):</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="InterpreterException"><a class="viewcode-back" href="../../api.html#ocgis.exc.InterpreterException">[docs]</a><span class="k">class</span> <span class="nc">InterpreterException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+<div class="viewcode-block" id="InterpreterException"><a class="viewcode-back" href="../../exc.html#ocgis.exc.InterpreterException">[docs]</a><span class="k">class</span> <span class="nc">InterpreterException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="InterpreterNotRecognized"><a class="viewcode-back" href="../../api.html#ocgis.exc.InterpreterNotRecognized">[docs]</a><span class="k">class</span> <span class="nc">InterpreterNotRecognized</span><span class="p">(</span><span class="n">InterpreterException</span><span class="p">):</span>
+<div class="viewcode-block" id="InterpreterNotRecognized"><a class="viewcode-back" href="../../exc.html#ocgis.exc.InterpreterNotRecognized">[docs]</a><span class="k">class</span> <span class="nc">InterpreterNotRecognized</span><span class="p">(</span><span class="n">InterpreterException</span><span class="p">):</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="EmptyIterationError"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptyIterationError">[docs]</a><span class="k">class</span> <span class="nc">EmptyIterationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="EmptyIterationError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.EmptyIterationError">[docs]</a><span class="k">class</span> <span class="nc">EmptyIterationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Iteration on the object &quot;{0}&quot; requested, but the object is empty.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        
-        </div>
-<div class="viewcode-block" id="CFException"><a class="viewcode-back" href="../../api.html#ocgis.exc.CFException">[docs]</a><span class="k">class</span> <span class="nc">CFException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+
+</div>
+<div class="viewcode-block" id="CFException"><a class="viewcode-back" href="../../exc.html#ocgis.exc.CFException">[docs]</a><span class="k">class</span> <span class="nc">CFException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="ProjectionCoordinateNotFound"><a class="viewcode-back" href="../../api.html#ocgis.exc.ProjectionCoordinateNotFound">[docs]</a><span class="k">class</span> <span class="nc">ProjectionCoordinateNotFound</span><span class="p">(</span><span class="n">CFException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">target</span><span class="p">):</span>
+<div class="viewcode-block" id="ProjectionCoordinateNotFound"><a class="viewcode-back" href="../../exc.html#ocgis.exc.ProjectionCoordinateNotFound">[docs]</a><span class="k">class</span> <span class="nc">ProjectionCoordinateNotFound</span><span class="p">(</span><span class="n">CFException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;The projection coordinate &quot;{0}&quot; was not found in the dataset.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-        
-        </div>
-<div class="viewcode-block" id="ProjectionDoesNotMatch"><a class="viewcode-back" href="../../api.html#ocgis.exc.ProjectionDoesNotMatch">[docs]</a><span class="k">class</span> <span class="nc">ProjectionDoesNotMatch</span><span class="p">(</span><span class="n">CFException</span><span class="p">):</span>
+
+</div>
+<div class="viewcode-block" id="ProjectionDoesNotMatch"><a class="viewcode-back" href="../../exc.html#ocgis.exc.ProjectionDoesNotMatch">[docs]</a><span class="k">class</span> <span class="nc">ProjectionDoesNotMatch</span><span class="p">(</span><span class="n">CFException</span><span class="p">):</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="DimensionNotFound"><a class="viewcode-back" href="../../api.html#ocgis.exc.DimensionNotFound">[docs]</a><span class="k">class</span> <span class="nc">DimensionNotFound</span><span class="p">(</span><span class="n">CFException</span><span class="p">):</span>
-    <span class="k">pass</span>
+<div class="viewcode-block" id="DimensionNotFound"><a class="viewcode-back" href="../../exc.html#ocgis.exc.DimensionNotFound">[docs]</a><span class="k">class</span> <span class="nc">DimensionNotFound</span><span class="p">(</span><span class="n">CFException</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Dimension data not found for axis: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">msg</span>
+
 
 </div>
-<div class="viewcode-block" id="DefinitionValidationError"><a class="viewcode-back" href="../../api.html#ocgis.exc.DefinitionValidationError">[docs]</a><span class="k">class</span> <span class="nc">DefinitionValidationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+<div class="viewcode-block" id="DefinitionValidationError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.DefinitionValidationError">[docs]</a><span class="k">class</span> <span class="nc">DefinitionValidationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when validation fails on :class:`~ocgis.OcgOperations`.</span>
 <span class="sd">    </span>
 <span class="sd">    :param ocg_argument: The origin of the exception.</span>
@@ -121,157 +124,147 @@
 <span class="sd">    :param msg: The message related to the exception to display in the exception&#39;s template.</span>
 <span class="sd">    :type msg: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ocg_argument</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ocg_argument</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ocg_argument</span> <span class="o">=</span> <span class="n">ocg_argument</span>
-        
+
         <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;OcgOperations validation raised an exception on the argument/operation &#39;</span>
                <span class="s">&#39;&quot;{0}&quot; with the message: {1}&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="p">,</span><span class="n">msg</span><span class="p">)</span>
-        
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ocg_argument</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">msg</span>
 
 </div>
-<div class="viewcode-block" id="ParameterFormattingError"><a class="viewcode-back" href="../../api.html#ocgis.exc.ParameterFormattingError">[docs]</a><span class="k">class</span> <span class="nc">ParameterFormattingError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    <span class="k">pass</span>
-    
-    </div>
-<div class="viewcode-block" id="UniqueIdNotFound"><a class="viewcode-back" href="../../api.html#ocgis.exc.UniqueIdNotFound">[docs]</a><span class="k">class</span> <span class="nc">UniqueIdNotFound</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;No unique ids found.&#39;</span>
-    
-    </div>
-<div class="viewcode-block" id="DummyDimensionEncountered"><a class="viewcode-back" href="../../api.html#ocgis.exc.DummyDimensionEncountered">[docs]</a><span class="k">class</span> <span class="nc">DummyDimensionEncountered</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+<div class="viewcode-block" id="ParameterFormattingError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.ParameterFormattingError">[docs]</a><span class="k">class</span> <span class="nc">ParameterFormattingError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="ResolutionError"><a class="viewcode-back" href="../../api.html#ocgis.exc.ResolutionError">[docs]</a><span class="k">class</span> <span class="nc">ResolutionError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    <span class="k">pass</span>
-    
+<div class="viewcode-block" id="UniqueIdNotFound"><a class="viewcode-back" href="../../exc.html#ocgis.exc.UniqueIdNotFound">[docs]</a><span class="k">class</span> <span class="nc">UniqueIdNotFound</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;No unique ids found.&#39;</span>
+
 </div>
-<div class="viewcode-block" id="SubsetException"><a class="viewcode-back" href="../../api.html#ocgis.exc.SubsetException">[docs]</a><span class="k">class</span> <span class="nc">SubsetException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+<div class="viewcode-block" id="DummyDimensionEncountered"><a class="viewcode-back" href="../../exc.html#ocgis.exc.DummyDimensionEncountered">[docs]</a><span class="k">class</span> <span class="nc">DummyDimensionEncountered</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="ResolutionError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.ResolutionError">[docs]</a><span class="k">class</span> <span class="nc">ResolutionError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="SubsetException"><a class="viewcode-back" href="../../exc.html#ocgis.exc.SubsetException">[docs]</a><span class="k">class</span> <span class="nc">SubsetException</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all subset exceptions.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="OcgisEnvironmentError"><a class="viewcode-back" href="../../api.html#ocgis.exc.OcgisEnvironmentError">[docs]</a><span class="k">class</span> <span class="nc">OcgisEnvironmentError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">env_parm</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="OcgisEnvironmentError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.OcgisEnvironmentError">[docs]</a><span class="k">class</span> <span class="nc">OcgisEnvironmentError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_parm</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">env_parm</span> <span class="o">=</span> <span class="n">env_parm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">new_msg</span> <span class="o">=</span> <span class="s">&#39;Error when setting the ocgis.env variable {0}. The message is: {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env_parm</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">new_msg</span><span class="p">)</span>
-    
+        <span class="n">new_msg</span> <span class="o">=</span> <span class="s">&#39;Error when setting the ocgis.env variable {0}. The message is: {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env_parm</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                                                              <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">new_msg</span><span class="p">)</span>
+
 </div>
-<div class="viewcode-block" id="SpatialWrappingError"><a class="viewcode-back" href="../../api.html#ocgis.exc.SpatialWrappingError">[docs]</a><span class="k">class</span> <span class="nc">SpatialWrappingError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    <span class="k">pass</span>
-    
-    </div>
-<div class="viewcode-block" id="ImproperPolygonBoundsError"><a class="viewcode-back" href="../../api.html#ocgis.exc.ImproperPolygonBoundsError">[docs]</a><span class="k">class</span> <span class="nc">ImproperPolygonBoundsError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+<div class="viewcode-block" id="SpatialWrappingError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.SpatialWrappingError">[docs]</a><span class="k">class</span> <span class="nc">SpatialWrappingError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="MaskedDataError"><a class="viewcode-back" href="../../api.html#ocgis.exc.MaskedDataError">[docs]</a><span class="k">class</span> <span class="nc">MaskedDataError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    
+<div class="viewcode-block" id="ImproperPolygonBoundsError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.ImproperPolygonBoundsError">[docs]</a><span class="k">class</span> <span class="nc">ImproperPolygonBoundsError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="MaskedDataError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.MaskedDataError">[docs]</a><span class="k">class</span> <span class="nc">MaskedDataError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Geometric intersection returned all masked values.&#39;</span>
-    
-    </div>
-<div class="viewcode-block" id="ExtentError"><a class="viewcode-back" href="../../api.html#ocgis.exc.ExtentError">[docs]</a><span class="k">class</span> <span class="nc">ExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+</div>
+<div class="viewcode-block" id="ExtentError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.ExtentError">[docs]</a><span class="k">class</span> <span class="nc">ExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span> <span class="ow">or</span> <span class="s">&#39;Geometry intersection is empty.&#39;</span>
-        
-        </div>
-<div class="viewcode-block" id="TemporalExtentError"><a class="viewcode-back" href="../../api.html#ocgis.exc.TemporalExtentError">[docs]</a><span class="k">class</span> <span class="nc">TemporalExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    
+
+</div>
+<div class="viewcode-block" id="TemporalExtentError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.TemporalExtentError">[docs]</a><span class="k">class</span> <span class="nc">TemporalExtentError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Temporal subset returned empty.&#39;</span>
-    
-    </div>
-<div class="viewcode-block" id="EmptyDataNotAllowed"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptyDataNotAllowed">[docs]</a><span class="k">class</span> <span class="nc">EmptyDataNotAllowed</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when the empty set for a geometry is returned and `allow_empty`_ is `False`.&quot;&quot;&quot;</span>
-    
+
+</div>
+<div class="viewcode-block" id="EmptyDataNotAllowed"><a class="viewcode-back" href="../../exc.html#ocgis.exc.EmptyDataNotAllowed">[docs]</a><span class="k">class</span> <span class="nc">EmptyDataNotAllowed</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when the empty set for a geometry is returned and ``allow_empty`` is ``False``.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Intersection returned empty, but empty data not allowed.&#39;</span>
-    
-    </div>
-<div class="viewcode-block" id="EmptyData"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptyData">[docs]</a><span class="k">class</span> <span class="nc">EmptyData</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+</div>
+<div class="viewcode-block" id="EmptyData"><a class="viewcode-back" href="../../exc.html#ocgis.exc.EmptyData">[docs]</a><span class="k">class</span> <span class="nc">EmptyData</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span> <span class="ow">or</span> <span class="s">&#39;Empty data returned.&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
 
 </div>
-<div class="viewcode-block" id="EmptySubsetError"><a class="viewcode-back" href="../../api.html#ocgis.exc.EmptySubsetError">[docs]</a><span class="k">class</span> <span class="nc">EmptySubsetError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="EmptySubsetError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.EmptySubsetError">[docs]</a><span class="k">class</span> <span class="nc">EmptySubsetError</span><span class="p">(</span><span class="n">SubsetException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
-        
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;A subset operation on dimension &quot;{0}&quot; returned empty.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    
-    </div>
-<div class="viewcode-block" id="NoUnitsError"><a class="viewcode-back" href="../../api.html#ocgis.exc.NoUnitsError">[docs]</a><span class="k">class</span> <span class="nc">NoUnitsError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Raised when a :class:`cfunits.Units` object is constructed from a NoneType</span>
-<span class="sd">    value.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    
+        <span class="k">return</span> <span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="NoUnitsError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.NoUnitsError">[docs]</a><span class="k">class</span> <span class="nc">NoUnitsError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a :class:`cfunits.Units` object is constructed from ``None``.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span>
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Variable has not been assigned units. Set the &quot;units&quot; attribute to continue.&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Variable &quot;{0}&quot; has not been assigned units in the source metadata. Set the &quot;units&quot; attribute to continue.&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    
-    </div>
-<div class="viewcode-block" id="UnitsValidationError"><a class="viewcode-back" href="../../api.html#ocgis.exc.UnitsValidationError">[docs]</a><span class="k">class</span> <span class="nc">UnitsValidationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Raised when units validation fails.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">variable</span><span class="p">,</span><span class="n">required_units</span><span class="p">,</span><span class="n">calculation_key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="UnitsValidationError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.UnitsValidationError">[docs]</a><span class="k">class</span> <span class="nc">UnitsValidationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when units validation fails.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">required_units</span><span class="p">,</span> <span class="n">calculation_key</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">required_units</span> <span class="o">=</span> <span class="n">required_units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calculation_key</span> <span class="o">=</span> <span class="n">calculation_key</span>
-        
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;There was an error in units validation for calculation&#39;</span>
-               <span class="s">&#39; with key &quot;{3}&quot;. The units on variable &quot;{0}&quot; (units=&quot;{2}&quot;)&#39;</span>
-               <span class="s">&#39; do not match the required units &quot;{1}&quot;. The units should&#39;</span>
-               <span class="s">&#39; be conformed or overloaded if incorrectly attributed.&#39;</span><span class="p">)</span><span class="o">.</span>\
-                       <span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">required_units</span><span class="p">,</span>
-                              <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">units</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">calculation_key</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;There was an error in units validation for calculation with key &quot;{3}&quot;. The units on variable &quot;{0}&quot; &#39;</span>
+               <span class="s">&#39;(units=&quot;{2}&quot;) do not match the required units &quot;{1}&quot;. The units should be conformed or overloaded if &#39;</span>
+               <span class="s">&#39;incorrectly attributed.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_units</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">calculation_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">msg</span>
 
 </div>
-<div class="viewcode-block" id="IncompleteSeasonError"><a class="viewcode-back" href="../../api.html#ocgis.exc.IncompleteSeasonError">[docs]</a><span class="k">class</span> <span class="nc">IncompleteSeasonError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
-            
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">season</span><span class="p">,</span><span class="n">year</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">month</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IncompleteSeasonError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.IncompleteSeasonError">[docs]</a><span class="k">class</span> <span class="nc">IncompleteSeasonError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">season</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">=</span> <span class="n">season</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="n">year</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">month</span> <span class="o">=</span> <span class="n">month</span>
-        
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The season specification &quot;{0}&quot; is missing the year &quot;{1}&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The season specification &quot;{0}&quot; is missing the year &quot;{1}&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The season specification &quot;{0}&quot; is missing the month &quot;{1}&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The season specification &quot;{0}&quot; is missing the month &quot;{1}&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">msg</span>
 
 </div>
-<div class="viewcode-block" id="VariableNotFoundError"><a class="viewcode-back" href="../../api.html#ocgis.exc.VariableNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">VariableNotFoundError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableNotFoundError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.VariableNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">VariableNotFoundError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when a variable name is not found in the target dataset.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
@@ -280,7 +273,20 @@
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The variable &quot;{0}&quot; was not found in the dataset with URI: {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">msg</span>
+
+</div>
+<div class="viewcode-block" id="RequestValidationError"><a class="viewcode-back" href="../../exc.html#ocgis.exc.RequestValidationError">[docs]</a><span class="k">class</span> <span class="nc">RequestValidationError</span><span class="p">(</span><span class="n">OcgException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when validation fails on a parameter when creating a :class:`~ocgis.RequestDataset` object.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyword</span> <span class="o">=</span> <span class="n">keyword</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Validation failed on the keyword parameter &quot;{0}&quot; with the message: {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">,</span>
+                                                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">message</span></div>
 </pre></div>
 
           </div>

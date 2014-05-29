@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Constants &mdash; OpenClimateGIS 0.07.1b-trunk documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.07.1b-trunk',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="OpenClimateGIS 0.07.1b-trunk documentation" href="index.html" />
+    <link rel="next" title="Exceptions" href="exc.html" />
+    <link rel="prev" title="Utility Functions" href="utility.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="exc.html" title="Exceptions"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="utility.html" title="Utility Functions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-ocgis.constants">
+<span id="constants"></span><h1>Constants<a class="headerlink" href="#module-ocgis.constants" title="Permalink to this headline">¶</a></h1>
+<dl class="data">
+<dt id="ocgis.constants.calc_headers">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">calc_headers</tt><em class="property"> = ['did', 'vid', 'cid', 'ugid', 'tid', 'lid', 'gid', 'variable', 'alias', 'calc_key', 'calc_alias', 'time', 'year', 'month', 'day', 'level', 'value']</em><a class="headerlink" href="#ocgis.constants.calc_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard headers for computation.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.calc_month_centroid">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">calc_month_centroid</tt><em class="property"> = 16</em><a class="headerlink" href="#ocgis.constants.calc_month_centroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>The day value to use for month centroids.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.calc_year_centroid_day">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">calc_year_centroid_day</tt><em class="property"> = 1</em><a class="headerlink" href="#ocgis.constants.calc_year_centroid_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default day value for year centroids.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.calc_year_centroid_month">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">calc_year_centroid_month</tt><em class="property"> = 7</em><a class="headerlink" href="#ocgis.constants.calc_year_centroid_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>The month value to use for year centroids.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.multi_headers">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">multi_headers</tt><em class="property"> = ['did', 'cid', 'ugid', 'tid', 'lid', 'gid', 'calc_key', 'calc_alias', 'time', 'year', 'month', 'day', 'level', 'value']</em><a class="headerlink" href="#ocgis.constants.multi_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard headers for multivariate calculations.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.name_bounds">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">name_bounds</tt><em class="property"> = ['bounds', 'bnds', 'bound', 'bnd', 'd_bounds', 'd_bnds', 'd_bound', 'd_bnd']</em><a class="headerlink" href="#ocgis.constants.name_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Potential bounds names used to find the bounds dimension on a netCDF.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.netCDF_default_data_model">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">netCDF_default_data_model</tt><em class="property"> = 'NETCDF4_CLASSIC'</em><a class="headerlink" href="#ocgis.constants.netCDF_default_data_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default netCDF4 output file type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ocgis.constants.np_float">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">np_float</tt><a class="headerlink" href="#ocgis.constants.np_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>The data type to use for NumPy floats.</p>
+<p>alias of <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ocgis.constants.np_int">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">np_int</tt><a class="headerlink" href="#ocgis.constants.np_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>The data type to use for NumPy integers.</p>
+<p>alias of <tt class="xref py py-class docutils literal"><span class="pre">int32</span></tt></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.ocgis_bounds">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">ocgis_bounds</tt><em class="property"> = 'bounds'</em><a class="headerlink" href="#ocgis.constants.ocgis_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard bounds name used when none is available from the input data.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.output_formats">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">output_formats</tt><em class="property"> = ['numpy', 'nc', 'csv', 'csv+', 'shp', 'geojson', 'meta']</em><a class="headerlink" href="#ocgis.constants.output_formats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key identifiers for output formats.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.prefix_icclim_function_key">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">prefix_icclim_function_key</tt><em class="property"> = 'icclim'</em><a class="headerlink" href="#ocgis.constants.prefix_icclim_function_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function key prefix for the <cite>icclim</cite> indices library.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.raw_headers">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">raw_headers</tt><em class="property"> = ['did', 'vid', 'ugid', 'tid', 'lid', 'gid', 'variable', 'alias', 'time', 'year', 'month', 'day', 'level', 'value']</em><a class="headerlink" href="#ocgis.constants.raw_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard headers for subset operations.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.required_headers">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">required_headers</tt><em class="property"> = ['did', 'ugid', 'gid']</em><a class="headerlink" href="#ocgis.constants.required_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required headers for every request.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ocgis.constants.resolution_limit">
+<tt class="descclassname">ocgis.constants.</tt><tt class="descname">resolution_limit</tt><em class="property"> = 100</em><a class="headerlink" href="#ocgis.constants.resolution_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of values to use when calculating data resolution.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="utility.html"
+                        title="previous chapter">Utility Functions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="exc.html"
+                        title="next chapter">Exceptions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/constants.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="exc.html" title="Exceptions"
+             >next</a></li>
+        <li class="right" >
+          <a href="utility.html" title="Utility Functions"
+             >previous</a> |</li>
+        <li><a href="index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, University of Michigan-Ann Arbor, Michigan Technological University, University of Colorado-Boulder.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
