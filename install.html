@@ -135,21 +135,22 @@
 
 sudo apt-get update
 sudo apt-get install wget libnetcdf-dev libgeos-dev libgdal-dev libspatialindex-dev libudunits2-0 libproj-dev python-pip python-dev
-sudo pip install numpy
-sudo pip install netCDF4
-sudo pip install shapely
-sudo pip install fiona
-sudo pip install rtree
+sudo pip install numpy netCDF4 shapely fiona rtree
 
 <span class="c">###########</span>
 <span class="c">## osgeo ##</span>
 <span class="c">###########</span>
+
+<span class="c">## If this fails, try the apt-get install below...</span>
 
 <span class="c">## http://stackoverflow.com/questions/11336153/python-gdal-package-missing-header-file-when-installing-via-pip</span>
 pip install --no-install GDAL
 <span class="nb">cd</span> /tmp/pip_build_ubuntu/GDAL
 python setup.py build_ext --include-dirs<span class="o">=</span>/usr/include/gdal
 sudo python setup.py install
+
+<span class="c">## If the above install fails, you can install from apt-get...</span>
+<span class="c">#sudo apt-get install python-gdal</span>
 
 <span class="c">#############</span>
 <span class="c">## cfunits ##</span>
@@ -169,8 +170,9 @@ tar -xzvf <span class="nv">$CFUNITS_TARBALL</span>
 sudo python setup.py install
 <span class="c">## installation does not copy UDUNITS database</span>
 <span class="nv">CFUNITS_SETUP_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>
-<span class="nb">cd</span>
-python -c <span class="s1">&#39;import cfunits,os,subprocess;cfunits_path=os.path.split(cfunits.__file__)[0];subprocess.call([&quot;export&quot;,&quot;CFUNITS_INSTALL_DIR={0}&quot;.format(cfunits_path)],shell=True)&#39;</span>
+<span class="c">## assumes a standard location. the installation directory may be retrieved by running the command:</span>
+<span class="c">##  python -c &quot;import cfunits, os;print(os.path.split(cfunits.__file__)[0])&quot;</span>
+<span class="nv">CFUNITS_INSTALL_DIR</span><span class="o">=</span>/usr/local/lib/python2.7/dist-packages/cfunits
 sudo cp -r <span class="nv">$CFUNITS_SETUP_DIR</span>/cfunits/etc <span class="nv">$CFUNITS_INSTALL_DIR</span>
 </pre></div>
 </div>
@@ -196,19 +198,22 @@ sudo cp -r <span class="nv">$CFUNITS_SETUP_DIR</span>/cfunits/etc <span class="n
 <tr class="row-even"><td>libnetcdf-dev</td>
 <td><tt class="docutils literal"><span class="pre">netCDF4</span></tt></td>
 </tr>
-<tr class="row-odd"><td>libspatialindex-dev</td>
+<tr class="row-odd"><td>libproj-dev</td>
+<td><tt class="docutils literal"><span class="pre">osgeo</span></tt> and <tt class="docutils literal"><span class="pre">fiona</span></tt></td>
+</tr>
+<tr class="row-even"><td>libspatialindex-dev</td>
 <td><tt class="docutils literal"><span class="pre">rtree</span></tt></td>
 </tr>
-<tr class="row-even"><td>libudunits2-0</td>
+<tr class="row-odd"><td>libudunits2-0</td>
 <td><tt class="docutils literal"><span class="pre">cfunits</span></tt></td>
 </tr>
-<tr class="row-odd"><td>python-dev</td>
+<tr class="row-even"><td>python-dev</td>
 <td>needed at least for <tt class="docutils literal"><span class="pre">numpy</span></tt></td>
 </tr>
-<tr class="row-even"><td>python-pip</td>
+<tr class="row-odd"><td>python-pip</td>
 <td>all <tt class="docutils literal"><span class="pre">pip</span></tt> installed Python packages</td>
 </tr>
-<tr class="row-odd"><td>wget</td>
+<tr class="row-even"><td>wget</td>
 <td><tt class="docutils literal"><span class="pre">cfunits</span></tt> installation</td>
 </tr>
 </tbody>

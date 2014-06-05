@@ -114,7 +114,7 @@ validation and input formatting.</p>
 selection defaults to entire spatial domain.</li>
 <li><strong>aggregate</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, dataset geometries are aggregated to coincident 
 selection geometries.</li>
-<li><strong>calc</strong> (<em>list of dictionaries</em>) &#8211; Calculations to be performed on the dataset subset.</li>
+<li><strong>calc</strong> (<em>list of dictionaries or string-based function</em>) &#8211; Calculations to be performed on the dataset subset.</li>
 <li><strong>calc_grouping</strong> (<em>list of str or int</em>) &#8211; Temporal grouping to apply for calculations.</li>
 <li><strong>calc_raw</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If <cite>True</cite>, perform calculations on the &#8220;raw&#8221; data regardless 
 of <cite>aggregation</cite> flag.</li>
@@ -1042,7 +1042,7 @@ the <tt class="docutils literal"><span class="pre">'geom'</span></tt> key from t
 <h2><a class="reference internal" href="#ocgis.Inspect" title="ocgis.Inspect"><tt class="xref py py-class docutils literal"><span class="pre">ocgis.Inspect</span></tt></a><a class="headerlink" href="#ocgis-inspect" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ocgis.Inspect">
-<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">Inspect</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>interface_overload={}</em>, <em>request_dataset=None</em>, <em>meta=None</em><big>)</big><a class="headerlink" href="#ocgis.Inspect" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">ocgis.</tt><tt class="descname">Inspect</tt><big>(</big><em>uri=None</em>, <em>variable=None</em>, <em>request_dataset=None</em>, <em>meta=None</em><big>)</big><a class="headerlink" href="#ocgis.Inspect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inspect a local or remote dataset returning a printout similar to <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/ncdump.html">ncdump</a>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">Inspect</span>
 <span class="gp">...</span>
@@ -1063,7 +1063,7 @@ the <tt class="docutils literal"><span class="pre">'geom'</span></tt> key from t
 <li><strong>uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Absolute path to data&#8217;s location.</li>
 <li><strong>variable</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Specific variable to inspect.</li>
 <li><strong>interface_overload</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Overloads for autodiscover.</li>
-<li><strong>meta</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ocgis.NcMetadata</span></tt>) &#8211; Optional overload for the <tt class="xref py py-class docutils literal"><span class="pre">ocgis.NcMetadata</span></tt> creation.</li>
+<li><strong>meta</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ocgis.NcMetadata</span></tt>) &#8211; Use this metadata object in place of the one created internally.</li>
 </ul>
 </td>
 </tr>

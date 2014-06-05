@@ -67,7 +67,7 @@
 </dl>
 <div class="section" id="computations-described">
 <h2>Computations Described<a class="headerlink" href="#computations-described" title="Permalink to this headline">¶</a></h2>
-<p>Computations are applied following any initial subsetting by time, level, or geometry. If data is spatially aggregated, any computation is applied to the aggregated data values unless <a class="reference internal" href="api.html#calc-raw-headline"><em>calc_raw</em></a> is set to <cite>True</cite>. Computations are applied to &#8220;temporal groups&#8221; within the target data defined by the <a class="reference internal" href="api.html#calc-grouping-headline"><em>calc_grouping</em></a> parameter. A &#8220;temporal group&#8221; is a unique set of date parts (e.g. the month of August, the year 2002, January 2004). Data is summarized within the temporal group to produce a single value within the temporal aggregation for each level and spatial coordinate.</p>
+<p>Computations are applied following any initial subsetting by time, level, or geometry. If data is spatially aggregated, any computation is applied to the aggregated data values unless <a class="reference internal" href="api.html#calc-raw-headline"><em>calc_raw</em></a> is set to <tt class="docutils literal"><span class="pre">True</span></tt>. Computations are applied to &#8220;temporal groups&#8221; within the target data defined by the <a class="reference internal" href="api.html#calc-grouping-headline"><em>calc_grouping</em></a> parameter. A &#8220;temporal group&#8221; is a unique set of date parts (e.g. the month of August, the year 2002, January 2004). Data is summarized within the temporal group to produce a single value within the temporal aggregation for each level and spatial coordinate.</p>
 <p>As a functional example, the following code replicates (in principle) the computational process used in OpenClimateGIS for calculating the mean of non-leveled (i.e. three-dimensional) data with temporal aggregation:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -102,7 +102,7 @@
 </div>
 <p>Computations are applied by passing a list of &#8220;function dictionaries&#8221; to the <a class="reference internal" href="api.html#calc-headline"><em>calc</em></a> argument of the <a class="reference internal" href="api.html#ocgis.OcgOperations" title="ocgis.OcgOperations"><tt class="xref py py-class docutils literal"><span class="pre">OcgOperations</span></tt></a> object. The other two relevant arguments are <a class="reference internal" href="api.html#calc-raw-headline"><em>calc_raw</em></a> and <a class="reference internal" href="api.html#calc-grouping-headline"><em>calc_grouping</em></a>.</p>
 <p>In its simplest form, a &#8220;function dictionary&#8221; is composed of a <cite>func</cite> key and a <cite>name</cite> key. The <cite>func</cite> key corresponds to the <cite>name</cite> attribute of the function class. The <cite>name</cite> key in the &#8220;function dictionary&#8221; is required and is a user-supplied alias. This is required to allow multiple calculations with the same function names to be performed with different parameters (in a single request).</p>
-<p>Functions currently available are listed below: <a class="reference internal" href="#available-functions"><em>Available Functions</em></a>. In the case where a function does not expose a <cite>name</cite> attribute, the <cite>func</cite> value is the lower case string of the function&#8217;s class name (e.g. Mean = &#8216;mean&#8217;).</p>
+<p>Functions currently available are listed below: <a class="reference internal" href="#available-functions"><em>Available Functions</em></a>. In the case where a function does not expose a <cite>name</cite> attribute, the <cite>func</cite> value is the lower case string of the function&#8217;s class name (i.e. Mean = &#8216;mean&#8217;).</p>
 <p>For example to calculate a monthly mean and median on a hypothetical daily climate dataset (written to CSV format), an OpenClimateGIS call may look like:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">OcgOperations</span><span class="p">,</span> <span class="n">RequestDataset</span>
 <span class="gp">...</span>
@@ -116,10 +116,25 @@
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;func&#39;</span><span class="p">:</span><span class="s">&#39;between&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;between_5_10&#39;</span><span class="p">,</span><span class="s">&#39;kwds&#39;</span><span class="p">:{</span><span class="s">&#39;lower&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&#39;upper&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">}}]</span>
 </pre></div>
 </div>
-<p>If a function takes parameters, those parameters are documented in the <a class="reference internal" href="#available-functions"><em>Available Functions</em></a> section. The keyword parameter name maps directly to its keyword name in the <cite>_calculate_</cite> method.</p>
+<p>If a function takes parameters, those parameters are documented in the <a class="reference internal" href="#available-functions"><em>Available Functions</em></a> section. The keyword parameter name maps directly to its keyword name in the <tt class="docutils literal"><span class="pre">calculate</span></tt> method.</p>
 </div>
 <div class="section" id="defining-custom-functions">
 <span id="id1"></span><h2>Defining Custom Functions<a class="headerlink" href="#defining-custom-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="string-based-function-expressions">
+<h3>String-Based Function Expressions<a class="headerlink" href="#string-based-function-expressions" title="Permalink to this headline">¶</a></h3>
+<p>String-based functions composed of variable aliases and selected NumPy functions are also allowed for the <a class="reference internal" href="api.html#calc-headline"><em>calc</em></a> argument. The list of enabled NumPy functions is found in the <a class="reference internal" href="constants.html#ocgis.constants.enabled_numpy_ufuncs" title="ocgis.constants.enabled_numpy_ufuncs"><tt class="xref py py-attr docutils literal"><span class="pre">ocgis.constants.enabled_numpy_ufuncs</span></tt></a> attribute. The string on the left-hand side of the expression will be the name of the output variable. Some acceptable string-based functions are:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="s">&#39;tas_added=tas+4&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="s">&#39;es=6.1078*exp(17.08085*(tas-273.16)/(234.175+(tas-273.16)))&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="s">&#39;diff=tasmax-tasmin&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is not possible to perform any temporal aggregations using string-based function expressions.</p>
+</div>
+</div>
+<div class="section" id="subclassing-openclimategis-function-classes">
+<h3>Subclassing OpenClimateGIS Function Classes<a class="headerlink" href="#subclassing-openclimategis-function-classes" title="Permalink to this headline">¶</a></h3>
 <p>Once a custom calculation is defined, it must be appended to <tt class="xref py py-class docutils literal"><span class="pre">ocgis.FunctionRegistry</span></tt>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">my_functions</span> <span class="kn">import</span> <span class="n">MyCustomFunction</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ocgis</span> <span class="kn">import</span> <span class="n">FunctionRegistry</span>
@@ -127,7 +142,7 @@
 </pre></div>
 </div>
 <div class="section" id="inheritance-structure">
-<h3>Inheritance Structure<a class="headerlink" href="#inheritance-structure" title="Permalink to this headline">¶</a></h3>
+<h4>Inheritance Structure<a class="headerlink" href="#inheritance-structure" title="Permalink to this headline">¶</a></h4>
 <dl class="docutils">
 <dt>All calculations are classes that inherit from the following abstract base classes:</dt>
 <dd><ol class="first last arabic simple">
@@ -305,6 +320,7 @@ by the function.</p>
 
 </dd></dl>
 
+</div>
 </div>
 </div>
 <div class="section" id="available-functions">
@@ -566,7 +582,11 @@ If this is passed, it will not be calculated internally by the object.</li>
 </li>
 <li><a class="reference internal" href="#using-computations">Using Computations</a></li>
 <li><a class="reference internal" href="#defining-custom-functions">Defining Custom Functions</a><ul>
+<li><a class="reference internal" href="#string-based-function-expressions">String-Based Function Expressions</a></li>
+<li><a class="reference internal" href="#subclassing-openclimategis-function-classes">Subclassing OpenClimateGIS Function Classes</a><ul>
 <li><a class="reference internal" href="#inheritance-structure">Inheritance Structure</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#available-functions">Available Functions</a><ul>
