@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ocgis.util.helpers &mdash; OpenClimateGIS 0.07.1b-trunk documentation</title>
+    <title>ocgis.util.helpers &mdash; OpenClimateGIS 0.07.1b-next documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.07.1b-trunk',
+        VERSION:     '0.07.1b-next',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,14 +26,14 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="OpenClimateGIS 0.07.1b-trunk documentation" href="../../../index.html" />
+    <link rel="top" title="OpenClimateGIS 0.07.1b-next documentation" href="../../../index.html" />
     <link rel="up" title="ocgis" href="../../ocgis.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-next documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" accesskey="U">ocgis</a> &raquo;</li> 
       </ul>
@@ -380,13 +380,19 @@
         <span class="k">assert</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
         <span class="n">ocgis_lh</span><span class="p">(</span><span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-        
-<span class="k">def</span> <span class="nf">get_iter</span><span class="p">(</span><span class="n">element</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+
+<span class="k">def</span> <span class="nf">get_iter</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param element: The element comprising the base iterator.</span>
+<span class="sd">    :param dtype: If not ``None``, use this argument as the argument to ``isinstance``. If ``element`` is an instance of</span>
+<span class="sd">     ``dtype``, ``element`` will be placed in a list and passed to ``iter``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
-            <span class="n">element</span> <span class="o">=</span> <span class="p">[</span><span class="n">element</span><span class="p">]</span>
-            
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span><span class="nb">basestring</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="p">,)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="p">(</span><span class="nb">basestring</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
         <span class="n">it</span> <span class="o">=</span> <span class="p">[</span><span class="n">element</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -394,7 +400,8 @@
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="n">element</span><span class="p">])</span>
             
-    <span class="k">return</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">it</span>
+
 
 <span class="k">def</span> <span class="nf">get_default_or_apply</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1117,7 +1124,7 @@
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-trunk documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">OpenClimateGIS 0.07.1b-next documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../ocgis.html" >ocgis</a> &raquo;</li> 
       </ul>
