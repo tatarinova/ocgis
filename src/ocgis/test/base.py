@@ -32,7 +32,7 @@ class TestBase(unittest.TestCase):
         ret = os.path.join(base_dir, 'bin')
         return (ret)
 
-    def assertNumpyAll(self, arr1, arr2, check_fill_value_dtype=True):
+    def assertNumpyAll(self, arr1, arr2, check_fill_value_dtype=True, check_arr_dtype=True):
         """
         :type arr1: :class:`numpy.ndarray`
         :type arr2: :class:`numpy.ndarray`
@@ -41,7 +41,8 @@ class TestBase(unittest.TestCase):
         """
 
         self.assertEqual(type(arr1), type(arr2))
-        self.assertEqual(arr1.dtype, arr2.dtype)
+        if check_arr_dtype:
+            self.assertEqual(arr1.dtype, arr2.dtype)
         if isinstance(arr1, np.ma.MaskedArray) or isinstance(arr2, np.ma.MaskedArray):
             self.assertTrue(np.all(arr1.data == arr2.data))
             self.assertTrue(np.all(arr1.mask == arr2.mask))
@@ -98,7 +99,7 @@ class TestBase(unittest.TestCase):
                         if close:
                             self.assertNumpyAllClose(var[:], dvar[:])
                         else:
-                            self.assertNumpyAll(var[:], dvar[:])
+                            self.assertNumpyAll(var[:], dvar[:], check_arr_dtype=check_types)
                 except AssertionError:
                     cmp = var[:] == dvar[:]
                     if cmp.shape == (1,) and cmp.data[0] == True:
@@ -108,7 +109,11 @@ class TestBase(unittest.TestCase):
                 if check_types:
                     self.assertEqual(var[:].dtype, dvar[:].dtype)
                 for k, v in var.__dict__.iteritems():
-                    self.assertNumpyAll(v, getattr(dvar, k))
+                    to_test_attr = getattr(dvar, k)
+                    try:
+                        self.assertNumpyAll(v, to_test_attr)
+                    except AttributeError:
+                        self.assertEqual(v, to_test_attr)
                 self.assertEqual(var.dimensions, dvar.dimensions)
             self.assertEqual(set(src.variables.keys()), set(dest.variables.keys()))
 
@@ -117,8 +122,11 @@ class TestBase(unittest.TestCase):
             else:
                 for k, v in src.__dict__.iteritems():
                     if k not in ignore_attributes['global']:
-                        self.assertNumpyAll(v, dest.__dict__[k])
-
+                        to_test = dest.__dict__[k]
+                        try:
+                            self.assertNumpyAll(v, to_test)
+                        except AttributeError:
+                            self.assertEqual(v, to_test)
         finally:
             src.close()
             dest.close()

@@ -88,7 +88,8 @@ class TestMean(AbstractTestField):
                             np.ma.array(data=[[31,31,31,31],[31,31,31,31],[31,31,31,31]],
                                         mask=[[False,False,False,False],[False,False,False,False],
                                               [False,False,False,False]],
-                                        fill_value=999999))
+                                        fill_value=999999,
+                                        dtype=ret.dtype))
         
         mu = Mean(field=field,tgd=tgd,alias='my_mean',calc_sample_size=False)
         dvc = mu.execute()
