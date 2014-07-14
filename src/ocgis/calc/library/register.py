@@ -13,7 +13,7 @@ class FunctionRegistry(dict):
         
         self.reg += [math.Divide,math.NaturalLogarithm,math.Sum]
         self.reg += [statistics.FrequencyPercentile,statistics.Mean,statistics.StandardDeviation,
-                     statistics.Max,statistics.Median,statistics.Min]
+                     statistics.Max,statistics.Median,statistics.Min,statistics.Convolve1D,statistics.MovingAverage]
         self.reg += [thresholds.Between,thresholds.Threshold]
         self.reg += [dynamic_kernel_percentile.DynamicDailyKernelPercentileThreshold,
                      heat_index.HeatIndex,duration.Duration,duration.FrequencyDuration]

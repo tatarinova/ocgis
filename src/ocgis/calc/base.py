@@ -398,20 +398,28 @@ class AbstractParameterizedFunction(AbstractFunction):
     
     @abc.abstractproperty
     def parms_definition(self):
-        '''
+        """
         A dictionary describing the input parameters with keys corresponding to
         parameter names and values to their types. Set the type to `None` for no
         type checking.
-        
+
         >>> {'threshold':float,'operation':str,'basis':None}
-        '''
+        """
         dict
     
-    def _format_parms_(self,values):
+    def _format_parms_(self, values):
+        """
+        :param values: A dictionary containing the parameter values to check.
+        :type values: dict[str, type]
+        """
+
         ret = {}
         for k,v in values.iteritems():
             try:
-                formatted = self.parms_definition[k](v)
+                if isinstance(v, self.parms_definition[k]):
+                    formatted = v
+                else:
+                    formatted = self.parms_definition[k](v)
             ## likely a nonetype
             except TypeError as e:
                 if self.parms_definition[k] is None:

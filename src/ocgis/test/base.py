@@ -32,12 +32,23 @@ class TestBase(unittest.TestCase):
         ret = os.path.join(base_dir, 'bin')
         return (ret)
 
-    def assertNumpyAll(self, arr1, arr2):
+    def assertNumpyAll(self, arr1, arr2, check_fill_value_dtype=True):
+        """
+        :type arr1: :class:`numpy.ndarray`
+        :type arr2: :class:`numpy.ndarray`
+        :param check_fill_value_dtype: If ``True``, check that the data type for masked array fill values are equal.
+        :type check_fill_value_dtype: bool
+        """
+
         self.assertEqual(type(arr1), type(arr2))
+        self.assertEqual(arr1.dtype, arr2.dtype)
         if isinstance(arr1, np.ma.MaskedArray) or isinstance(arr2, np.ma.MaskedArray):
             self.assertTrue(np.all(arr1.data == arr2.data))
             self.assertTrue(np.all(arr1.mask == arr2.mask))
-            self.assertEqual(arr1.fill_value, arr2.fill_value)
+            if check_fill_value_dtype:
+                self.assertEqual(arr1.fill_value, arr2.fill_value)
+            else:
+                self.assertTrue(np.equal(arr1.fill_value, arr2.fill_value.astype(arr1.fill_value.dtype)))
             return True
         else:
             return self.assertTrue(np.all(arr1 == arr2))
