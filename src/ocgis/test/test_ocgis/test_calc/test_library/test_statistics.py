@@ -1,6 +1,6 @@
 import pickle
 import unittest
-from ocgis.api.parms.definition import Calc
+from ocgis.api.parms.definition import Calc, OutputFormat
 from ocgis.calc.library.statistics import Mean, FrequencyPercentile, Convolve1D, MovingAverage
 from ocgis.interface.base.variable import DerivedVariable, Variable
 import numpy as np
@@ -50,6 +50,16 @@ class TestConvolve1D(AbstractTestField):
         self.assertEqual(cd.field.shape, (2, 2, 2, 3, 4))
         actual = np.loads('\x80\x02cnumpy.core.multiarray\n_reconstruct\nq\x01cnumpy\nndarray\nq\x02K\x00\x85U\x01b\x87Rq\x03(K\x01K\x02\x85cnumpy\ndtype\nq\x04U\x02O8K\x00K\x01\x87Rq\x05(K\x03U\x01|NNNJ\xff\xff\xff\xffJ\xff\xff\xff\xffK?tb\x89]q\x06(cdatetime\ndatetime\nq\x07U\n\x07\xd0\x01\x02\x0c\x00\x00\x00\x00\x00\x85Rq\x08h\x07U\n\x07\xd0\x01\x03\x0c\x00\x00\x00\x00\x00\x85Rq\tetb.')
         self.assertNumpyAll(actual, cd.field.temporal.value)
+
+    def test_execute_valid_through_operations(self):
+        """Test executing a "valid" convolution mode through operations ensuring the data is appropriately truncated."""
+
+        rd = self.test_data.get_rd('cancm4_tas')
+        calc = [{'func': 'convolve_1d', 'name': 'convolve', 'kwds': {'v': np.array([1, 1, 1, 1, 1]), 'mode': 'valid'}}]
+        ops = ocgis.OcgOperations(dataset=rd, calc=calc, slice=[None, [0, 365], None, [0, 10], [0, 10]])
+        ret = ops.execute()
+        self.assertEqual(ret[1]['tas'].shape, (1, 361, 1, 10, 10))
+        self.assertAlmostEqual(ret[1]['tas'].variables['convolve'].value.mean(), 1200.4059833795013)
 
     def test_registry(self):
         Calc([{'func': 'convolve_1d', 'name': 'convolve'}])

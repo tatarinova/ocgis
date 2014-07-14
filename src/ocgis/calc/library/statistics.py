@@ -48,16 +48,7 @@ class Convolve1D(base.AbstractUnivariateFunction, base.AbstractParameterizedFunc
 
             # identify where the two arrays completely overlap and collect the indices to subset the field object
             # attached to the calculation object
-            select = np.zeros(values.shape[1], dtype=bool)
-            idx = np.arange(values.shape[1])
-            shape_fill = fill.shape[1]
-            shape_values = values.shape[1]
-            for ii in idx.flat:
-                if ii-shape_fill+1 >= 0 and ii+shape_fill-1 <= shape_values-1:
-                    select[ii] = True
-            idx = idx[select]
-            # update the attached field object
-            self.field = self.field[:, slice(idx.min(), idx.max()+1), :, :, :]
+            self.field = self.field[:, slice(0, 0-(v.shape[0]-1)), :, :, :]
         else:
             # same does not modify the output array size
             fill = np.ma.array(fill, mask=values.mask)
