@@ -151,6 +151,11 @@ Mathematical Operations
    :members: calculate
    :undoc-members:
 
+.. autoclass:: ocgis.calc.library.math.Convolve1D
+   :show-inheritance:
+   :members: calculate
+   :undoc-members:
+
 Basic Statistics
 ----------------
 
@@ -180,6 +185,14 @@ Basic Statistics
    :undoc-members:
 
 .. autoclass:: ocgis.calc.library.statistics.StandardDeviation
+   :show-inheritance:
+   :members: calculate
+   :undoc-members:
+
+Moving Window / Kernel-Based
+----------------------------
+
+.. autoclass:: ocgis.calc.library.statistics.MovingAverage
    :show-inheritance:
    :members: calculate
    :undoc-members:
