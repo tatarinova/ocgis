@@ -49,7 +49,7 @@ class MovingAverage(Convolve1D):
                     raise StopIteration
                 yield origin, values[start:stop]
                 origin += 1
-        else:
+        elif mode == 'same':
             while True:
                 start = origin - shift
                 stop = origin + shift + 1
@@ -59,6 +59,8 @@ class MovingAverage(Convolve1D):
                 origin += 1
                 if origin == shape_values:
                     raise StopIteration
+        else:
+            raise NotImplementedError(mode)
 
 
 class FrequencyPercentile(base.AbstractUnivariateSetFunction,base.AbstractParameterizedFunction):

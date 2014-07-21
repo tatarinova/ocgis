@@ -68,7 +68,8 @@ class TestMovingAverage(AbstractTestField):
 
         k = [1, 2, 3, 4]
         values = [np.array([[2, 3], [4, 5]]), np.arange(0, 13)]
-        for kwds in itr_products_keywords({'k': k, 'values': values}, as_namedtuple=True):
+        mode = ['same', 'valid', 'foo']
+        for kwds in itr_products_keywords({'k': k, 'values': values, 'mode': mode}, as_namedtuple=True):
             try:
                 list(MovingAverage._iter_kernel_values_(kwds.values, kwds.k))
             except AssertionError:
@@ -79,6 +80,11 @@ class TestMovingAverage(AbstractTestField):
                         raise
                 else:
                     continue
+            except NotImplementedError:
+                if kwds.mode == 'foo':
+                    continue
+                else:
+                    raise
 
 
 class TestFrequencyPercentile(AbstractTestField):
