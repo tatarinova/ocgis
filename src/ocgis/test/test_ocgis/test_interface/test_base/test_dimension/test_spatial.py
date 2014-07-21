@@ -113,7 +113,7 @@ class TestSpatialBase(TestBase):
 
     @property
     def uid_value(self):
-        return np.ma.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], mask=False)
+        return np.ma.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], mask=False, dtype=constants.np_int)
 
     def write_sdim(self):
         sdim = self.get_sdim(bounds=True)
@@ -828,7 +828,7 @@ class TestSpatialDimension(TestSpatialBase):
         sdim.unwrap()
         sdim.set_grid_bounds_from_geometry()
         self.assertNumpyAll(np.array(sdim.geom.polygon.value[2, 2].bounds), sdim.grid.bounds[2, 2, :].data)
-        self.assertNumpyAll(sdim.geom.polygon.value[2, 2].bounds, (261.5, 37.5, 262.5, 38.5))
+        self.assertEqual(sdim.geom.polygon.value[2, 2].bounds, (261.5, 37.5, 262.5, 38.5))
         self.assertNumpyAll(np.array(sdim.geom.point.value[2, 2]), np.array([ 262.,   38.]))
         self.assertTrue(sdim.is_unwrapped)
 

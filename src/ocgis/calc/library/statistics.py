@@ -37,7 +37,6 @@ class MovingAverage(AbstractUnivariateFunction, AbstractParameterizedFunction):
         fill = values.copy()
 
         # perform the moving average on the time axis
-        itr = iter_array(values)
         axes = [0, 2, 3, 4]
         itrs = [range(values.shape[axis]) for axis in axes]
         for ie, il, ir, ic in itertools.product(*itrs):
@@ -45,11 +44,14 @@ class MovingAverage(AbstractUnivariateFunction, AbstractParameterizedFunction):
             build = True
             for origin, values_kernel in self._iter_kernel_values_(values_slice, k, mode=mode):
                 if build:
+                    # if only the valid region is returned, this index will determine where the start index for the
+                    # field/fill slice is
                     idx_start = origin
                     build = False
                 fill[ie, origin, il, ir, ic] = mean(values_kernel)
 
         if mode == 'valid':
+            # slice the field and fill arrays
             self.field = self.field[:, idx_start:origin+1, :, :, :]
             fill = fill[:, idx_start:origin+1, :, :, :]
         elif mode == 'same':
@@ -61,21 +63,37 @@ class MovingAverage(AbstractUnivariateFunction, AbstractParameterizedFunction):
 
     @staticmethod
     def _iter_kernel_values_(values, k, mode='valid'):
+        """
+        :param values: The one-dimensional array from which to extract window values.
+        :type values: :class:`numpy.core.multiarray.ndarray`
+        :param int k: The width of window. Must be odd and greater than 3.
+        :param str mode: If ``valid``, return only values with a full window overlap. If ``same``, return all values
+         regardless of window overlap.
+        :returns: tuple(int, :class:`numpy.core.multiarray.ndarray`)
+        :raises: AssertionError, NotImplementedError
+        """
+
         assert(k % 2 != 0)
         assert(k >= 3)
         assert(len(values.shape) == 1)
 
+        # used to track the current value for the centered window.
         origin = 0
+        # size of one side of the window used to determine the slice for the kernel
         shift = (k - 1)/2
+        # reference for the length of the value array
         shape_values = values.shape[0]
 
+        # will return only values with a full window overlap
         if mode == 'valid':
             while True:
                 start = origin - shift
+                # skip slices without a full window
                 if start < 0:
                     origin += 1
                     continue
                 stop = origin + shift + 1
+                # if the end index is greater than the length of the value array end iteration
                 if stop > shape_values:
                     raise StopIteration
                 yield origin, values[start:stop]
@@ -84,10 +102,12 @@ class MovingAverage(AbstractUnivariateFunction, AbstractParameterizedFunction):
             while True:
                 start = origin - shift
                 stop = origin + shift + 1
+                # return values regardless of window overlap. always start at the beginning of the array
                 if start < 0:
                     start = 0
                 yield origin, values[start:stop]
                 origin += 1
+                # stop when we've used the last array value
                 if origin == shape_values:
                     raise StopIteration
         else:
