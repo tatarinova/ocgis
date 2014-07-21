@@ -1,3 +1,4 @@
+import pickle
 import unittest
 import itertools
 import numpy as np
@@ -8,9 +9,17 @@ from ocgis.interface.base.variable import DerivedVariable, Variable
 from ocgis.test.test_ocgis.test_interface.test_base.test_field import AbstractTestField
 from ocgis.test.test_simple.test_simple import nc_scope
 import ocgis
+from ocgis.util.itester import itr_products_keywords
 
 
 class TestMovingAverage(AbstractTestField):
+
+    def test_calculate(self):
+        ma = MovingAverage()
+        values = np.ma.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=float).reshape(1, -1, 1, 1, 1)
+        k = 5
+        ret = ma.calculate(values, k=k)
+        import ipdb;ipdb.set_trace()
 
     def test_execute(self):
         #todo: add to docs
@@ -27,6 +36,49 @@ class TestMovingAverage(AbstractTestField):
 
     def test_registry(self):
         Calc([{'func': 'moving_average', 'name': 'ma'}])
+
+    def test_iter_kernel_values_same(self):
+        """Test returning kernel values with the 'same' mode."""
+
+        values = np.arange(2, 11)
+        k = 5
+        mode = 'same'
+        itr = MovingAverage._iter_kernel_values_(values, k, mode=mode)
+        to_test = list(itr)
+        actual = pickle.loads("(lp0\n(I0\ncnumpy.core.multiarray\n_reconstruct\np1\n(cnumpy\nndarray\np2\n(I0\ntp3\nS'b'\np4\ntp5\nRp6\n(I1\n(I3\ntp7\ncnumpy\ndtype\np8\n(S'i8'\np9\nI0\nI1\ntp10\nRp11\n(I3\nS'<'\np12\nNNNI-1\nI-1\nI0\ntp13\nbI00\nS'\\x02\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np14\ntp15\nbtp16\na(I1\ng1\n(g2\n(I0\ntp17\ng4\ntp18\nRp19\n(I1\n(I4\ntp20\ng11\nI00\nS'\\x02\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np21\ntp22\nbtp23\na(I2\ng1\n(g2\n(I0\ntp24\ng4\ntp25\nRp26\n(I1\n(I5\ntp27\ng11\nI00\nS'\\x02\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np28\ntp29\nbtp30\na(I3\ng1\n(g2\n(I0\ntp31\ng4\ntp32\nRp33\n(I1\n(I5\ntp34\ng11\nI00\nS'\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np35\ntp36\nbtp37\na(I4\ng1\n(g2\n(I0\ntp38\ng4\ntp39\nRp40\n(I1\n(I5\ntp41\ng11\nI00\nS'\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np42\ntp43\nbtp44\na(I5\ng1\n(g2\n(I0\ntp45\ng4\ntp46\nRp47\n(I1\n(I5\ntp48\ng11\nI00\nS'\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np49\ntp50\nbtp51\na(I6\ng1\n(g2\n(I0\ntp52\ng4\ntp53\nRp54\n(I1\n(I5\ntp55\ng11\nI00\nS'\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np56\ntp57\nbtp58\na(I7\ng1\n(g2\n(I0\ntp59\ng4\ntp60\nRp61\n(I1\n(I4\ntp62\ng11\nI00\nS'\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np63\ntp64\nbtp65\na(I8\ng1\n(g2\n(I0\ntp66\ng4\ntp67\nRp68\n(I1\n(I3\ntp69\ng11\nI00\nS'\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np70\ntp71\nbtp72\na.")
+        for idx in range(len(to_test)):
+            self.assertEqual(to_test[idx][0], actual[idx][0])
+            self.assertNumpyAll(to_test[idx][1], actual[idx][1])
+
+    def test_iter_kernel_values_valid(self):
+        """Test returning kernel values with the 'valid' mode."""
+
+        values = np.arange(2, 11)
+        k = 5
+        mode = 'valid'
+        itr = MovingAverage._iter_kernel_values_(values, k, mode=mode)
+        to_test = list(itr)
+        actual = pickle.loads("(lp0\n(I2\ncnumpy.core.multiarray\n_reconstruct\np1\n(cnumpy\nndarray\np2\n(I0\ntp3\nS'b'\np4\ntp5\nRp6\n(I1\n(I5\ntp7\ncnumpy\ndtype\np8\n(S'i8'\np9\nI0\nI1\ntp10\nRp11\n(I3\nS'<'\np12\nNNNI-1\nI-1\nI0\ntp13\nbI00\nS'\\x02\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np14\ntp15\nbtp16\na(I3\ng1\n(g2\n(I0\ntp17\ng4\ntp18\nRp19\n(I1\n(I5\ntp20\ng11\nI00\nS'\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np21\ntp22\nbtp23\na(I4\ng1\n(g2\n(I0\ntp24\ng4\ntp25\nRp26\n(I1\n(I5\ntp27\ng11\nI00\nS'\\x04\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np28\ntp29\nbtp30\na(I5\ng1\n(g2\n(I0\ntp31\ng4\ntp32\nRp33\n(I1\n(I5\ntp34\ng11\nI00\nS'\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np35\ntp36\nbtp37\na(I6\ng1\n(g2\n(I0\ntp38\ng4\ntp39\nRp40\n(I1\n(I5\ntp41\ng11\nI00\nS'\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\np42\ntp43\nbtp44\na.")
+        for idx in range(len(to_test)):
+            self.assertEqual(to_test[idx][0], actual[idx][0])
+            self.assertNumpyAll(to_test[idx][1], actual[idx][1])
+
+    def test_iter_kernel_values_asserts(self):
+        """Test assert statements."""
+
+        k = [1, 2, 3, 4]
+        values = [np.array([[2, 3], [4, 5]]), np.arange(0, 13)]
+        for kwds in itr_products_keywords({'k': k, 'values': values}, as_namedtuple=True):
+            try:
+                list(MovingAverage._iter_kernel_values_(kwds.values, kwds.k))
+            except AssertionError:
+                if kwds.k == 3:
+                    if kwds.values.shape == (2, 2):
+                        continue
+                    else:
+                        raise
+                else:
+                    continue
 
 
 class TestFrequencyPercentile(AbstractTestField):

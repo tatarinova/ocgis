@@ -28,6 +28,38 @@ class MovingAverage(Convolve1D):
         v = np.ones((k,))/k
         return super(MovingAverage, self).calculate(values, v=v, mode=mode)
 
+    @staticmethod
+    def _iter_kernel_values_(values, k, mode='valid'):
+        assert(k % 2 != 0)
+        assert(k >= 3)
+        assert(len(values.shape) == 1)
+
+        origin = 0
+        shift = (k - 1)/2
+        shape_values = values.shape[0]
+
+        if mode == 'valid':
+            while True:
+                start = origin - shift
+                if start < 0:
+                    origin += 1
+                    continue
+                stop = origin + shift + 1
+                if stop > shape_values:
+                    raise StopIteration
+                yield origin, values[start:stop]
+                origin += 1
+        else:
+            while True:
+                start = origin - shift
+                stop = origin + shift + 1
+                if start < 0:
+                    start = 0
+                yield origin, values[start:stop]
+                origin += 1
+                if origin == shape_values:
+                    raise StopIteration
+
 
 class FrequencyPercentile(base.AbstractUnivariateSetFunction,base.AbstractParameterizedFunction):
     key = 'freq_perc'
