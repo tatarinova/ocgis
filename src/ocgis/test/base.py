@@ -32,6 +32,9 @@ class TestBase(unittest.TestCase):
         ret = os.path.join(base_dir, 'bin')
         return (ret)
 
+    def shortDescription(self):
+        return None
+
     def assertNumpyAll(self, arr1, arr2, check_fill_value_dtype=True, check_arr_dtype=True):
         """
         :type arr1: :class:`numpy.ndarray`
@@ -56,6 +59,9 @@ class TestBase(unittest.TestCase):
 
     def assertNumpyAllClose(self, arr1, arr2):
         self.assertEqual(type(arr1), type(arr2))
+        if isinstance(arr1, np.ma.MaskedArray) or isinstance(arr2, np.ma.MaskedArray):
+            self.assertTrue(np.all(arr1.mask == arr2.mask))
+            self.assertEqual(arr1.fill_value, arr2.fill_value)
         return self.assertTrue(np.allclose(arr1, arr2))
 
     def assertNumpyNotAll(self, arr1, arr2):
@@ -65,6 +71,15 @@ class TestBase(unittest.TestCase):
             ret = True
         else:
             raise AssertionError('Arrays are equivalent.')
+        return ret
+
+    def assertNumpyNotAllClose(self, arr1, arr2):
+        try:
+            self.assertNumpyAll(arr1, arr2)
+        except AssertionError:
+            ret = True
+        else:
+            raise AssertionError('Arrays are equivalent within precision.')
         return ret
 
     def assertDictEqual(self, d1, d2, msg=None):
@@ -233,6 +248,9 @@ class TestData(OrderedDict):
         return (dest)
 
     def get_rd(self, key, kwds=None):
+        """
+        :rtype: :class:`ocgis.RequestDataset`
+        """
         ref = self[key]
         if kwds is None:
             kwds = {}
