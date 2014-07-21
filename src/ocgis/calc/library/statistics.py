@@ -1,32 +1,63 @@
+import itertools
 import numpy as np
 from ocgis.calc import base
 from ocgis import constants
+from ocgis.calc.base import AbstractUnivariateFunction, AbstractParameterizedFunction
 from ocgis.calc.library.math import Convolve1D
+from ocgis.util.helpers import iter_array
 
 
-class MovingAverage(Convolve1D):
+class MovingAverage(AbstractUnivariateFunction, AbstractParameterizedFunction):
     key = 'moving_average'
     parms_definition = {'k': int, 'mode': str}
     description = ('Calculate a moving window average alone the time axis with window of width ``k``. The optional ',
-                   'parameter ``mode`` defaults to ``same``. ``valid`` is also available in which case the time axis ',
-                   'will be truncated.')
+                   'parameter ``mode`` defaults to ``valid`` which will truncate the time axis. ``same`` is also ',
+                   'available which outputs the same time dimension. The moving window is centered on the time coordinate.',
+                   '``k`` must be odd and greater than 3.')
     dtype = constants.np_float
 
-    def calculate(self, values, k=None, mode='same'):
+    def calculate(self, values, k=None, mode='valid'):
         """
         :param values: Array containing variable values.
         :type values: :class:`numpy.ma.core.MaskedArray`
-        :param k: The width of the moving window.
+        :param k: The width of the moving window. ``k`` must be odd and greater than three.
         :type k: int
-        :param str mode: The convolution mode. See: http://docs.scipy.org/doc/numpy/reference/generated/numpy.convolve.html.
-         The output mode ``full`` is not supported.
+        :param str mode: See: http://docs.scipy.org/doc/numpy/reference/generated/numpy.convolve.html. The output mode
+         ``full`` is not supported.
         :rtype: :class:`numpy.ma.core.MaskedArray`
-        :raises: AssertionError
+        :raises: AssertionError, NotImplementedError
         """
 
-        # the second convolution array will generate a moving average
-        v = np.ones((k,))/k
-        return super(MovingAverage, self).calculate(values, v=v, mode=mode)
+        mean = np.ma.mean
+
+        # 'full' is not supported as this would add dates to the temporal dimension
+        assert(mode in ('same', 'valid'))
+        assert(len(values.shape) == 5)
+
+        fill = values.copy()
+
+        # perform the moving average on the time axis
+        itr = iter_array(values)
+        axes = [0, 2, 3, 4]
+        itrs = [range(values.shape[axis]) for axis in axes]
+        for ie, il, ir, ic in itertools.product(*itrs):
+            values_slice = values[ie, :, il, ir, ic]
+            build = True
+            for origin, values_kernel in self._iter_kernel_values_(values_slice, k, mode=mode):
+                if build:
+                    idx_start = origin
+                    build = False
+                fill[ie, origin, il, ir, ic] = mean(values_kernel)
+
+        if mode == 'valid':
+            self.field = self.field[:, idx_start:origin+1, :, :, :]
+            fill = fill[:, idx_start:origin+1, :, :, :]
+        elif mode == 'same':
+            pass
+        else:
+            raise NotImplementedError(mode)
+
+        return fill
 
     @staticmethod
     def _iter_kernel_values_(values, k, mode='valid'):

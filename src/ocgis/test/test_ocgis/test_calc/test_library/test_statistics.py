@@ -16,10 +16,16 @@ class TestMovingAverage(AbstractTestField):
 
     def test_calculate(self):
         ma = MovingAverage()
-        values = np.ma.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=float).reshape(1, -1, 1, 1, 1)
+        np.random.seed(1)
+        values = np.ma.array(np.random.rand(10), dtype=float).reshape(1, -1, 1, 1, 1)
         k = 5
-        ret = ma.calculate(values, k=k)
-        import ipdb;ipdb.set_trace()
+        ret = ma.calculate(values, k=k, mode='same')
+        self.assertEqual(ret.shape, values.shape)
+        actual = pickle.loads('cnumpy.ma.core\n_mareconstruct\np0\n(cnumpy.ma.core\nMaskedArray\np1\ncnumpy\nndarray\np2\n(I0\ntp3\nS\'b\'\np4\ntp5\nRp6\n(I1\n(I1\nI10\nI1\nI1\nI1\ntp7\ncnumpy\ndtype\np8\n(S\'f8\'\np9\nI0\nI1\ntp10\nRp11\n(I3\nS\'<\'\np12\nNNNI-1\nI-1\nI0\ntp13\nbI00\nS\'\\xec\\x80\\\'\\x90\\rD\\xd8?\\xee"\\x1d\\xdad\\t\\xd7?\\x126\\xab\\x0b\\xceN\\xd4?\\xc4\\xcdN\\xdc\\xe1&\\xd0?\\x0e\\xa2\\x12\\x8a\\xb8\\xa1\\xc2?#!\\x9bX\\xa3y\\xcb?\\x83\\xb5\\x00\\xd2\\x86\\xe4\\xcd?*M\\xfa\\xe1\\xf7\\xf6\\xd3?\\xd4\\xd3\\xad\\xd1}z\\xd7? J4q\\xc2T\\xdb?\'\np14\nS\'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\'\np15\ncnumpy.core.multiarray\n_reconstruct\np16\n(g2\n(I0\ntp17\ng4\ntp18\nRp19\n(I1\n(tg11\nI00\nS\'@\\x8c\\xb5x\\x1d\\xaf\\x15D\'\np20\ntp21\nbtp22\nb.')
+        self.assertNumpyAllClose(ret, actual)
+        ret = ret.squeeze()
+        values = values.squeeze()
+        self.assertEqual(ret[4], np.mean(values[2:7]))
 
     def test_execute(self):
         #todo: add to docs
@@ -27,12 +33,25 @@ class TestMovingAverage(AbstractTestField):
         field = field[:, 0:4, :, :, :]
         field.variables['tmax'].value[:] = 1
         field.variables['tmax'].value.mask[:, :, :, 1, 1] = True
-        parms = {'k': 3}
-        ma = MovingAverage(field=field, parms=parms)
-        vc = ma.execute()
-        to_test = vc['moving_average'].value[0, :, 0, 0, 0]
-        actual = np.ma.array([0.6666666865348816, 1.0, 1.0, 0.6666666865348816], mask=False, dtype=to_test.dtype)
-        self.assertNumpyAll(to_test, actual)
+        for mode in ['same', 'valid']:
+            parms = {'k': 3, 'mode': mode}
+            ma = MovingAverage(field=field, parms=parms)
+            vc = ma.execute()
+            if mode == 'same':
+                self.assertEqual(vc['moving_average'].value.shape, field.shape)
+            else:
+                self.assertEqual(vc['moving_average'].value.shape, (2, 2, 2, 3, 4))
+                self.assertEqual(ma.field.shape, (2, 2, 2, 3, 4))
+
+    def test_execute_valid_through_operations(self):
+        """Test executing a "valid" convolution mode through operations ensuring the data is appropriately truncated."""
+
+        rd = self.test_data.get_rd('cancm4_tas')
+        calc = [{'func': 'moving_average', 'name': 'ma', 'kwds': {'k': 5, 'mode': 'valid'}}]
+        ops = ocgis.OcgOperations(dataset=rd, calc=calc, slice=[None, [0, 365], None, [0, 10], [0, 10]])
+        ret = ops.execute()
+        self.assertEqual(ret[1]['tas'].shape, (1, 361, 1, 10, 10))
+        self.assertAlmostEqual(ret[1]['tas'].variables['ma'].value.mean(), 240.08204986149585)
 
     def test_registry(self):
         Calc([{'func': 'moving_average', 'name': 'ma'}])
